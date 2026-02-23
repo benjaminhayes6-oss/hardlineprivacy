@@ -1,5 +1,7 @@
 {
-  "name": "repository-url-fallback",
+  "name": "hardlineprivacy",
   "version": "1.0.0",
-  "main": "index.js"
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {}
 }
