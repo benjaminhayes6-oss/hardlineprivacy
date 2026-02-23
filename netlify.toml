@@ -6,6 +6,9 @@
 [functions]
   directory = "netlify/functions"
 
+[[plugins]]
+  package = "./netlify/plugins/repository-url-fallback"
+
 [[redirects]]
   from = "/checkout/:plan"
   to = "/.netlify/functions/checkout?plan=:plan"

@@ -1,10 +1,5 @@
 {
-  "name": "hardlineprivacy",
+  "name": "repository-url-fallback",
   "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "@netlify/blobs": "^10.6.0",
-    "@netlify/functions": "^3.0.0",
-    "stripe": "^20.3.1"
-  }
+  "main": "index.js"
 }
