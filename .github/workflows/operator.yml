@@ -1,0 +1,17 @@
+name: Hardline Privacy Operator
+
+on:
+  schedule:
+    - cron: '0 14 * * 1'
+    - cron: '0 14 * * 4'
+  workflow_dispatch:
+
+jobs:
+  operator:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Operator Reminder
+        run: echo "Run Hardline Privacy AI Operator"
