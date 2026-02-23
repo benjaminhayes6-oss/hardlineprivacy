@@ -92,6 +92,8 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
 .btn.primary:hover{box-shadow:0 4px 20px rgba(96,165,250,.35)}
 .btn.outline{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
 .btn.outline:hover{background:rgba(96,165,250,.08)}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.18);color:var(--muted)}
+.btn.ghost:hover{border-color:rgba(255,255,255,.35);color:var(--ink)}
 
 /* Sections */
 .section{padding:56px 0;border-top:1px solid var(--border)}
@@ -145,6 +147,41 @@ footer a:hover{color:var(--ink)}
 .trust-signal{margin-top:24px;color:var(--muted);font-size:.9rem;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .badge{background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.2);font-weight:700;font-size:11px;padding:3px 9px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
 
+/* Hero quick links */
+.quick-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:16px 0}
+.quick-links a{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border:1px solid rgba(255,255,255,.08);padding:6px 10px;border-radius:999px}
+.quick-links a:hover{color:var(--ink);text-decoration:none;border-color:rgba(255,255,255,.2)}
+
+/* Hero proof strip */
+.hero-proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:18px}
+.hero-proof-item{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.03);text-align:left}
+.hero-proof-title{font-weight:700;font-size:13px;margin-bottom:4px}
+.hero-proof-sub{color:var(--muted);font-size:12px;line-height:1.4}
+
+/* Proof section */
+.proof-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;align-items:center}
+.proof-panel{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:18px}
+.proof-header{font-weight:800;margin-bottom:12px;font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.proof-row{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.08);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:12px}
+.proof-row:last-of-type{border-bottom:none}
+.proof-footer{margin-top:10px;color:var(--muted);font-size:11px}
+
+/* CTA band */
+.cta-band{background:linear-gradient(160deg,rgba(34,211,238,.08),rgba(8,16,24,.98))}
+.cta-band-inner{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;align-items:center}
+.cta-band .btnrow{justify-content:flex-start}
+
+/* Comparison section */
+.comparison .sub{max-width:720px}
+
+/* Scan flow */
+.scan-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0 16px}
+.scan-step{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.03);text-align:left}
+.scan-step-title{font-weight:700;font-size:13px;margin-bottom:6px}
+.scan-step-sub{font-size:12px;color:var(--muted)}
+.scan-trust{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.scan-trust .chip{font-size:11px;text-transform:uppercase;letter-spacing:.08em;border:1px solid rgba(255,255,255,.12);padding:6px 10px;border-radius:999px;color:var(--muted)}
+
 /* === Hardline Privacy: Pricing card stack fix === */
 .tier,
 .pricing-card{display:flex;flex-direction:column;gap:10px}
@@ -167,4 +204,14 @@ footer .logo img{height:112px;width:auto;max-width:440px;object-fit:contain;opac
 .pricing-card{margin-bottom:28px}
 @media (max-width:768px){
   .pricing-card{margin-bottom:36px}
+}
+
+@media (max-width:680px){
+  .quick-links{justify-content:flex-start}
+  .quick-links a{font-size:11px}
+  .hero-proof{grid-template-columns:1fr}
+  .cta-band .btnrow{justify-content:center}
+  .proof-panel{padding:14px}
+  .proof-row{flex-direction:column;align-items:flex-start}
+  .scan-steps{grid-template-columns:1fr}
 }

@@ -74,14 +74,29 @@
     <h1 class="h1">Exposure Scanner</h1>
     <p class="sub">Enter a name and city/state. We query multiple search engines and show de‑duplicated results. Use this to understand what may be publicly discoverable.</p>
 
+    <div class="scan-steps" role="list">
+      <div class="scan-step" role="listitem">
+        <div class="scan-step-title">1) Submit name + city</div>
+        <div class="scan-step-sub">We use your inputs to query public search sources.</div>
+      </div>
+      <div class="scan-step" role="listitem">
+        <div class="scan-step-title">2) Scan public listings</div>
+        <div class="scan-step-sub">We de‑duplicate results across brokers and directories.</div>
+      </div>
+      <div class="scan-step" role="listitem">
+        <div class="scan-step-title">3) Get a risk snapshot</div>
+        <div class="scan-step-sub">See exposure level and recommended next actions.</div>
+      </div>
+    </div>
+
     <form id="scanForm" class="callout" data-requires-consent>
       <label for="fullName">Full Name</label>
-      <input id="fullName" name="fullName" placeholder="Enter your full name" required aria-describedby="error-fullName help-fullName"/>
+      <input id="fullName" name="fullName" placeholder="Enter your full name" autocomplete="name" required aria-describedby="error-fullName help-fullName"/>
       <div class="field-error" id="error-fullName" role="alert" aria-live="polite"></div>
       <div class="field-help" id="help-fullName">Use your legal name for the most accurate scan.</div>
 
       <label for="cityState">City &amp; State</label>
-      <input id="cityState" name="cityState" placeholder="Enter your city and state" required aria-describedby="error-cityState help-cityState"/>
+      <input id="cityState" name="cityState" placeholder="Enter your city and state" autocomplete="address-level2" required aria-describedby="error-cityState help-cityState"/>
       <div class="field-error" id="error-cityState" role="alert" aria-live="polite"></div>
       <div class="field-help" id="help-cityState">Example: Nashville, TN</div>
 
@@ -89,13 +104,20 @@
       <input id="aliases" name="aliases" placeholder="Other names you may be listed under" aria-describedby="help-aliases"/>
       <div class="field-help" id="help-aliases">Maiden name, nickname, previous legal name</div>
 
-      <div class="btnrow">
-        <button class="btn primary" type="submit">Run Scan</button>
-        <a class="btn outline" href="/pricing">See protection options</a>
+      <div class="scan-trust">
+        <span class="chip">No credit card</span>
+        <span class="chip">~60 seconds</span>
+        <span class="chip">No data resale</span>
       </div>
-      <div class="scan-cta-note small">Now monitoring 700+ personal‑data sources† Coverage details.</div>
-      <div class="small">† Coverage varies by source; updated periodically. Coverage details.</div>
-      <div class="small">We do not sell personal information. Results are search‑engine listings and may include false positives.</div>
+
+      <div class="btnrow">
+        <button class="btn primary" type="submit">Run Exposure Scan</button>
+        <a class="btn outline" href="/pricing">See protection options</a>
+        <a class="btn ghost" href="/contact">Request a quote</a>
+      </div>
+      <div class="scan-cta-note small">Now monitoring 700+ personal‑data sources†</div>
+      <div class="small">† Coverage varies by source; updated periodically.</div>
+      <div class="small">Results are search‑engine listings and may include false positives.</div>
       <label style="margin-top:12px">
         <input type="checkbox" id="scanConsent" data-consent-checkbox required/>
         I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.

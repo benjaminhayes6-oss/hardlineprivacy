@@ -36,6 +36,24 @@ const BROKER_HINTS = [
   'peoplefinders.com','ussearch.com','peekyou.com'
 ];
 
+function getCtaVariant(){
+  try{
+    const params = new URLSearchParams(location.search);
+    const forced = (params.get('exp') || '').toLowerCase();
+    if (forced === 'a' || forced === 'b') {
+      localStorage.setItem('hp_exp_scan_cta', forced);
+      return forced;
+    }
+    const stored = localStorage.getItem('hp_exp_scan_cta');
+    if (stored === 'a' || stored === 'b') return stored;
+    const variant = Math.random() < 0.5 ? 'a' : 'b';
+    localStorage.setItem('hp_exp_scan_cta', variant);
+    return variant;
+  }catch(e){
+    return 'a';
+  }
+}
+
 function setResultsHTML(html){
   if (!resultsEl) return;
   requestAnimationFrame(()=>{ resultsEl.innerHTML = html; });
@@ -84,6 +102,8 @@ function recommendationBlock(rec){
     pro: { title:'Recommended for you: Enhanced / High‑Risk Protection', href:'/pricing?rec=pro#plans', cta:'Protect My Information' }
   };
   const r = map[rec] || map.sub;
+  const variant = getCtaVariant();
+  const ctaLabel = variant === 'b' ? 'Start Protection Now' : r.cta;
   return `
     <div class="callout">
       <div class="cta-box">
@@ -93,7 +113,8 @@ function recommendationBlock(rec){
           <div class="small" style="margin-top:6px">No credit card required to view protection options.</div>
         </div>
         <div>
-          <a class="btn primary" href="${r.href}">${r.cta}</a>
+          <a class="btn primary" href="${r.href}">${ctaLabel}</a>
+          <a class="btn ghost" href="/contact" style="margin-top:8px">Request a quote</a>
         </div>
       </div>
       <div class="small" style="margin-top:10px">Built by a U.S. Military Veteran &amp; Law‑Enforcement Officer · No ads · No data resale</div>
@@ -115,6 +136,7 @@ function renderProviders(providers){
 
 function render(items, meta, message, isFallback, requestId, limitedVisibility, providers){
   const {level,label,rec,brokerHits} = meta;
+  const count = (items || []).length;
   const safeId = escapeHtml(requestId || '');
   const hasFallbackResults = isFallback && (!items || items.length === 0);
   const listItems = (hasFallbackResults ? FALLBACK_RESULTS : (items||[])).slice(0, 15);
@@ -156,13 +178,22 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
     </div>
   `;
 
+  const levelText = level === 'elevated' ? 'Elevated' : level === 'low' ? 'Low' : 'Moderate';
+  const exposureSummary = count
+    ? `This scan identified ${count} publicly visible listing${count === 1 ? '' : 's'} associated with the name and location provided.`
+    : 'This scan did not surface obvious listings for the name and location provided, but results can change as brokers refresh.';
+  const brokerLine = brokerHits.length
+    ? `Broker sources detected: ${brokerHits.join(', ')}.`
+    : 'No broker-domain hits were detected in this scan.';
+
   const headerLabel = isPartial ? 'Partial Scan' : 'Scan Complete';
   const pillLabel = isPartial ? 'Limited Visibility' : label;
   const pillLevel = isPartial ? 'moderate' : level;
   const exposureBlock = isPartial ? '' : `
-      <div class="small" style="margin-top:8px">Exposure Level: <span style="font-weight:700">Elevated</span></div>
-      <div class="small" style="margin-top:8px">This scan identified multiple public listings associated with your name and location.</div>
-      <div class="small" style="margin-top:8px">Results are based on available free sources and indicate a higher‑than‑average risk of personal data exposure.</div>
+      <div class="small" style="margin-top:8px">Exposure Level: <span style="font-weight:700">${levelText}</span></div>
+      <div class="small" style="margin-top:8px">${escapeHtml(exposureSummary)}</div>
+      <div class="small" style="margin-top:8px">${escapeHtml(brokerLine)}</div>
+      <div class="small" style="margin-top:8px">Results are based on available free sources and provide an exposure estimate, not a guarantee of removal or search rank changes.</div>
   `;
 
   setResultsHTML(`
@@ -175,13 +206,20 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
       ${!isPartial ? `<div class="small" style="margin-top:8px">${escapeHtml(message || FALLBACK_RESULT.message)}</div>` : ''}
       ${exposureBlock}
       ${renderProviders(providers)}
-      <div class="small" style="margin-top:8px">Based on the number and type of results returned from publicly accessible sources. This is an informational estimate, not a guarantee of removal or search rank changes.</div>
       <div class="small" style="margin-top:8px">Families with children and older adults are often targeted when listings are easy to find.</div>
       <div class="small" style="margin-top:8px">This scan uses publicly accessible sources only.</div>
       ${safeId ? `<div class="small" style="margin-top:8px">Request ID: <span style="font-weight:700">${safeId}</span></div>` : ''}
     </div>
     ${means}
     ${why}
+    <div class="callout">
+      <h3 style="margin:0 0 6px">Next steps</h3>
+      <ul class="features">
+        <li><span class="feature-icon">•</span>Review the listings below for known addresses and relatives.</li>
+        <li><span class="feature-icon">•</span>Start removal work for broker sources that republish frequently.</li>
+        <li><span class="feature-icon">•</span>Set monitoring so re‑listings are caught early.</li>
+      </ul>
+    </div>
     ${recommendationBlock(rec)}
     <div class="callout items-list">
       <h3 style="margin:0 0 6px">Results</h3>
@@ -191,6 +229,11 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
     </div>
     <div class="small" style="margin-top:14px">This scan does not access private databases or bypass protections. Results reflect publicly accessible listings and may change over time.</div>
   `);
+  if (resultsEl) {
+    requestAnimationFrame(() => {
+      resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
 }
 
 function escapeHtml(s){
