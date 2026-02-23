@@ -1,45 +1,57 @@
-name: Hardline Privacy Operator
+name: Hardline Privacy Growth Operator
 
 on:
   schedule:
-    - cron: '0 14 * * 1'
-    - cron: '0 14 * * 4'
+    - cron: '0 13 * * 1'   # Monday
+    - cron: '0 13 * * 3'   # Wednesday
+    - cron: '0 13 * * 5'   # Friday
   workflow_dispatch:
 
 jobs:
-  operator:
+  growth:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Site Health Check
+      - name: Website Health Check
         run: |
-          echo "Checking site status..."
+          echo "Checking production site..."
           curl -I https://www.hardlineprivacy.com
 
-      - name: SEO Scan
+      - name: SEO Presence Audit
         run: |
           echo "Scanning SEO structure..."
           grep -i "<title>" index.html || true
           grep -i "meta name=\"description\"" index.html || true
+          echo "Verify structured data + schema"
+
+      - name: Growth Expansion Planner
+        run: |
+          echo "Suggested SEO pages:"
+          echo "- Nashville data broker removal"
+          echo "- Executive privacy protection"
+          echo "- Family privacy monitoring"
+          echo "- Law enforcement privacy protection"
+          echo "- Remove home address from internet"
 
       - name: Competitor Intelligence
         run: |
-          echo "Tracking competitors..."
+          echo "Tracking competitors:"
           echo "DeleteMe"
           echo "Incogni"
           echo "Optery"
           echo "Aura Privacy"
 
-      - name: Founder Action Report
+      - name: Conversion Optimization Reminder
         run: |
-          echo "Generate next action list:"
-          echo "- Improve trust signals"
+          echo "Founder Actions:"
           echo "- Add testimonials"
-          echo "- Add founder authority"
-          echo "- Expand SEO pages"
+          echo "- Add removal screenshots"
+          echo "- Add urgency statistics"
+          echo "- Improve pricing clarity"
+          echo "- Publish case study"
 
-      - name: Deployment Reminder
+      - name: Weekly Growth Signal
         run: |
-          echo "Operator cycle complete."
+          echo "Hardline Privacy Growth Operator cycle complete."
