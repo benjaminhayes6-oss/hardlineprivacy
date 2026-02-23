@@ -1,0 +1,103 @@
+name: Hardline Market Dominance Protocol
+
+on:
+  schedule:
+    - cron: '0 21 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  MODEL: gpt-4o-mini
+  MAX_TOKENS: 1500
+  SITE_URL: https://www.hardlineprivacy.com/
+
+jobs:
+  dominance:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq python3-pip
+          pip3 install google-api-python-client google-auth
+
+      - name: Create GSC credential file
+        run: |
+          echo '${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}' > gsc-key.json
+
+      - name: Pull Search Console Data
+        run: |
+          python3 <<EOF
+          import json
+          from google.oauth2 import service_account
+          from googleapiclient.discovery import build
+          from datetime import date, timedelta
+
+          SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly']
+          credentials = service_account.Credentials.from_service_account_file(
+              'gsc-key.json', scopes=SCOPES)
+
+          service = build('searchconsole', 'v1', credentials=credentials)
+
+          end_date = date.today()
+          start_date = end_date - timedelta(days=28)
+
+          request = {
+              'startDate': str(start_date),
+              'endDate': str(end_date),
+              'dimensions': ['query', 'page'],
+              'rowLimit': 1500
+          }
+
+          response = service.searchanalytics().query(
+              siteUrl='https://www.hardlineprivacy.com/',
+              body=request).execute()
+
+          with open('gsc-data.json', 'w') as f:
+              json.dump(response, f)
+          EOF
+
+      - name: Detect CTR Gaps
+        run: |
+          jq '[.rows[] | select(.impressions > 100 and .ctr < 0.02)]' gsc-data.json > ctr-gaps.json
+
+      - name: Detect Ranking Decay
+        run: |
+          jq '[.rows[] | select(.position > 15)]' gsc-data.json > ranking-risk.json
+
+      - name: Generate Executive Dominance Brief
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          DATA=$(cat gsc-data.json)
+          CTR=$(cat ctr-gaps.json)
+          RISK=$(cat ranking-risk.json)
+
+          RESPONSE=$(curl -s https://api.openai.com/v1/responses \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -d "{
+              \"model\": \"${MODEL}\",
+              \"max_output_tokens\": ${MAX_TOKENS},
+              \"input\": \"You are a strategic SEO war room advisor. Analyze this ranking data. Identify revenue opportunity pages, CTR optimization targets, ranking decay risks, and produce a 30-day and 90-day prioritized execution roadmap. GSC Data: $DATA CTR Gaps: $CTR Ranking Risk: $RISK\"
+            }")
+
+          CONTENT=$(echo $RESPONSE | jq -r '.output_text')
+
+          echo "# Market Dominance Brief" > dominance-report.md
+          echo "$CONTENT" >> dominance-report.md
+
+      - name: Upload Executive Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-dominance-dashboard
+          path: |
+            gsc-data.json
+            ctr-gaps.json
+            ranking-risk.json
+            dominance-report.md
