@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /checkout
+Disallow: /.netlify/functions/
+Sitemap: https://hardlineprivacy.com/sitemap.xml

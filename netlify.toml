@@ -1,0 +1,64 @@
+[build]
+  publish = "."
+  [build.environment]
+    REPOSITORY_URL = "https://github.com/hardlineprivacy/hardlineprivacy"
+
+[functions]
+  directory = "netlify/functions"
+
+[[plugins]]
+  package = "./netlify/plugins/repository-url-fallback"
+
+[[redirects]]
+  from = "/checkout/:plan"
+  to = "/.netlify/functions/checkout?plan=:plan"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/assets/images/logo.png"
+  to = "/assets/brand/hardlineprivacy-logo.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/assets/images/logo.svg"
+  to = "/assets/brand/hardlineprivacy-logo.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/assets/images/logo-dark.svg"
+  to = "/assets/brand/hardlineprivacy-logo.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/assets/images/logo-dark.png"
+  to = "/assets/brand/hardlineprivacy-logo.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/assets/images/logo-light.svg"
+  to = "/assets/brand/hardlineprivacy-logo.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/assets/images/logo-light.png"
+  to = "/assets/brand/hardlineprivacy-logo.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/admin"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/404.html"
+  status = 404
+  force = true

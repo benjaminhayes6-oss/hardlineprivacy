@@ -1,0 +1,17 @@
+/*
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-site
+  Content-Security-Policy-Report-Only: default-src 'self'; img-src 'self' https: data:; script-src 'self' https:; style-src 'self' 'unsafe-inline' https:; connect-src 'self' https:; frame-ancestors 'none';
+
+/scan*
+  Cache-Control: no-store
+  Pragma: no-cache
+
+/member*
+  Cache-Control: no-store
+  Pragma: no-cache

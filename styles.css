@@ -1,0 +1,4 @@
+header{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padding-top:env(safe-area-inset-top)}
+.nav-bar{display:flex;align-items:center;justify-content:space-between;height:100px;padding:0 24px}
+.brand-logo,
+.nav-bar img{height:135px;width:auto;object-fit:contain;flex-shrink:0;display:block}

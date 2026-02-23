@@ -1,0 +1,6 @@
+http://hardlineprivacy.com/*       https://www.hardlineprivacy.com/:splat   301!
+https://hardlineprivacy.com/*      https://www.hardlineprivacy.com/:splat   301!
+http://www.hardlineprivacy.com/*   https://www.hardlineprivacy.com/:splat   301!
+
+/family   /family.html   200
+/coverage  /404.html  410

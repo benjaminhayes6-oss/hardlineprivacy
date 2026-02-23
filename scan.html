@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Exposure Scanner | Hardline Privacy</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="description" content="Run a free exposure scan to see publicly discoverable listings across people-search sites and data brokers."/>
+<meta name="robots" content="noindex, nofollow"/>
+<meta property="og:title" content="Exposure Scanner | Hardline Privacy"/>
+<meta property="og:description" content="Run a free exposure scan to see publicly discoverable listings across people-search sites and data brokers."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://www.hardlineprivacy.com/scan"/>
+<meta property="og:image" content="https://www.hardlineprivacy.com/assets/images/hardline-privacy-og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Exposure Scanner | Hardline Privacy"/>
+<meta name="twitter:description" content="Run a free exposure scan to see publicly discoverable listings across people-search sites and data brokers."/>
+<meta name="twitter:image" content="https://www.hardlineprivacy.com/assets/images/hardline-privacy-og.png"/>
+<link rel="canonical" href="https://www.hardlineprivacy.com/scan"/>
+<link rel="icon" href="/favicon.png"/>
+<link rel="preload" as="image" href="/assets/images/logo-light.png" fetchpriority="high"/>
+<link rel="stylesheet" href="/assets/css/styles.364.css"/>
+
+<style>
+  .result-wrap{margin-top:18px}
+  .risk-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px}
+  .risk-low{background:#16A34A;color:#081018}
+  .risk-mod{background:#D97706;color:#081018}
+  .risk-high{background:#DC2626;color:#081018}
+  .callout{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:14px 16px;border-radius:14px;margin-top:14px}
+  .cta-box{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+  .cta-box .btn{min-width:220px}
+  .small{font-size:12px;color:var(--muted)}
+  #scanForm{min-height:420px}
+  #scanForm .btnrow{min-height:52px}
+  .scan-cta-note{margin-top:var(--space-2);line-height:1.4;min-height:1.4em}
+  .items-list h4{margin:16px 0 6px}
+  .items-list .item{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);word-wrap:break-word;overflow-wrap:break-word}
+  .items-list .meta{font-size:12px;color:var(--muted)}
+  .scan-summary-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;word-break:break-word}
+  @media(max-width:680px){
+    #scanForm{min-height:460px}
+    #scanForm .btnrow{min-height:112px}
+    .cta-box{flex-direction:column;align-items:stretch;text-align:center}
+    .cta-box .btn{min-width:0;width:100%}
+    .result-wrap .callout{padding:12px 14px}
+    #scanForm{text-align:left}
+    .items-list a{word-break:break-all}
+    .scan-summary-header{flex-direction:column;align-items:flex-start;gap:8px}
+    .callout{padding:12px 14px}
+    .items-list .item{font-size:14px}
+  }
+</style>
+</head>
+<body data-consent-version="2026-02-16">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="nav" role="banner">
+  <div class="nav-bar">
+    <a class="logo" href="/" aria-label="Hardline Privacy home"><img class="brand-logo" src="/assets/images/logo-light.png" alt="Hardline Privacy" decoding="async" fetchpriority="high"/></a>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav aria-label="Primary">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/services">Services</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/resources">Resources</a>
+    <a class="cta" href="/contact">Get a Quote</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="container">
+    <h1 class="h1">Exposure Scanner</h1>
+    <p class="sub">Enter a name and city/state. We query multiple search engines and show de‑duplicated results. Use this to understand what may be publicly discoverable.</p>
+
+    <form id="scanForm" class="callout" data-requires-consent>
+      <label for="fullName">Full Name</label>
+      <input id="fullName" name="fullName" placeholder="Enter your full name" required aria-describedby="error-fullName help-fullName"/>
+      <div class="field-error" id="error-fullName" role="alert" aria-live="polite"></div>
+      <div class="field-help" id="help-fullName">Use your legal name for the most accurate scan.</div>
+
+      <label for="cityState">City &amp; State</label>
+      <input id="cityState" name="cityState" placeholder="Enter your city and state" required aria-describedby="error-cityState help-cityState"/>
+      <div class="field-error" id="error-cityState" role="alert" aria-live="polite"></div>
+      <div class="field-help" id="help-cityState">Example: Nashville, TN</div>
+
+      <label for="aliases">Aliases (optional)</label>
+      <input id="aliases" name="aliases" placeholder="Other names you may be listed under" aria-describedby="help-aliases"/>
+      <div class="field-help" id="help-aliases">Maiden name, nickname, previous legal name</div>
+
+      <div class="btnrow">
+        <button class="btn primary" type="submit">Run Scan</button>
+        <a class="btn outline" href="/pricing">See protection options</a>
+      </div>
+      <div class="scan-cta-note small">Now monitoring 700+ personal‑data sources† Coverage details.</div>
+      <div class="small">† Coverage varies by source; updated periodically. Coverage details.</div>
+      <div class="small">We do not sell personal information. Results are search‑engine listings and may include false positives.</div>
+      <label style="margin-top:12px">
+        <input type="checkbox" id="scanConsent" data-consent-checkbox required/>
+        I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.
+      </label>
+      <div class="consent-error" role="alert" aria-live="polite"></div>
+    </form>
+
+    <div id="results" class="result-wrap"></div>
+  </div>
+</section>
+</main>
+
+<footer role="contentinfo">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="logo" href="/" aria-label="Hardline Privacy home"><img src="/assets/images/logo-light.png" alt="Hardline Privacy" decoding="async" loading="lazy" fetchpriority="low"/></a>
+    </div>
+    <div class="footer-links">
+      <a href='/faq'>FAQ</a>
+
+      <a href="/trust">Trust &amp; Security</a>
+
+      <a href="/data-brokers">Data Brokers</a>
+      <a href="/about">About</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <div class="footer-contact">Hardline Privacy · Nashville, TN · support@hardlineprivacy.com</div>
+    <small>© 2026 Hardline Privacy. All rights reserved.</small>
+  </div>
+</footer>
+
+<script src="/assets/js/main.364.js" type="module" defer></script>
+<script src="/assets/js/scan.js" defer></script>
+
+<script async id="netlify-rum-container" src="/.netlify/scripts/rum" data-netlify-rum-site-id="b0bbea64-64e0-42d8-ac4f-b72b1f6410d0" data-netlify-deploy-branch="" data-netlify-deploy-context="production" data-netlify-cwv-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlX2lkIjoiYjBiYmVhNjQtNjRlMC00MmQ4LWFjNGYtYjcyYjFmNjQxMGQwIiwiYWNjb3VudF9pZCI6IjY5ODE1ZmQ1MTVmZDkzZDdkZTE3YmQxZSIsImRlcGxveV9pZCI6IjY5OWExYmMzMmY1MzMyZGRjYzgzOGJjYiIsImlzc3VlciI6Im5mc2VydmVyIn0.GCNl6giQ3DCM6gA-FjShVKrLzrBOhk0xsQCAQWbVFrk"></script></body>
+</html>
