@@ -1,57 +1,47 @@
-name: Hardline Privacy Growth Operator
+name: Hardline Privacy Autonomous Operator
 
 on:
   schedule:
-    - cron: '0 13 * * 1'   # Monday
-    - cron: '0 13 * * 3'   # Wednesday
-    - cron: '0 13 * * 5'   # Friday
+    - cron: '0 14 * * 1'   # Monday
+    - cron: '0 14 * * 3'   # Wednesday
+    - cron: '0 14 * * 5'   # Friday
   workflow_dispatch:
 
 jobs:
-  growth:
+  growth-operator:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Website Health Check
+      - name: Website Status Check
         run: |
-          echo "Checking production site..."
+          echo "Checking HardlinePrivacy.com status"
           curl -I https://www.hardlineprivacy.com
 
-      - name: SEO Presence Audit
+      - name: Authority Engine Tasks
         run: |
-          echo "Scanning SEO structure..."
-          grep -i "<title>" index.html || true
-          grep -i "meta name=\"description\"" index.html || true
-          echo "Verify structured data + schema"
+          echo "Authority Tasks:"
+          echo "- Improve founder authority"
+          echo "- Add trust signals"
+          echo "- Strengthen security positioning"
 
-      - name: Growth Expansion Planner
+      - name: SEO Expansion Planner
         run: |
-          echo "Suggested SEO pages:"
-          echo "- Nashville data broker removal"
-          echo "- Executive privacy protection"
-          echo "- Family privacy monitoring"
-          echo "- Law enforcement privacy protection"
-          echo "- Remove home address from internet"
+          echo "Create or improve pages:"
+          echo "/trust"
+          echo "/methodology"
+          echo "/data-brokers"
+          echo "/spokeo-removal"
+          echo "/whitepages-removal"
 
-      - name: Competitor Intelligence
+      - name: Revenue Flywheel Reminder
         run: |
-          echo "Tracking competitors:"
-          echo "DeleteMe"
-          echo "Incogni"
-          echo "Optery"
-          echo "Aura Privacy"
+          echo "Revenue Actions:"
+          echo "- Add testimonial"
+          echo "- Publish exposure article"
+          echo "- Improve scan conversion"
+          echo "- Add proof screenshot"
 
-      - name: Conversion Optimization Reminder
-        run: |
-          echo "Founder Actions:"
-          echo "- Add testimonials"
-          echo "- Add removal screenshots"
-          echo "- Add urgency statistics"
-          echo "- Improve pricing clarity"
-          echo "- Publish case study"
-
-      - name: Weekly Growth Signal
-        run: |
-          echo "Hardline Privacy Growth Operator cycle complete."
+      - name: Growth Cycle Complete
+        run: echo "Hardline Privacy Autonomous Growth Cycle Finished"
