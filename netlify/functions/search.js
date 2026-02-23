@@ -1,38 +1,45 @@
-exports.handler = async (event) => {
+exports.handler = async function (event) {
   try {
-    const { q } = event.queryStringParameters;
+    const { GOOGLE_API_KEY, GOOGLE_CX } = process.env;
+
+    if (!GOOGLE_API_KEY || !GOOGLE_CX) {
+      return response(500, { error: "Google API not configured" });
+    }
+
+    const params = new URLSearchParams(event.queryStringParameters || {});
+    const q = (params.get("q") || "").trim();
 
     if (!q) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Missing query parameter" })
-      };
+      return response(400, { error: "Missing q parameter" });
     }
 
-    const apiKey = process.env.GOOGLE_API_KEY;
-    const cx = process.env.GOOGLE_CX;
+    const url = new URL("https://www.googleapis.com/customsearch/v1");
+    url.searchParams.set("key", GOOGLE_API_KEY);
+    url.searchParams.set("cx", GOOGLE_CX);
+    url.searchParams.set("q", q);
 
-    if (!apiKey || !cx) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: "Missing environment variables" })
-      };
-    }
+    const r = await fetch(url.toString());
+    const data = await r.json();
 
-    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(q)}`;
+    const items = (data.items || []).map((item) => ({
+      title: item.title,
+      url: item.link,
+      snippet: item.snippet,
+    }));
 
-    const response = await fetch(url);
-    const data = await response.json();
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify(data)
-    };
-
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Scan failed", details: error.message })
-    };
+    return response(200, { q, items });
+  } catch (err) {
+    return response(500, { error: "Search failed", details: err.message });
   }
 };
+
+function response(status, body) {
+  return {
+    statusCode: status,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+    body: JSON.stringify(body),
+  };
+}
