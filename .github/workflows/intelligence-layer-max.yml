@@ -1,0 +1,119 @@
+name: Hardline Intelligence Layer Max
+
+on:
+  schedule:
+    - cron: '0 22 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  intelligence:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure intelligence state exists
+        run: |
+          mkdir -p .intelligence
+          if [ ! -f .intelligence/state.json ]; then
+            echo '{"query_history":{}, "page_history":{}}' > .intelligence/state.json
+          fi
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq python3-pip
+          pip3 install google-api-python-client google-auth
+
+      - name: Create GSC credential file
+        run: echo '${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}' > gsc-key.json
+
+      - name: Pull 28-day Search Console Data
+        run: |
+          python3 <<EOF
+          import json
+          from google.oauth2 import service_account
+          from googleapiclient.discovery import build
+          from datetime import date, timedelta
+
+          SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly']
+          credentials = service_account.Credentials.from_service_account_file(
+              'gsc-key.json', scopes=SCOPES)
+
+          service = build('searchconsole', 'v1', credentials=credentials)
+
+          end_date = date.today()
+          start_date = end_date - timedelta(days=28)
+
+          request = {
+              'startDate': str(start_date),
+              'endDate': str(end_date),
+              'dimensions': ['query', 'page'],
+              'rowLimit': 1500
+          }
+
+          response = service.searchanalytics().query(
+              siteUrl='https://www.hardlineprivacy.com/',
+              body=request).execute()
+
+          with open('current.json', 'w') as f:
+              json.dump(response, f)
+          EOF
+
+      - name: Update Historical State
+        run: |
+          python3 <<EOF
+          import json
+          import datetime
+
+          with open('.intelligence/state.json') as f:
+              state = json.load(f)
+
+          with open('current.json') as f:
+              current = json.load(f)
+
+          for row in current.get('rows', []):
+              query = row['keys'][0]
+              page = row['keys'][1]
+              impressions = row['impressions']
+              ctr = row['ctr']
+              position = row['position']
+
+              if query not in state["query_history"]:
+                  state["query_history"][query] = {"impressions":[], "ctr":[], "position":[]}
+
+              state["query_history"][query]["impressions"].append(impressions)
+              state["query_history"][query]["ctr"].append(ctr)
+              state["query_history"][query]["position"].append(position)
+
+              if page not in state["page_history"]:
+                  state["page_history"][page] = {"impressions":[], "ctr":[], "position":[]}
+
+              state["page_history"][page]["impressions"].append(impressions)
+              state["page_history"][page]["ctr"].append(ctr)
+              state["page_history"][page]["position"].append(position)
+
+          state["last_run"] = str(datetime.date.today())
+
+          with open('.intelligence/state.json', 'w') as f:
+              json.dump(state, f)
+          EOF
+
+      - name: Commit Updated State
+        run: |
+          git config --global user.name "Hardline Intelligence Engine"
+          git config --global user.email "engine@hardlineprivacy.com"
+          git add .intelligence/state.json
+          git commit -m "Update intelligence state" || echo "No changes"
+          git push
+
+      - name: Upload Intelligence Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: intelligence-layer-max
+          path: |
+            current.json
+            .intelligence/state.json
