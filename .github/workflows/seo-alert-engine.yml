@@ -1,0 +1,96 @@
+name: Hardline Real-Time SEO Alert Engine
+
+on:
+  schedule:
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SITE_URL: https://www.hardlineprivacy.com/
+
+jobs:
+  alerts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq python3-pip
+          pip3 install google-api-python-client google-auth
+
+      - name: Create GSC credential file
+        run: |
+          echo '${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}' > gsc-key.json
+
+      - name: Pull 7-day and Previous 7-day Data
+        run: |
+          python3 <<EOF
+          import json
+          from google.oauth2 import service_account
+          from googleapiclient.discovery import build
+          from datetime import date, timedelta
+
+          SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly']
+          credentials = service_account.Credentials.from_service_account_file(
+              'gsc-key.json', scopes=SCOPES)
+
+          service = build('searchconsole', 'v1', credentials=credentials)
+
+          today = date.today()
+
+          def query_data(start, end):
+              request = {
+                  'startDate': str(start),
+                  'endDate': str(end),
+                  'dimensions': ['query'],
+                  'rowLimit': 1000
+              }
+              return service.searchanalytics().query(
+                  siteUrl='https://www.hardlineprivacy.com/',
+                  body=request).execute()
+
+          current = query_data(today - timedelta(days=7), today)
+          previous = query_data(today - timedelta(days=14), today - timedelta(days=7))
+
+          with open('current.json', 'w') as f:
+              json.dump(current, f)
+
+          with open('previous.json', 'w') as f:
+              json.dump(previous, f)
+          EOF
+
+      - name: Detect Significant Changes
+        id: detect
+        run: |
+          CURRENT_IMPRESSIONS=$(jq '[.rows[].impressions] | add' current.json)
+          PREV_IMPRESSIONS=$(jq '[.rows[].impressions] | add' previous.json)
+
+          CHANGE=$((CURRENT_IMPRESSIONS - PREV_IMPRESSIONS))
+
+          echo "change=$CHANGE" >> $GITHUB_OUTPUT
+
+      - name: Send Email Alert if Triggered
+        if: steps.detect.outputs.change != '0'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Hardline SEO Alert Triggered"
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: Hardline War Room
+          body: |
+            SEO Alert Triggered.
+
+            Impression delta (last 7 days vs previous 7):
+            ${{ steps.detect.outputs.change }}
+
+            Review GitHub Actions logs for detailed breakdown.
