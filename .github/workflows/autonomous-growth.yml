@@ -1,0 +1,108 @@
+name: Hardline Privacy AI Growth Engine
+
+on:
+  schedule:
+    - cron: '0 15 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  ai-growth:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      # -------------------------------------
+      # Detect Missing Broker Pages
+      # -------------------------------------
+      - name: Detect Missing Pages
+        id: brokers
+        run: |
+          BROKERS=("radaris" "beenverified" "truthfinder" "intelius" "peekyou")
+          MISSING=""
+          for broker in "${BROKERS[@]}"; do
+            if [ ! -f "./${broker}-removal.html" ]; then
+              MISSING="$MISSING $broker"
+            fi
+          done
+          echo "missing=$MISSING" >> $GITHUB_OUTPUT
+
+      # -------------------------------------
+      # Generate AI Content
+      # -------------------------------------
+      - name: Generate Broker Pages via OpenAI
+        if: steps.brokers.outputs.missing != ''
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          for broker in ${{ steps.brokers.outputs.missing }}; do
+
+            RESPONSE=$(curl https://api.openai.com/v1/chat/completions \
+              -s \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer $OPENAI_API_KEY" \
+              -d "{
+                \"model\": \"gpt-4o-mini\",
+                \"messages\": [
+                  {
+                    \"role\": \"system\",
+                    \"content\": \"You are an SEO expert writing high-authority privacy removal guides.\"
+                  },
+                  {
+                    \"role\": \"user\",
+                    \"content\": \"Write a 1200+ word SEO-optimized removal guide for $broker. Include steps, warnings, FAQs, and authority tone. Include structured JSON-LD FAQ schema at the bottom.\"
+                  }
+                ]
+              }")
+
+            CONTENT=$(echo $RESPONSE | jq -r '.choices[0].message.content')
+
+            FILE="${broker}-removal.html"
+
+            echo "<html><head><title>${broker^} Removal Guide | Hardline Privacy</title></head><body>" > $FILE
+            echo "<h1>How to Remove Yourself from ${broker^}</h1>" >> $FILE
+            echo "$CONTENT" >> $FILE
+            echo "<hr><p>Need professional help? <a href=\"/pricing\">Start your removal</a>.</p>" >> $FILE
+            echo "</body></html>" >> $FILE
+
+          done
+
+      # -------------------------------------
+      # Create Growth Branch
+      # -------------------------------------
+      - name: Create Branch and Commit
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            BRANCH="ai-growth-$(date +%s)"
+            git checkout -b $BRANCH
+            git config --global user.name "Hardline AI Growth"
+            git config --global user.email "growth@hardlineprivacy.com"
+            git add .
+            git commit -m "AI-generated broker page expansion"
+            git push origin $BRANCH
+            echo "branch=$BRANCH" >> $GITHUB_ENV
+          fi
+
+      # -------------------------------------
+      # Create Pull Request
+      # -------------------------------------
+      - name: Open Pull Request
+        if: env.branch != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "AI Broker Page Expansion",
+              head: process.env.branch,
+              base: "main",
+              body: "Automated AI-generated broker removal guides for SEO authority expansion."
+            })
