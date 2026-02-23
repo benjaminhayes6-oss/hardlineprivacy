@@ -13,9 +13,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Website Audit
+      - name: Site Health Check
         run: |
-          echo "Running Hardline Privacy AI Operator"
-          echo "Audit SEO, UX, Trust Signals, Performance"
-          echo "Compare against DeleteMe, Incogni, Optery"
-          echo "Generate improvement recommendations"
+          echo "Checking site status..."
+          curl -I https://www.hardlineprivacy.com
+
+      - name: SEO Scan
+        run: |
+          echo "Scanning SEO structure..."
+          grep -i "<title>" index.html || true
+          grep -i "meta name=\"description\"" index.html || true
+
+      - name: Competitor Intelligence
+        run: |
+          echo "Tracking competitors..."
+          echo "DeleteMe"
+          echo "Incogni"
+          echo "Optery"
+          echo "Aura Privacy"
+
+      - name: Founder Action Report
+        run: |
+          echo "Generate next action list:"
+          echo "- Improve trust signals"
+          echo "- Add testimonials"
+          echo "- Add founder authority"
+          echo "- Expand SEO pages"
+
+      - name: Deployment Reminder
+        run: |
+          echo "Operator cycle complete."
