@@ -1,47 +1,184 @@
-name: Hardline Privacy Autonomous Operator
+name: Hardline Privacy Authority Operator v5
 
 on:
   schedule:
-    - cron: '0 14 * * 1'   # Monday
-    - cron: '0 14 * * 3'   # Wednesday
-    - cron: '0 14 * * 5'   # Friday
+    - cron: '0 14 * * 1'
+    - cron: '0 14 * * 3'
+    - cron: '0 14 * * 5'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  issues: write
+
+env:
+  PERFORMANCE_THRESHOLD: 80
+
 jobs:
-  growth-operator:
+  authority-operator:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
 
-      - name: Website Status Check
+      # -------------------------------
+      # Prevent Infinite Bot Loop
+      # -------------------------------
+      - name: Stop if bot triggered
+        if: github.actor == 'github-actions[bot]'
+        run: exit 0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # -------------------------------
+      # Validate Revenue + Core Pages
+      # -------------------------------
+      - name: Core Page Protection
         run: |
-          echo "Checking HardlinePrivacy.com status"
-          curl -I https://www.hardlineprivacy.com
+          PAGES=("" "/trust" "/about" "/pricing" "/contact" "/spokeo-removal" "/whitepages-removal")
+          FAIL=0
+          for page in "${PAGES[@]}"; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://www.hardlineprivacy.com$page)
+            echo "$page -> $STATUS"
+            if [ "$STATUS" != "200" ]; then FAIL=1; fi
+          done
+          if [ "$FAIL" -ne 0 ]; then
+            echo "Core page failure detected"
+            exit 1
+          fi
 
-      - name: Authority Engine Tasks
+      # -------------------------------
+      # Install Tools
+      # -------------------------------
+      - name: Install Tools
         run: |
-          echo "Authority Tasks:"
-          echo "- Improve founder authority"
-          echo "- Add trust signals"
-          echo "- Strengthen security positioning"
+          npm install -g lighthouse linkinator htmlhint prettier puppeteer
 
-      - name: SEO Expansion Planner
+      # -------------------------------
+      # Lighthouse Audit
+      # -------------------------------
+      - name: Run Lighthouse
         run: |
-          echo "Create or improve pages:"
-          echo "/trust"
-          echo "/methodology"
-          echo "/data-brokers"
-          echo "/spokeo-removal"
-          echo "/whitepages-removal"
+          lighthouse https://www.hardlineprivacy.com \
+            --quiet \
+            --chrome-flags="--headless=new --no-sandbox" \
+            --output=json \
+            --output-path=./lighthouse.json
 
-      - name: Revenue Flywheel Reminder
+      - name: Extract Scores
+        id: scores
         run: |
-          echo "Revenue Actions:"
-          echo "- Add testimonial"
-          echo "- Publish exposure article"
-          echo "- Improve scan conversion"
-          echo "- Add proof screenshot"
+          PERF=$(jq '.categories.performance.score * 100' lighthouse.json)
+          SEO=$(jq '.categories.seo.score * 100' lighthouse.json)
+          echo "perf=$PERF" >> $GITHUB_OUTPUT
+          echo "seo=$SEO" >> $GITHUB_OUTPUT
 
-      - name: Growth Cycle Complete
-        run: echo "Hardline Privacy Autonomous Growth Cycle Finished"
+      # -------------------------------
+      # Performance Trend Tracking
+      # -------------------------------
+      - name: Store Performance History
+        run: |
+          echo "$(date -u +%Y-%m-%d),${{ steps.scores.outputs.perf }}" >> performance-history.csv
+
+      - name: Commit Performance History
+        run: |
+          git config --global user.name "Authority Tracker"
+          git config --global user.email "tracker@hardlineprivacy.com"
+          git add performance-history.csv || true
+          git commit -m "Update performance history [skip ci]" || true
+          git push || true
+
+      # -------------------------------
+      # Enforce Performance Threshold
+      # -------------------------------
+      - name: Enforce Threshold
+        run: |
+          SCORE=${{ steps.scores.outputs.perf }}
+          if (( $(echo "$SCORE < $PERFORMANCE_THRESHOLD" | bc -l) )); then
+            echo "Performance below threshold"
+            exit 1
+          fi
+
+      # -------------------------------
+      # Broken Link Scan
+      # -------------------------------
+      - name: Broken Link Scan
+        run: linkinator https://www.hardlineprivacy.com --recurse --silent
+
+      # -------------------------------
+      # Structured Data Presence
+      # -------------------------------
+      - name: Schema Validation
+        run: |
+          curl -s https://www.hardlineprivacy.com | grep -q "application/ld+json" || (echo "Missing JSON-LD"; exit 1)
+
+      # -------------------------------
+      # Conversion Element Protection
+      # -------------------------------
+      - name: Check Conversion Elements
+        run: |
+          curl -s https://www.hardlineprivacy.com/pricing | grep -qi "checkout" || (echo "Checkout element missing"; exit 1)
+
+      # -------------------------------
+      # Visual Snapshot
+      # -------------------------------
+      - name: Capture Screenshot
+        run: |
+          node -e "
+          const puppeteer = require('puppeteer');
+          (async () => {
+            const browser = await puppeteer.launch({args:['--no-sandbox']});
+            const page = await browser.newPage();
+            await page.goto('https://www.hardlineprivacy.com');
+            await page.screenshot({path: 'homepage.png', fullPage: true});
+            await browser.close();
+          })();
+          "
+
+      # -------------------------------
+      # Generate Trend Graph
+      # -------------------------------
+      - name: Generate Trend Graph
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnuplot
+          echo "set datafile separator ','" > graph.gnuplot
+          echo "set terminal png" >> graph.gnuplot
+          echo "set output 'performance-trend.png'" >> graph.gnuplot
+          echo "plot 'performance-history.csv' using 2 with lines" >> graph.gnuplot
+          gnuplot graph.gnuplot
+
+      # -------------------------------
+      # Upload Artifacts
+      # -------------------------------
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: authority-artifacts
+          path: |
+            lighthouse.json
+            homepage.png
+            performance-trend.png
+
+      # -------------------------------
+      # Create Issue on Failure
+      # -------------------------------
+      - name: Create Issue on Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Authority Operator Alert",
+              body: "Performance, SEO, or conversion validation failed. Review latest workflow."
+            })
+
+      - name: Authority Cycle Complete
+        run: echo "Hardline Authority Infrastructure Active"
