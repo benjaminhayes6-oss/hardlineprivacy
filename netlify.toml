@@ -13,6 +13,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/assets/images/logo.png"
   to = "/assets/brand/hardlineprivacy-logo.png"
   status = 301
