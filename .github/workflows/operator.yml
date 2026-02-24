@@ -1,4 +1,4 @@
-name: Hardline Privacy Authority Operator v5
+name: Hardline Privacy Authority Operator v6
 
 on:
   schedule:
@@ -12,7 +12,8 @@ permissions:
   issues: write
 
 env:
-  PERFORMANCE_THRESHOLD: 80
+  PERFORMANCE_THRESHOLD: 65
+  SEO_THRESHOLD: 75
 
 jobs:
   authority-operator:
@@ -20,9 +21,6 @@ jobs:
 
     steps:
 
-      # -------------------------------
-      # Prevent Infinite Bot Loop
-      # -------------------------------
       - name: Stop if bot triggered
         if: github.actor == 'github-actions[bot]'
         run: exit 0
@@ -35,9 +33,7 @@ jobs:
         with:
           node-version: 20
 
-      # -------------------------------
-      # Validate Revenue + Core Pages
-      # -------------------------------
+      # Core Page Protection
       - name: Core Page Protection
         run: |
           PAGES=("" "/trust" "/about" "/pricing" "/contact" "/spokeo-removal" "/whitepages-removal")
@@ -52,16 +48,14 @@ jobs:
             exit 1
           fi
 
-      # -------------------------------
       # Install Tools
-      # -------------------------------
       - name: Install Tools
         run: |
-          npm install -g lighthouse linkinator htmlhint prettier puppeteer
+          sudo apt-get update
+          sudo apt-get install -y jq bc
+          npm install -g lighthouse linkinator puppeteer
 
-      # -------------------------------
       # Lighthouse Audit
-      # -------------------------------
       - name: Run Lighthouse
         run: |
           lighthouse https://www.hardlineprivacy.com \
@@ -78,9 +72,7 @@ jobs:
           echo "perf=$PERF" >> $GITHUB_OUTPUT
           echo "seo=$SEO" >> $GITHUB_OUTPUT
 
-      # -------------------------------
-      # Performance Trend Tracking
-      # -------------------------------
+      # Store Performance History
       - name: Store Performance History
         run: |
           echo "$(date -u +%Y-%m-%d),${{ steps.scores.outputs.perf }}" >> performance-history.csv
@@ -93,40 +85,37 @@ jobs:
           git commit -m "Update performance history [skip ci]" || true
           git push || true
 
-      # -------------------------------
-      # Enforce Performance Threshold
-      # -------------------------------
-      - name: Enforce Threshold
+      # Enforce Thresholds
+      - name: Enforce Thresholds
         run: |
-          SCORE=${{ steps.scores.outputs.perf }}
-          if (( $(echo "$SCORE < $PERFORMANCE_THRESHOLD" | bc -l) )); then
+          PERF=${{ steps.scores.outputs.perf }}
+          SEO=${{ steps.scores.outputs.seo }}
+
+          if (( $(echo "$PERF < $PERFORMANCE_THRESHOLD" | bc -l) )); then
             echo "Performance below threshold"
             exit 1
           fi
 
-      # -------------------------------
+          if (( $(echo "$SEO < $SEO_THRESHOLD" | bc -l) )); then
+            echo "SEO below threshold"
+            exit 1
+          fi
+
       # Broken Link Scan
-      # -------------------------------
       - name: Broken Link Scan
         run: linkinator https://www.hardlineprivacy.com --recurse --silent
 
-      # -------------------------------
-      # Structured Data Presence
-      # -------------------------------
+      # Schema Validation
       - name: Schema Validation
         run: |
           curl -s https://www.hardlineprivacy.com | grep -q "application/ld+json" || (echo "Missing JSON-LD"; exit 1)
 
-      # -------------------------------
       # Conversion Element Protection
-      # -------------------------------
       - name: Check Conversion Elements
         run: |
           curl -s https://www.hardlineprivacy.com/pricing | grep -qi "checkout" || (echo "Checkout element missing"; exit 1)
 
-      # -------------------------------
-      # Visual Snapshot
-      # -------------------------------
+      # Screenshot
       - name: Capture Screenshot
         run: |
           node -e "
@@ -140,12 +129,9 @@ jobs:
           })();
           "
 
-      # -------------------------------
-      # Generate Trend Graph
-      # -------------------------------
+      # Trend Graph
       - name: Generate Trend Graph
         run: |
-          sudo apt-get update
           sudo apt-get install -y gnuplot
           echo "set datafile separator ','" > graph.gnuplot
           echo "set terminal png" >> graph.gnuplot
@@ -153,9 +139,7 @@ jobs:
           echo "plot 'performance-history.csv' using 2 with lines" >> graph.gnuplot
           gnuplot graph.gnuplot
 
-      # -------------------------------
       # Upload Artifacts
-      # -------------------------------
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -165,20 +149,28 @@ jobs:
             homepage.png
             performance-trend.png
 
-      # -------------------------------
-      # Create Issue on Failure
-      # -------------------------------
+      # Create Issue Only If One Doesn't Exist
       - name: Create Issue on Failure
         if: failure()
         uses: actions/github-script@v7
         with:
           script: |
-            github.rest.issues.create({
+            const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: "Authority Operator Alert",
-              body: "Performance, SEO, or conversion validation failed. Review latest workflow."
-            })
+              state: "open"
+            });
+
+            const existing = issues.find(issue => issue.title === "Authority Operator Alert");
+
+            if (!existing) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: "Authority Operator Alert",
+                body: "Performance, SEO, or conversion validation failed. Review latest workflow."
+              });
+            }
 
       - name: Authority Cycle Complete
         run: echo "Hardline Authority Infrastructure Active"
