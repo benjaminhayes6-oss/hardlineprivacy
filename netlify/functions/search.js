@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+
 exports.handler = async (event) => {
   try {
     const { GOOGLE_API_KEY, GOOGLE_CX } = process.env;
@@ -15,14 +17,6 @@ exports.handler = async (event) => {
     const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${GOOGLE_CX}&q=${encodeURIComponent(q)}`;
 
     const apiResponse = await fetch(url);
-
-    if (!apiResponse.ok) {
-      return response(apiResponse.status, {
-        error: "Google API error",
-        status: apiResponse.status
-      });
-    }
-
     const data = await apiResponse.json();
 
     const items = (data.items || []).map(item => ({
