@@ -31,21 +31,24 @@ export default function Page() {
 
       {/* HERO */}
       <section aria-labelledby="hero-heading" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-12">
-        <div>
+        <div className="flex md:justify-start justify-center">
           <Image
-            src="/images/founder.jpg"
+            src="/images/founder-headshot.png"
             alt="Founder of Hardline Privacy"
-            width={1200}
-            height={800}
-            className="rounded-lg object-cover w-full h-auto"
+            width={900}
+            height={1200}
+            className="rounded-[12px] object-cover w-full h-auto max-w-[420px] shadow-lg"
             loading="lazy"
             priority={false}
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 90vw, 420px"
           />
         </div>
 
         <div>
           <h2 id="hero-heading" className="sr-only">Authority positioning</h2>
+          <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-2">Founder</p>
+          <p className="text-xl font-semibold mb-3">Founder, Hardline Privacy</p>
+          <p className="mb-4">The founder leads data broker removal, digital exposure reduction, and privacy advocacy with a clear mandate: reclaim personal data control through disciplined, repeatable execution.</p>
           <p className="text-lg font-medium mb-4">Hardline Privacy was built to fight back against data brokers, exposure threats, and digital exploitation.</p>
 
           <p className="mb-2">We defend personal sovereignty by reducing unnecessary exposure and restoring control over how personal data is used. Exposure risk is amplified by AI systems that scrape and repurpose public and semi-public records; we refuse to accept surveillance as the default.</p>
