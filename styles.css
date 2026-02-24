@@ -2,3 +2,43 @@ header{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padding-
 .nav-bar{display:flex;align-items:center;justify-content:space-between;height:100px;padding:0 24px}
 .brand-logo,
 .nav-bar img{height:135px;width:auto;object-fit:contain;flex-shrink:0;display:block}
+
+.live-protection{
+  text-align:center;
+  padding:60px 20px;
+  background:rgba(255,255,255,0.03);
+  border-top:1px solid rgba(255,255,255,0.08);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.live-protection h2{
+  margin-bottom:28px;
+  font-size:28px;
+}
+
+.protection-stats{
+  list-style:none;
+  padding:0;
+  margin:0 auto;
+  max-width:700px;
+}
+
+.protection-stats li{
+  font-size:18px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.protection-stats li:last-child{
+  border-bottom:none;
+}
+
+@media(max-width:768px){
+  .live-protection{
+    padding:48px 18px;
+  }
+
+  .protection-stats li{
+    font-size:16px;
+  }
+}
