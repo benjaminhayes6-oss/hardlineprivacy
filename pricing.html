@@ -129,6 +129,48 @@
     color: #22d3ee;
     font-weight: 700;
   }
+  .pricing-highlights {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+  }
+  .pricing-highlight {
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,.03);
+  }
+  .pricing-highlight .amount {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+  }
+  .pricing-highlight .label {
+    font-size: 13px;
+    color: #cbd5e1;
+    margin-top: 6px;
+  }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    font-size: 14px;
+  }
+  .compare-table th,
+  .compare-table td {
+    border: 1px solid rgba(255,255,255,.08);
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .compare-table th {
+    background: rgba(255,255,255,.04);
+    color: #e2e8f0;
+    font-weight: 700;
+  }
+  .compare-table td {
+    color: #cbd5e1;
+  }
 
   .card-footer {
     margin-top: auto;
@@ -171,6 +213,7 @@
   /* Small tweaks for tighter layouts */
   @media (max-width: 860px) {
     .pricing-grid { gap: 1rem; }
+    .pricing-highlights { grid-template-columns: 1fr; }
   }
   @media (max-width: 768px) {
     .pricing-card { margin-bottom: 36px; }
@@ -210,6 +253,54 @@
 
 <section id="plans" aria-labelledby="pricing-heading" style="max-width: 1100px; margin: 0 auto; padding: 24px 16px;">
   <h2 id="pricing-heading" style="color:#e2e8f0; font-size:22px; margin: 0 0 18px 0;">Choose your protection level</h2>
+  <div class="callout">
+    <h3 style="margin:0 0 10px 0">Simple, clear pricing</h3>
+    <div class="pricing-highlights">
+      <div class="pricing-highlight">
+        <div class="amount">$149</div>
+        <div class="label">One-Time Removal</div>
+      </div>
+      <div class="pricing-highlight">
+        <div class="amount">$30/month</div>
+        <div class="label">Ongoing Monitoring</div>
+      </div>
+      <div class="pricing-highlight">
+        <div class="amount">$300</div>
+        <div class="label">You + 1</div>
+      </div>
+    </div>
+    <div class="small">No contracts. Cancel anytime.</div>
+    <table class="compare-table" aria-label="Plan comparison table">
+      <thead>
+        <tr>
+          <th scope="col">Plan</th>
+          <th scope="col">Best for</th>
+          <th scope="col">Monitoring</th>
+          <th scope="col">Coverage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>One-Time Removal</td>
+          <td>Single cleanup</td>
+          <td>Not included</td>
+          <td>Household opt-outs where available</td>
+        </tr>
+        <tr>
+          <td>Ongoing Monitoring</td>
+          <td>Ongoing protection</td>
+          <td>Monthly alerts + re-scans</td>
+          <td>Household monitoring across major brokers</td>
+        </tr>
+        <tr>
+          <td>You + 1</td>
+          <td>Two-person coverage</td>
+          <td>Included</td>
+          <td>Expanded broker coverage + priority handling</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <div class="group-note">
     Companies and agencies seeking group pricing can request a custom quote in the <a href="/contact">quote section</a>.
   </div>
@@ -256,7 +347,7 @@
       <header class="card-header">
         <h3>Active Monitoring</h3>
         <div class="price">
-          <div class="amount">$29.99</div>
+          <div class="amount">$30</div>
           <div class="term">monthly</div>
         </div>
         <p class="subtitle">Best for households. Ongoing monitoring and re‑submissions when listings reappear.</p>
@@ -277,7 +368,7 @@
     <article class="pricing-card" id="tier-pro" aria-label="Full Coverage">
       <header class="card-header">
         <h3>Full Coverage</h3>
-<p class="small"><strong>Includes you +1 additional person</strong></p>
+<p class="small"><strong>Includes you + 1 additional person</strong></p>
         <div class="price">
           <div class="amount">$300</div>
           <div class="term">annual</div>
