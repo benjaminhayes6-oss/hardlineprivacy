@@ -207,6 +207,11 @@ footer .logo img{height:112px;width:auto;max-width:440px;object-fit:contain;opac
   opacity:.7;
 }
 
+.founder-cta{
+  text-align:center;
+  padding:60px 20px;
+}
+
 @media(max-width:768px){
   .exposure-awareness{
     padding:50px 18px;
