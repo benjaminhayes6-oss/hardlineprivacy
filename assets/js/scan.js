@@ -58,6 +58,7 @@ function collectBrokerHits(items){
 }
 
 function normalizeExposureLevel(count, brokerHits, limitedVisibility){
+  if (count >= 8 || brokerHits.length >= 4) return 'high';
   if (count >= 4 || brokerHits.length >= 2) return 'elevated';
   if (count >= 1) return 'moderate';
   if (limitedVisibility) return 'moderate';
@@ -68,13 +69,14 @@ function getExposureMeta(items, exposure, limitedVisibility){
   const count = (items || []).length;
   const brokerHits = collectBrokerHits(items);
   const level = normalizeExposureLevel(count, brokerHits, limitedVisibility);
+  if (level === 'high') return { level:'high', label:'High Exposure', rec:'pro', brokerHits };
   if (level === 'elevated') return { level:'elevated', label:'Elevated Exposure', rec:'pro', brokerHits };
   if (level === 'low') return { level:'low', label:'Low Exposure', rec:'sub', brokerHits };
   return { level:'moderate', label:'Moderate Exposure', rec:'sub', brokerHits };
 }
 
 function riskPill(level,label){
-  const cls = level==='low' ? 'risk-low' : level==='elevated' ? 'risk-high' : 'risk-mod';
+  const cls = level==='low' ? 'risk-low' : level==='high' ? 'risk-high' : level==='elevated' ? 'risk-high' : 'risk-mod';
   return `<span class="risk-pill ${cls}">${label}</span>`;
 }
 
@@ -157,12 +159,34 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
   `;
 
   const headerLabel = isPartial ? 'Partial Scan' : 'Scan Complete';
-  const pillLabel = isPartial ? 'Limited Visibility' : label;
+  const pillLabel = isPartial ? 'Exposure Analysis Complete' : label;
   const pillLevel = isPartial ? 'moderate' : level;
-  const exposureBlock = isPartial ? '' : `
-      <div class="small" style="margin-top:8px">Exposure Level: <span style="font-weight:700">Elevated</span></div>
-      <div class="small" style="margin-top:8px">This scan identified multiple public listings associated with your name and location.</div>
-      <div class="small" style="margin-top:8px">Results are based on available free sources and indicate a higher‑than‑average risk of personal data exposure.</div>
+  const levels = [
+    { key:'low', label:'Low' },
+    { key:'moderate', label:'Moderate' },
+    { key:'elevated', label:'Elevated' },
+    { key:'high', label:'High' }
+  ];
+  const riskLevels = levels.map((l)=>{
+    const active = l.key === pillLevel;
+    const cls = `${l.key} ${active ? 'active' : ''}`.trim();
+    return `<div class="risk-level ${cls}">${l.label}</div>`;
+  }).join('');
+  const exposureBlock = `
+      <div class="risk-panel">
+        <div class="risk-title">Estimated Risk Level</div>
+        <div class="risk-levels">${riskLevels}</div>
+        <div class="small" style="margin-top:8px">Based on the number and type of results returned from publicly accessible sources. This is an informational estimate, not a guarantee of removal or search rank changes.</div>
+      </div>
+      <div class="risk-categories">
+        <div class="risk-title">Exposure Categories</div>
+        <ul class="small">
+          <li>People-search databases</li>
+          <li>Phone aggregators</li>
+          <li>Address history networks</li>
+        </ul>
+        <div class="small" style="margin-top:6px">Categories reflect the most common sources that surface public listings.</div>
+      </div>
   `;
 
   setResultsHTML(`
@@ -175,7 +199,6 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
       ${!isPartial ? `<div class="small" style="margin-top:8px">${escapeHtml(message || FALLBACK_RESULT.message)}</div>` : ''}
       ${exposureBlock}
       ${renderProviders(providers)}
-      <div class="small" style="margin-top:8px">Based on the number and type of results returned from publicly accessible sources. This is an informational estimate, not a guarantee of removal or search rank changes.</div>
       <div class="small" style="margin-top:8px">Families with children and older adults are often targeted when listings are easy to find.</div>
       <div class="small" style="margin-top:8px">This scan uses publicly accessible sources only.</div>
       ${safeId ? `<div class="small" style="margin-top:8px">Request ID: <span style="font-weight:700">${safeId}</span></div>` : ''}
