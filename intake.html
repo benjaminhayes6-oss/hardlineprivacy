@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Intake | Hardline Privacy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0b1d2a;
+      color: white;
+      padding: 40px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #2bd0a4;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>You’re Protected. Let’s Get Started.</h1>
+    <p>Please complete your secure intake form below. Most clients finish in under 3 minutes.</p>
+
+    <form name="intake" method="POST" data-netlify="true">
+      <input type="hidden" name="form-name" value="intake" />
+
+      <label>Full Name</label>
+      <input type="text" name="full_name" required />
+
+      <label>City & State</label>
+      <input type="text" name="location" required />
+
+      <label>Date of Birth</label>
+      <input type="text" name="dob" required />
+
+      <label>Phone Number</label>
+      <input type="text" name="phone" />
+
+      <label>Email Address</label>
+      <input type="email" name="email" required />
+
+      <label>Past Addresses (if known)</label>
+      <textarea name="past_addresses"></textarea>
+
+      <button type="submit">Submit Secure Intake</button>
+    </form>
+
+    <p style="margin-top:30px;font-size:14px;">
+      Your information is used solely for removal processing and is never sold or shared.
+    </p>
+  </div>
+</body>
+</html>
