@@ -54,7 +54,7 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
 .menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
 .menu-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
-@media(max-width:680px){
+@media(max-width:768px){
   .menu-toggle{display:flex}
   .nav-bar{height:90px;padding:0 16px}
   .brand-logo,
