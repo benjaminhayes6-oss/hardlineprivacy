@@ -168,3 +168,52 @@ footer .logo img{height:112px;width:auto;max-width:440px;object-fit:contain;opac
 @media (max-width:768px){
   .pricing-card{margin-bottom:36px}
 }
+
+.exposure-awareness{
+  text-align:center;
+  padding:70px 20px;
+}
+
+.awareness-intro{
+  max-width:720px;
+  margin:20px auto 40px;
+  opacity:.85;
+  line-height:1.6;
+}
+
+.awareness-points{
+  max-width:640px;
+  margin:0 auto 40px;
+  text-align:left;
+}
+
+.awareness-points div{
+  padding:10px 0;
+  font-size:18px;
+}
+
+.primary-cta{
+  display:inline-block;
+  padding:16px 28px;
+  background:#1ec8ff;
+  color:#001018;
+  font-weight:600;
+  border-radius:6px;
+  text-decoration:none;
+}
+
+.cta-support{
+  margin-top:14px;
+  font-size:14px;
+  opacity:.7;
+}
+
+@media(max-width:768px){
+  .exposure-awareness{
+    padding:50px 18px;
+  }
+
+  .awareness-points div{
+    font-size:16px;
+  }
+}
