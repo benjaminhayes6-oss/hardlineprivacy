@@ -36,7 +36,7 @@ export default function Page() {
             src="/images/founder-headshot.png"
             alt="Founder of Hardline Privacy"
             width={900}
-            height={1200}
+            height={900}
             className="rounded-[12px] object-cover w-full h-auto max-w-[420px] shadow-lg"
             loading="lazy"
             priority={false}
@@ -46,6 +46,7 @@ export default function Page() {
 
         <div>
           <h2 id="hero-heading" className="sr-only">Authority positioning</h2>
+          <p className="text-2xl font-semibold mb-1">Grey</p>
           <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-2">Founder</p>
           <p className="text-xl font-semibold mb-3">Founder, Hardline Privacy</p>
           <p className="mb-4">The founder leads data broker removal, digital exposure reduction, and privacy advocacy with a clear mandate: reclaim personal data control through disciplined, repeatable execution.</p>
