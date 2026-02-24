@@ -45,8 +45,7 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
 .nav nav{display:flex;align-items:center;gap:18px;font-size:20px;font-weight:500}
 .nav nav a{color:var(--muted);transition:color .2s}
 .nav nav a:hover{color:var(--ink);text-decoration:none}
-.nav nav a.cta{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg);padding:12px 23px;border-radius:999px;font-weight:700}
-.nav nav a.cta:hover{opacity:.9}
+.nav nav .btn{font-size:15px}
 
 /* Mobile menu toggle */
 .menu-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px}
