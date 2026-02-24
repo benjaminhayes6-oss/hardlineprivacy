@@ -1,8 +1,9 @@
 [build]
   publish = "."
-  [build.environment]
-    REPOSITORY_URL = "https://github.com/hardlineprivacy/hardlineprivacy"
 
+  [build.environment]
+    REPOSITORY_URL = "https://github.com/benjaminhayes6-oss/hardlineprivacy"
+    NODE_VERSION = "18"
 [functions]
   directory = "netlify/functions"
 
