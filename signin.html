@@ -1,8 +1,134 @@
-<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Sign in · Hardline Privacy</title><link rel='stylesheet' href='/assets/css/styles.364.css'></head><body><header class='nav'>
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Sign in · Hardline Privacy</title>
+
+  <link rel="stylesheet" href="/assets/css/styles.364.css" />
+</head>
+
+<body>
+
+<!-- NAV -->
+<header class="nav">
   <div class="nav-bar">
-    <div class='logo'><img src='/assets/images/logo-light.png' alt='Hardline Privacy'/><span>Hardline Privacy</span></div>
-    <button class='menu-toggle' aria-label='Menu' aria-expanded='false'><span></span><span></span><span></span></button>
-    <nav><a href='/'>Home</a><a href='/scan'>Scanner</a><a href='/pricing'>Pricing</a></nav>
+
+    <div class="logo">
+      <img src="/assets/images/logo-light.png" alt="Hardline Privacy" />
+      <span>Hardline Privacy</span>
+    </div>
+
+    <button class="menu-toggle"
+      aria-label="Menu"
+      aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav>
+      <a href="/">Home</a>
+      <a href="/scan">Scanner</a>
+      <a href="/pricing">Pricing</a>
+    </nav>
+
   </div>
-</header><section class='hero'><div class='container'><h1 class='h1'>Sign in</h1><p class='sub'>Enter your email. We'll send a one-time sign-in link.</p></div></section><section class='section'><div class='container center' style='max-width:520px'><form id='f'><label>Email</label><input id='e' type='email' required placeholder='you@example.com'/><button class='btn primary' style='margin-top:12px'>Send link</button></form><p id='msg' style='display:none; margin-top:16px'></p></div></section><footer><div class='container'>&copy; 2026 Hardline Privacy &middot; <a href='/privacy'>Privacy</a> &middot; <a href='/faq'>FAQ</a> &middot; <a href='/terms'>Terms</a></div></footer><script>const f=document.getElementById('f');const e=document.getElementById('e');const msg=document.getElementById('msg');f.addEventListener('submit', async(ev)=>{ev.preventDefault(); msg.style.display='none'; try{ const r=await fetch('/api/auth-request-link',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ email:e.value })}); const d=await r.json(); if(d.ok){msg.style.display='block'; msg.style.color='#4ade80'; msg.textContent='Check your email for a sign-in link.';} else{msg.style.display='block'; msg.style.color='#f87171'; msg.textContent=d.error||'Something went wrong. Please try again.';} }catch(err){msg.style.display='block'; msg.style.color='#f87171'; msg.textContent='Something went wrong. Please try again.';}});</script>
-<script async id="netlify-rum-container" src="/.netlify/scripts/rum" data-netlify-rum-site-id="b0bbea64-64e0-42d8-ac4f-b72b1f6410d0" data-netlify-deploy-branch="" data-netlify-deploy-context="production" data-netlify-cwv-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlX2lkIjoiYjBiYmVhNjQtNjRlMC00MmQ4LWFjNGYtYjcyYjFmNjQxMGQwIiwiYWNjb3VudF9pZCI6IjY5ODE1ZmQ1MTVmZDkzZDdkZTE3YmQxZSIsImRlcGxveV9pZCI6IjY5OWExYmMzMmY1MzMyZGRjYzgzOGJjYiIsImlzc3VlciI6Im5mc2VydmVyIn0.GCNl6giQ3DCM6gA-FjShVKrLzrBOhk0xsQCAQWbVFrk"></script></body></html>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <h1 class="h1">Sign in</h1>
+    <p class="sub">
+      Enter your email. We'll send a one‑time sign‑in link.
+    </p>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="section">
+  <div class="container center" style="max-width:520px">
+
+    <form id="f">
+      <label>Email</label>
+
+      <input
+        id="e"
+        type="email"
+        required
+        placeholder="you@example.com"
+      />
+
+      <button class="btn primary" style="margin-top:12px">
+        Send link
+      </button>
+    </form>
+
+    <p id="msg" style="display:none;margin-top:16px"></p>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    © 2026 Hardline Privacy ·
+    <a href="/privacy">Privacy</a> ·
+    <a href="/faq">FAQ</a> ·
+    <a href="/terms">Terms</a>
+  </div>
+</footer>
+
+<!-- AUTH SCRIPT -->
+<script>
+const f = document.getElementById("f");
+const e = document.getElementById("e");
+const msg = document.getElementById("msg");
+
+f.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+
+  msg.style.display = "none";
+
+  try {
+    const r = await fetch("/api/auth-request-link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: e.value })
+    });
+
+    const d = await r.json();
+
+    msg.style.display = "block";
+
+    if (d.ok) {
+      msg.style.color = "#4ade80";
+      msg.textContent =
+        "Check your email for a sign‑in link.";
+    } else {
+      msg.style.color = "#f87171";
+      msg.textContent =
+        d.error || "Something went wrong.";
+    }
+
+  } catch {
+    msg.style.display = "block";
+    msg.style.color = "#f87171";
+    msg.textContent =
+      "Something went wrong. Please try again.";
+  }
+});
+</script>
+
+<!-- NETLIFY RUM -->
+<script async
+  id="netlify-rum-container"
+  src="/.netlify/scripts/rum"
+  data-netlify-rum-site-id="b0bbea64-64e0-42d8-ac4f-b72b1f6410d0">
+</script>
+
+</body>
+</html>
