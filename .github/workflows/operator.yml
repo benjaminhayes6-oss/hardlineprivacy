@@ -1,4 +1,4 @@
-name: Hardline Privacy Authority Operator v6
+name: Hardline Privacy Authority Operator v7
 
 on:
   schedule:
@@ -14,6 +14,7 @@ permissions:
 env:
   PERFORMANCE_THRESHOLD: 65
   SEO_THRESHOLD: 75
+  ALERT_TITLE: Authority Operator Alert
 
 jobs:
   authority-operator:
@@ -33,7 +34,17 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install System Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq bc gnuplot
+
+      - name: Install Node Tools
+        run: npm install -g lighthouse linkinator puppeteer
+
+      # -------------------------------
       # Core Page Protection
+      # -------------------------------
       - name: Core Page Protection
         run: |
           PAGES=("" "/trust" "/about" "/pricing" "/contact" "/spokeo-removal" "/whitepages-removal")
@@ -48,14 +59,9 @@ jobs:
             exit 1
           fi
 
-      # Install Tools
-      - name: Install Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq bc
-          npm install -g lighthouse linkinator puppeteer
-
+      # -------------------------------
       # Lighthouse Audit
+      # -------------------------------
       - name: Run Lighthouse
         run: |
           lighthouse https://www.hardlineprivacy.com \
@@ -71,8 +77,12 @@ jobs:
           SEO=$(jq '.categories.seo.score * 100' lighthouse.json)
           echo "perf=$PERF" >> $GITHUB_OUTPUT
           echo "seo=$SEO" >> $GITHUB_OUTPUT
+          echo "Performance: $PERF"
+          echo "SEO: $SEO"
 
+      # -------------------------------
       # Store Performance History
+      # -------------------------------
       - name: Store Performance History
         run: |
           echo "$(date -u +%Y-%m-%d),${{ steps.scores.outputs.perf }}" >> performance-history.csv
@@ -85,37 +95,56 @@ jobs:
           git commit -m "Update performance history [skip ci]" || true
           git push || true
 
-      # Enforce Thresholds
-      - name: Enforce Thresholds
+      # -------------------------------
+      # Threshold Evaluation
+      # -------------------------------
+      - name: Evaluate Thresholds
+        id: evaluate
         run: |
           PERF=${{ steps.scores.outputs.perf }}
           SEO=${{ steps.scores.outputs.seo }}
 
+          FAIL=0
+
           if (( $(echo "$PERF < $PERFORMANCE_THRESHOLD" | bc -l) )); then
             echo "Performance below threshold"
-            exit 1
+            FAIL=1
           fi
 
           if (( $(echo "$SEO < $SEO_THRESHOLD" | bc -l) )); then
             echo "SEO below threshold"
+            FAIL=1
+          fi
+
+          echo "fail=$FAIL" >> $GITHUB_OUTPUT
+
+          if [ "$FAIL" -eq 1 ]; then
             exit 1
           fi
 
+      # -------------------------------
       # Broken Link Scan
+      # -------------------------------
       - name: Broken Link Scan
         run: linkinator https://www.hardlineprivacy.com --recurse --silent
 
+      # -------------------------------
       # Schema Validation
+      # -------------------------------
       - name: Schema Validation
         run: |
           curl -s https://www.hardlineprivacy.com | grep -q "application/ld+json" || (echo "Missing JSON-LD"; exit 1)
 
+      # -------------------------------
       # Conversion Element Protection
+      # -------------------------------
       - name: Check Conversion Elements
         run: |
           curl -s https://www.hardlineprivacy.com/pricing | grep -qi "checkout" || (echo "Checkout element missing"; exit 1)
 
+      # -------------------------------
       # Screenshot
+      # -------------------------------
       - name: Capture Screenshot
         run: |
           node -e "
@@ -129,17 +158,20 @@ jobs:
           })();
           "
 
+      # -------------------------------
       # Trend Graph
+      # -------------------------------
       - name: Generate Trend Graph
         run: |
-          sudo apt-get install -y gnuplot
           echo "set datafile separator ','" > graph.gnuplot
           echo "set terminal png" >> graph.gnuplot
           echo "set output 'performance-trend.png'" >> graph.gnuplot
           echo "plot 'performance-history.csv' using 2 with lines" >> graph.gnuplot
           gnuplot graph.gnuplot
 
+      # -------------------------------
       # Upload Artifacts
+      # -------------------------------
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -149,7 +181,9 @@ jobs:
             homepage.png
             performance-trend.png
 
-      # Create Issue Only If One Doesn't Exist
+      # -------------------------------
+      # Create Alert If Failing
+      # -------------------------------
       - name: Create Issue on Failure
         if: failure()
         uses: actions/github-script@v7
@@ -161,14 +195,39 @@ jobs:
               state: "open"
             });
 
-            const existing = issues.find(issue => issue.title === "Authority Operator Alert");
+            const existing = issues.find(issue => issue.title === process.env.ALERT_TITLE);
 
             if (!existing) {
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: "Authority Operator Alert",
-                body: "Performance, SEO, or conversion validation failed. Review latest workflow."
+                title: process.env.ALERT_TITLE,
+                body: "Performance or SEO validation failed. Review latest workflow."
+              });
+            }
+
+      # -------------------------------
+      # Auto Close Alert If Healthy
+      # -------------------------------
+      - name: Close Alert If Healthy
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open"
+            });
+
+            const existing = issues.find(issue => issue.title === process.env.ALERT_TITLE);
+
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                state: "closed"
               });
             }
 
