@@ -1,8 +1,9 @@
 const fetch = require("node-fetch");
 
 const token = process.env.GITHUB_TOKEN;
-const repo = "hardlineprivacy";
+
 const owner = "benjaminhayes6-oss";
+const repo = "hardlineprivacy";
 
 const workflows = [
   "growth.yml",
@@ -15,30 +16,39 @@ const workflows = [
 ];
 
 async function trigger(workflow) {
-  const url = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`;
 
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/vnd.github+json"
-    },
-    body: JSON.stringify({
-      ref: "main"
-    })
-  });
+  console.log(`Dispatching ${workflow}`);
 
-  console.log(`Triggered ${workflow}`);
+  const response = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+      },
+      body: JSON.stringify({
+        ref: "main"
+      })
+    }
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    console.log(`FAILED: ${workflow}`);
+    console.log(text);
+  } else {
+    console.log(`SUCCESS: ${workflow}`);
+  }
 }
 
-async function run() {
-  console.log("MASTER OPERATOR ONLINE");
+(async () => {
+  console.log("MASTER OPERATOR ACTIVATED");
 
   for (const workflow of workflows) {
     await trigger(workflow);
   }
 
-  console.log("ALL SYSTEMS EXECUTED");
-}
-
-run();
+  console.log("ALL SYSTEMS TRIGGERED");
+})();
