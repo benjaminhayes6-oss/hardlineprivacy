@@ -1,0 +1,10 @@
+name: authority
+
+on:
+  workflow_dispatch:
+
+jobs:
+  authority:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Authority Engine Active"
