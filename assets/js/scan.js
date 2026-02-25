@@ -220,6 +220,10 @@ function escapeHtml(s){
   return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+function isValidEmail(value){
+  return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(String(value||'').trim());
+}
+
 function generateRequestId(){
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
@@ -246,13 +250,17 @@ function buildFallbackResponse(){
 
 async function runScan(){
   const name = document.getElementById('fullName')?.value.trim();
-  const loc = document.getElementById('cityState')?.value.trim();
+  const email = document.getElementById('email')?.value.trim();
+  const state = document.getElementById('state')?.value.trim();
+  const city = document.getElementById('city')?.value.trim();
   const aliases = document.getElementById('aliases')?.value.trim();
   setFieldError('fullName', name ? '' : 'Please enter a full name.');
-  setFieldError('cityState', loc ? '' : 'Please enter a city and state.');
-  if (!name || !loc) return;
+  setFieldError('email', isValidEmail(email) ? '' : 'Please enter a valid email.');
+  setFieldError('state', state ? '' : 'Please select a state.');
+  if (!name || !isValidEmail(email) || !state) return;
 
-  const query = [name, loc, aliases].filter(Boolean).join(' ');
+  const location = city ? `${city}, ${state}` : state;
+  const query = [name, location, aliases].filter(Boolean).join(' ');
   const q = encodeURIComponent(query);
 
   setResultsHTML('<div class="callout">Scanning…</div>');
@@ -265,7 +273,7 @@ async function runScan(){
     let res;
     try {
       res = await fetch(
-        `/api/search?q=${q}&name=${encodeURIComponent(name)}&city=${encodeURIComponent(loc)}`,
+        `/api/search?q=${q}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&state=${encodeURIComponent(state)}&city=${encodeURIComponent(city || '')}`,
         { signal: controller.signal }
       );
     } finally {
@@ -315,10 +323,11 @@ async function runScan(){
 
 form?.addEventListener('submit', (e)=>{ e.preventDefault(); runScan(); });
 
-['fullName','cityState'].forEach((id)=>{
+['fullName','email','state','city'].forEach((id)=>{
   const input = document.getElementById(id);
   if (input) {
-    input.addEventListener('input', ()=>{
+    const eventName = input.tagName === 'SELECT' ? 'change' : 'input';
+    input.addEventListener(eventName, ()=>{
       const value = input.value.trim();
       if (value) setFieldError(id, '');
     });
@@ -329,7 +338,11 @@ form?.addEventListener('submit', (e)=>{ e.preventDefault(); runScan(); });
 (function(){
   const p = new URLSearchParams(location.search);
   const n = p.get('name');
-  const l = p.get('location');
+  const e = p.get('email');
+  const s = p.get('state');
+  const c = p.get('city');
   if (n) document.getElementById('fullName').value = n;
-  if (l) document.getElementById('cityState').value = l;
+  if (e) document.getElementById('email').value = e;
+  if (s) document.getElementById('state').value = s;
+  if (c) document.getElementById('city').value = c;
 })();

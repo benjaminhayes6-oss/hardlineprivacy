@@ -157,7 +157,42 @@
     });
   }
 
+  function initStickyCta(){
+    if(document.querySelector('.sticky-cta')) return;
+    var cta=document.createElement('a');
+    cta.className='btn primary sticky-cta';
+    cta.href='/scan';
+    cta.setAttribute('aria-label','Run Free Exposure Scan');
+    cta.textContent='Run Free Exposure Scan';
+    document.body.appendChild(cta);
+  }
+
+  function initDynamicStats(){
+    document.querySelectorAll('[data-stat-range]').forEach(function(el){
+      var range=(el.getAttribute('data-stat-range')||'').split('-').map(function(v){ return parseInt(v,10); });
+      if(range.length<2 || range.some(function(v){ return Number.isNaN(v); })) return;
+      var min=range[0];
+      var max=range[1];
+      if(max<min){ var tmp=min; min=max; max=tmp; }
+      var target=Math.round(min + Math.random()*(max-min));
+      var prefix=el.getAttribute('data-stat-prefix')||'';
+      var suffix=el.getAttribute('data-stat-suffix')||'';
+      var duration=parseInt(el.getAttribute('data-stat-duration')||'900',10);
+      var startTime=null;
+      function step(ts){
+        if(startTime===null) startTime=ts;
+        var progress=Math.min((ts-startTime)/duration,1);
+        var value=Math.floor(target*progress);
+        el.textContent=prefix + value + suffix;
+        if(progress<1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
   bindFormConsent();
   bindConsentLinks();
   applyCtaVariants();
+  initStickyCta();
+  initDynamicStats();
 })();
