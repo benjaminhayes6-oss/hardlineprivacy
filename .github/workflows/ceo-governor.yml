@@ -1,0 +1,39 @@
+name: Hardline CEO Governor
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  governor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate workflow safety
+        run: |
+          COUNT=$(ls .github/workflows/*.yml | wc -l)
+          echo "Workflow count: $COUNT"
+
+          if [ "$COUNT" -gt 5 ]; then
+            echo "Too many automation systems active."
+            exit 1
+          fi
+
+      - name: Protect visual files
+        run: |
+          CHANGED=$(git diff --name-only origin/main || true)
+          echo "$CHANGED"
+
+          if echo "$CHANGED" | grep -E "(styles|index|assets/css|assets/js)"; then
+            echo "Core visual files modified automatically."
+            exit 1
+          fi
+
+      - name: Governor check passed
+        run: echo "CEO control active"
