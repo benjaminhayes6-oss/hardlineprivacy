@@ -3,170 +3,201 @@ const fs = require("fs");
 
 console.log("👑 HARDLINE TRUE AI EXECUTIVE ONLINE");
 
-/*
-====================================
-CONFIG
-====================================
+# /*
+
+# CONFIG
+
 */
 
 const SITE = "https://hardlineprivacy.com";
-
 let workflows = [];
 
-/*
-====================================
-SAFE COMMAND RUNNER
-====================================
+# /*
+
+# SAFE COMMAND RUNNER
+
 */
 
 function run(cmd) {
-  console.log(`▶ ${cmd}`);
-  return execSync(cmd, {
-    encoding: "utf8",
-    stdio: "pipe"
-  });
+try {
+console.log(`▶ ${cmd}`);
+return execSync(cmd, {
+encoding: "utf8",
+stdio: "pipe"
+});
+} catch (err) {
+console.log("Command failed:", err.message);
+return "";
+}
 }
 
-/*
-====================================
-WORKFLOW DISCOVERY
-====================================
+# /*
+
+# WORKFLOW DISCOVERY
+
 */
 
 function discoverWorkflows() {
-  console.log("🧠 Discovering workflows...");
+console.log("🧠 Discovering workflows...");
 
-  const list = run("gh workflow list --json name,path");
-  const parsed = JSON.parse(list);
+const list = run("gh workflow list --json name,path");
 
-  workflows = parsed
-    .filter(wf => !wf.path.includes("operator.yml"))
-    .map(wf => wf.name);
+if (!list) return;
 
-  console.log("✅ Found workflows:", workflows);
+const parsed = JSON.parse(list);
+
+workflows = parsed
+.filter(wf =>
+!wf.path.includes("operator.yml") &&
+!wf.path.includes("autonomous-brain.yml")
+)
+.map(wf => wf.name);
+
+console.log("✅ Found workflows:", workflows);
 }
 
 function dispatch(workflow) {
-  console.log(`🚀 Executing division → ${workflow}`);
-  run(`gh workflow run "${workflow}"`);
+console.log(`🚀 Executing division → ${workflow}`);
+run(`gh workflow run "${workflow}"`);
 }
 
-/*
-====================================
-EXECUTIVE ANALYSIS
-====================================
+# /*
+
+# EXECUTIVE ANALYSIS
+
 */
 
 function analyzeWebsite() {
-  console.log("🌐 Checking revenue surface...");
+console.log("🌐 Checking website availability...");
 
-  try {
-    run(`curl -Is ${SITE}`);
-    console.log("✅ Website reachable");
-  } catch {
-    createIssue("🚨 Website unavailable — revenue risk");
-  }
+const result = run(`curl -Is ${SITE}`);
+
+if (!result.includes("200")) {
+createIssue("🚨 Website unreachable or degraded");
+} else {
+console.log("✅ Website reachable");
+}
 }
 
 function analyzeRepoHealth() {
-  console.log("🔎 Checking repo health...");
+console.log("🔎 Checking repo health...");
 
-  const status = run("git status --porcelain");
+const status = run("git status --porcelain");
 
-  if (status.trim().length > 0) {
-    createIssue("⚠ Repository changes detected");
-  }
+if (status.trim().length > 0) {
+createIssue("⚠ Repository has pending changes");
+}
 }
 
-/*
-====================================
-AUTONOMOUS MANAGEMENT
-====================================
+# /*
+
+# AUTONOMOUS MANAGEMENT
+
 */
 
 function createIssue(title) {
-  console.log(`📌 Creating Issue → ${title}`);
+console.log(`📌 Creating Issue → ${title}`);
 
-  run(
-    `gh issue create --title "${title}" --body "Created automatically by Hardline Executive AI."`
-  );
+run(
+`gh issue create --title "${title}" --body "Created automatically by Hardline Executive AI."`
+);
 }
 
-/*
-====================================
-REVENUE ENGINE
-====================================
+# /*
+
+# REVENUE ENGINE
+
 */
 
 function revenueDecisions() {
-  console.log("💰 Executive Revenue Optimization");
+console.log("💰 Running Executive Revenue Engine");
 
-  const improvements = [
-    {
-      title: "Improve homepage CTA",
-      file: "index.html",
-      change: "<!-- Executive AI: Stronger CTA placement -->"
-    },
-    {
-      title: "Add trust signals",
-      file: "index.html",
-      change: "<!-- Executive AI: testimonials + guarantees -->"
-    },
-    {
-      title: "Clarify pricing",
-      file: "pricing.html",
-      change: "<!-- Executive AI: simplified pricing tiers -->"
-    }
-  ];
+const improvements = [
+{
+title: "Strengthen homepage CTA",
+file: "index.html",
+change: "<!-- Executive AI Suggestion: Improve CTA visibility -->"
+},
+{
+title: "Increase trust signals",
+file: "index.html",
+change: "<!-- Executive AI Suggestion: Add testimonials + authority proof -->"
+},
+{
+title: "Optimize pricing clarity",
+file: "pricing.html",
+change: "<!-- Executive AI Suggestion: Simplify pricing messaging -->"
+}
+];
 
-  improvements.forEach(improvement => {
-    try {
+improvements.forEach(improvement => {
+try {
 
-      fs.appendFileSync(
-        improvement.file,
-        `\n${improvement.change}\n`
-      );
+```
+  if (!fs.existsSync(improvement.file)) return;
 
-      run('git config user.name "Hardline Executive AI"');
-      run('git config user.email "ai@hardlineprivacy.com"');
+  fs.appendFileSync(
+    improvement.file,
+    `\n${improvement.change}\n`
+  );
 
-      const branch = `executive-${Date.now()}`;
+  run('git config user.name "Hardline Executive AI"');
+  run('git config user.email "ai@hardlineprivacy.com"');
 
-      run(`git checkout -b ${branch}`);
-      run("git add .");
-      run(`git commit -m "Executive Optimization: ${improvement.title}"`);
-      run(`git push origin ${branch}`);
+  const branch = `executive-${Date.now()}`;
 
-      run(
-        `gh pr create --title "Executive Optimization: ${improvement.title}" --body "Autonomous revenue improvement generated by Executive AI."`
-      );
+  run(`git checkout -b ${branch}`);
+  run("git add .");
+  run(`git commit -m "Executive Optimization: ${improvement.title}"`);
+  run(`git push origin ${branch}`);
 
-      console.log("✅ Improvement proposed");
+  run(
+    `gh pr create --title "Executive Optimization: ${improvement.title}" --body "Autonomous revenue improvement generated by Executive AI."`
+  );
 
-    } catch (err) {
-      console.log("Skipped improvement:", err.message);
-    }
-  });
+  console.log("✅ Improvement proposed");
+
+} catch (err) {
+  console.log("Skipped improvement:", err.message);
+}
+```
+
+});
 }
 
-/*
-====================================
-EXECUTIVE COMMAND LOOP
-====================================
+# /*
+
+# AUTONOMOUS REVENUE BRAIN
+
+*/
+
+function runAutonomousBrain() {
+console.log("🧠 Activating Autonomous Revenue Brain");
+
+run("node ai/autonomous-revenue-brain.js");
+run("node ai/executive-intelligence.js");
+run("node ai/conversion-lab.js");
+}
+
+# /*
+
+# EXECUTIVE COMMAND LOOP
+
 */
 
 function runExecutiveCycle() {
-  console.log("👑 EXECUTIVE CYCLE STARTED");
+console.log("👑 EXECUTIVE CYCLE STARTED");
 
-  discoverWorkflows();
-  analyzeWebsite();
-  analyzeRepoHealth();
+discoverWorkflows();
+analyzeWebsite();
+analyzeRepoHealth();
 
-  workflows.forEach(dispatch);
+workflows.forEach(dispatch);
 
-  revenueDecisions();
+revenueDecisions();
+runAutonomousBrain();
 
-  console.log("✅ EXECUTIVE CYCLE COMPLETE");
+console.log("✅ EXECUTIVE CYCLE COMPLETE");
 }
 
 runExecutiveCycle();
