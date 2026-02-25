@@ -1,4 +1,0 @@
-
-import { getStore } from '@netlify/blobs';
-import { signJWT } from './_lib/jwt.js';
-export async function handler(event){ try{ const token = (event.queryStringParameters||{}).token; if (!token) return { statusCode:400, body:'Missing token' }; const store = getStore('login_tokens'); const recRaw = await store.get(token); if (!recRaw) return { statusCode:400, body:'Invalid or expired token' }; const rec = JSON.parse(recRaw); if (Date.now() > rec.exp) return { statusCode:400, body:'Token expired' }; await store.delete(token); const jwt = signJWT({ email: rec.email, scope:'member' }, process.env.JWT_SECRET, { expSeconds: 7*24*3600 }); const cookie = `hp_session=${jwt}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7*24*3600}`; const dest = '/members/opt-out-hub/'; return { statusCode: 302, headers: { 'Set-Cookie': cookie, Location: dest }, body: 'Redirecting…' }; }catch(e){ console.error(e); return { statusCode:500, body:'Server error' }; } }
