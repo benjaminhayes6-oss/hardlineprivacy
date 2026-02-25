@@ -1,54 +1,42 @@
-const fetch = require("node-fetch");
+const { execSync } = require("child_process");
 
-const token = process.env.GITHUB_TOKEN;
-
-const owner = "benjaminhayes6-oss";
-const repo = "hardlineprivacy";
+console.log("🧠 Hardline Master Operator Brain Online");
 
 const workflows = [
-  "growth.yml",
-  "domination.yml",
-  "intelligence.yml",
-  "signals.yml",
-  "warroom.yml",
-  "executive.yml",
-  "authority.yml"
+  { name: "growth.yml", priority: "high" },
+  { name: "domination.yml", priority: "high" },
+  { name: "intelligence.yml", priority: "medium" },
+  { name: "signals.yml", priority: "medium" },
+  { name: "warroom.yml", priority: "conditional" },
+  { name: "executive.yml", priority: "low" },
+  { name: "authority.yml", priority: "low" }
 ];
 
-async function trigger(workflow) {
+function shouldRun(priority) {
+  const hour = new Date().getUTCHours();
 
-  console.log(`Dispatching ${workflow}`);
+  if (priority === "high") return true;
+  if (priority === "medium") return hour % 2 === 0;
+  if (priority === "conditional") return hour >= 12;
+  if (priority === "low") return hour === 15;
 
-  const response = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
-      },
-      body: JSON.stringify({
-        ref: "main"
-      })
-    }
-  );
-
-  if (!response.ok) {
-    const text = await response.text();
-    console.log(`FAILED: ${workflow}`);
-    console.log(text);
-  } else {
-    console.log(`SUCCESS: ${workflow}`);
-  }
+  return false;
 }
 
-(async () => {
-  console.log("MASTER OPERATOR ACTIVATED");
-
-  for (const workflow of workflows) {
-    await trigger(workflow);
+for (const wf of workflows) {
+  if (!shouldRun(wf.priority)) {
+    console.log(`⏭ Skipping ${wf.name}`);
+    continue;
   }
 
-  console.log("ALL SYSTEMS TRIGGERED");
-})();
+  console.log(`🚀 Dispatching ${wf.name}`);
+
+  execSync(`
+    gh api \
+    -X POST \
+    repos/${process.env.GITHUB_REPOSITORY}/actions/workflows/${wf.name}/dispatches \
+    -f ref=main
+  `);
+}
+
+console.log("✅ Operator cycle complete");
