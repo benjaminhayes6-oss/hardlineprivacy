@@ -1,42 +1,106 @@
 const { execSync } = require("child_process");
+const fs = require("fs");
 
-console.log("🧠 Hardline Master Operator Brain Online");
+console.log("🧠 HARDLINE AUTONOMOUS OPERATOR ONLINE");
+
+/*
+============================
+SYSTEM CONFIG
+============================
+*/
 
 const workflows = [
-  { name: "growth.yml", priority: "high" },
-  { name: "domination.yml", priority: "high" },
-  { name: "intelligence.yml", priority: "medium" },
-  { name: "signals.yml", priority: "medium" },
-  { name: "warroom.yml", priority: "conditional" },
-  { name: "executive.yml", priority: "low" },
-  { name: "authority.yml", priority: "low" }
+  "growth.yml",
+  "domination.yml",
+  "intelligence.yml",
+  "signals.yml",
+  "warroom.yml",
+  "executive.yml",
+  "authority.yml"
 ];
 
-function shouldRun(priority) {
-  const hour = new Date().getUTCHours();
+const SITE = "https://hardlineprivacy.com";
 
-  if (priority === "high") return true;
-  if (priority === "medium") return hour % 2 === 0;
-  if (priority === "conditional") return hour >= 12;
-  if (priority === "low") return hour === 15;
+/*
+============================
+HELPERS
+============================
+*/
 
-  return false;
+function run(cmd) {
+  return execSync(cmd, { encoding: "utf8" });
 }
 
-for (const wf of workflows) {
-  if (!shouldRun(wf.priority)) {
-    console.log(`⏭ Skipping ${wf.name}`);
-    continue;
-  }
+function dispatch(workflow) {
+  console.log(`🚀 Dispatching ${workflow}`);
 
-  console.log(`🚀 Dispatching ${wf.name}`);
-
-  execSync(`
+  run(`
     gh api \
     -X POST \
-    repos/${process.env.GITHUB_REPOSITORY}/actions/workflows/${wf.name}/dispatches \
+    repos/${process.env.GITHUB_REPOSITORY}/actions/workflows/${workflow}/dispatches \
     -f ref=main
   `);
 }
 
-console.log("✅ Operator cycle complete");
+/*
+============================
+AUTONOMOUS ANALYSIS
+============================
+*/
+
+function analyzeRepoHealth() {
+  console.log("🔎 Checking repo health...");
+
+  const status = run("git status --porcelain");
+
+  if (status.trim().length > 0) {
+    console.log("⚠ Repo changes detected");
+    createIssue("Repository changes detected requiring review");
+  }
+}
+
+function analyzeWebsite() {
+  console.log("🌐 Checking website availability...");
+
+  try {
+    run(`curl -Is ${SITE}`);
+    console.log("✅ Website reachable");
+  } catch {
+    createIssue("Website appears unreachable");
+  }
+}
+
+/*
+============================
+SELF-MANAGEMENT
+============================
+*/
+
+function createIssue(title) {
+  console.log(`📌 Creating Issue: ${title}`);
+
+  run(`
+    gh issue create \
+    --title "${title}" \
+    --body "Created automatically by Hardline Autonomous Operator."
+  `);
+}
+
+/*
+============================
+AUTONOMOUS DECISION ENGINE
+============================
+*/
+
+function runOperatorCycle() {
+  console.log("⚙ Running autonomous cycle");
+
+  analyzeRepoHealth();
+  analyzeWebsite();
+
+  workflows.forEach(dispatch);
+
+  console.log("✅ Autonomous cycle complete");
+}
+
+runOperatorCycle();
