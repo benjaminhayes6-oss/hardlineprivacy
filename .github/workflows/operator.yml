@@ -1,142 +1,31 @@
-name: HARDLINE MASTER OPERATOR
+name: Hardline Master Operator
 
 on:
-schedule:
-- cron: '0 13 * * 1'
-workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
 
 permissions:
-contents: write
-pull-requests: write
-issues: write
+  contents: write
+  actions: write
 
 jobs:
+  operator:
+    runs-on: ubuntu-latest
 
-# =========================
+    steps:
+      - uses: actions/checkout@v4
 
-# 1. AUTHORITY OPERATOR
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-# =========================
+      - name: Install AI Brain
+        run: |
+          cd ai
+          npm install
 
-authority:
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "Authority Operator Running"
-
-# =========================
-
-# 2. SEO SIGNAL ENGINE
-
-# =========================
-
-seo-signals:
-needs: authority
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "SEO Signal Engine Running"
-
-# =========================
-
-# 3. AUTONOMOUS GROWTH
-
-# =========================
-
-growth:
-needs: seo-signals
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "Growth Engine Running"
-
-# =========================
-
-# 4. DOMINATION ENGINE
-
-# =========================
-
-domination:
-needs: growth
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "Domination Engine Running"
-
-# =========================
-
-# 5. INTELLIGENT DOMINATION
-
-# =========================
-
-domination-v2:
-needs: domination
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "Intelligent Domination Running"
-
-# =========================
-
-# 6. STRATEGIC INTELLIGENCE
-
-# =========================
-
-strategic-intel:
-needs: domination-v2
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "Strategic Intelligence Running"
-
-# =========================
-
-# 7. MARKET DOMINANCE
-
-# =========================
-
-market:
-needs: strategic-intel
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "Market Dominance Running"
-
-# =========================
-
-# 8. WAR ROOM
-
-# =========================
-
-warroom:
-needs: market
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "Strategic War Room Running"
-
-# =========================
-
-# 9. INTELLIGENCE LAYER
-
-# =========================
-
-intelligence-layer:
-needs: warroom
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "Intelligence Layer Running"
-
-# =========================
-
-# 10. EXECUTIVE CONTROL
-
-# =========================
-
-executive:
-needs: intelligence-layer
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- run: echo "Executive Control Complete"
+      - name: Run Operator Brain
+        run: |
+          node ai/operator-brain.js
