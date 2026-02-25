@@ -1,0 +1,10 @@
+name: executive
+
+on:
+  workflow_dispatch:
+
+jobs:
+  executive:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Executive Control Active"
