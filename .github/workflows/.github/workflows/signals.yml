@@ -1,0 +1,10 @@
+name: signals
+
+on:
+  workflow_dispatch:
+
+jobs:
+  signals:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "SEO Signals Engine Active"
