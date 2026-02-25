@@ -2,32 +2,27 @@ name: Hardline Master Operator Brain
 
 on:
   schedule:
-    - cron: '0 * * * *'   # runs every hour
+    - cron: "0 */3 * * *"   # every 3 hours
   workflow_dispatch:
-
-permissions:
-  actions: write
-  contents: read
 
 jobs:
   operator:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
+
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh -y
 
-      - name: Install AI Brain
-        run: |
-          cd ai
-          npm install
+      - name: Authenticate GH
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
       - name: Run Operator Brain
         run: node ai/operator-brain.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
