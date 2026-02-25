@@ -1,0 +1,54 @@
+name: Hardline Executive Operator
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  operator:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check homepage availability
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://www.hardlineprivacy.com)
+          echo "Homepage status: $STATUS"
+
+          if [ "$STATUS" != "200" ]; then
+            echo "SITE_DOWN=true" >> $GITHUB_ENV
+          fi
+
+      - name: Verify core pages
+        run: |
+          PAGES=("/pricing" "/trust" "/founder" "/contact")
+
+          for page in "${PAGES[@]}"; do
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" https://www.hardlineprivacy.com$page)
+            echo "$page → $CODE"
+
+            if [ "$CODE" != "200" ]; then
+              echo "PAGE_FAIL=true" >> $GITHUB_ENV
+            fi
+          done
+
+      - name: Create issue if problem detected
+        if: env.SITE_DOWN == 'true' || env.PAGE_FAIL == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Executive Operator Alert",
+              body: "Site health check failed. Immediate review recommended."
+            });
+
+      - name: Executive Operator Complete
+        run: echo "Executive oversight active"
