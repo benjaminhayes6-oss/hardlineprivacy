@@ -1,197 +1,147 @@
 const { execSync } = require("child_process");
 const fs = require("fs");
 
-console.log("🧠 HARDLINE AUTONOMOUS OPERATOR ONLINE");
+console.log("👑 HARDLINE AI EXECUTIVE ONLINE");
 
 /*
-============================
-SYSTEM CONFIG
-============================
+====================================
+EXECUTIVE CONFIG
+====================================
 */
 
 const SITE = "https://hardlineprivacy.com";
+
 let workflows = [];
 
 /*
-============================
-HELPERS
-============================
+====================================
+CORE EXECUTION
+====================================
 */
 
 function run(cmd) {
-  try {
-    return execSync(cmd, { encoding: "utf8", stdio: ["pipe","pipe","pipe"] });
-  } catch (err) {
-    console.log("⚠ Command failed:", cmd);
-    console.log(err.message);
-    return "";
-  }
+  return execSync(cmd, { encoding: "utf8" });
 }
 
-/*
-============================
-DISCOVER WORKFLOWS
-(Self-aware system)
-============================
-*/
-
 function discoverWorkflows() {
-  console.log("🧠 Discovering workflows automatically...");
+  console.log("🧠 Discovering organization capabilities...");
 
-  const result = run(`gh workflow list --json name,path`);
-
-  if (!result) {
-    console.log("⚠ Unable to read workflows");
-    return;
-  }
-
-  const parsed = JSON.parse(result);
+  const list = run("gh workflow list --json name,path");
+  const parsed = JSON.parse(list);
 
   workflows = parsed
     .filter(wf => !wf.path.includes("operator.yml"))
     .map(wf => wf.name);
 
-  console.log("✅ Workflows found:", workflows);
+  console.log("✅ Workflows discovered:", workflows);
 }
 
-/*
-============================
-DISPATCH WORKFLOW
-============================
-*/
-
 function dispatch(workflow) {
-  console.log(`🚀 Dispatching ${workflow}`);
+  console.log(`🚀 Executing division → ${workflow}`);
 
   run(`
-    gh workflow run "${workflow}" --ref main
+    gh workflow run "${workflow}"
   `);
 }
 
 /*
-============================
-AUTONOMOUS ANALYSIS
-============================
+====================================
+EXECUTIVE ANALYSIS
+====================================
 */
 
-function analyzeRepoHealth() {
-  console.log("🔎 Checking repo health...");
-
-  const status = run("git status --porcelain");
-
-  if (status.trim().length > 0) {
-    createIssue("Repository changes detected requiring review");
-  }
-}
-
 function analyzeWebsite() {
-  console.log("🌐 Checking website availability...");
+  console.log("🌐 Checking revenue surface...");
 
   try {
     run(`curl -Is ${SITE}`);
     console.log("✅ Website reachable");
   } catch {
-    createIssue("Website appears unreachable");
+    createIssue("🚨 Website unavailable — revenue loss risk");
+  }
+}
+
+function analyzeRepoHealth() {
+  console.log("🔎 Evaluating operational stability...");
+
+  const status = run("git status --porcelain");
+
+  if (status.trim().length > 0) {
+    createIssue("⚠ Pending changes detected requiring review");
   }
 }
 
 /*
-============================
-SELF MANAGEMENT
-============================
+====================================
+REVENUE EXECUTIVE ENGINE
+====================================
 */
 
-function createIssue(title) {
-  console.log(`📌 Creating Issue: ${title}`);
+function revenueDecisions() {
+  console.log("💰 Running Revenue Optimization Protocol");
 
-  run(`
-    gh issue create \
-    --title "${title}" \
-    --body "Created automatically by Hardline Autonomous Operator."
-  `);
-}
-
-/*
-============================
-SELF IMPROVEMENT ENGINE
-============================
-*/
-
-function selfImprove() {
-  console.log("🧠 Running Self-Improvement Engine");
-
-  const improvements = [
+  const opportunities = [
     {
-      title: "Improve SEO meta descriptions",
+      title: "Add above-the-fold CTA optimization",
       file: "index.html",
-      change: "<!-- AI Suggestion: Improve meta descriptions for SEO -->"
+      change: "<!-- AI EXECUTIVE: Strong CTA added for conversions -->"
     },
     {
-      title: "Add trust signals section",
+      title: "Increase trust signals",
       file: "index.html",
-      change: "<!-- AI Suggestion: Add testimonials / authority badges -->"
+      change: "<!-- AI EXECUTIVE: Add testimonials, press logos, guarantees -->"
+    },
+    {
+      title: "Improve pricing clarity",
+      file: "pricing.html",
+      change: "<!-- AI EXECUTIVE: Simplify pricing tiers for faster purchase -->"
     }
   ];
 
-  improvements.forEach(improvement => {
+  opportunities.forEach(improvement => {
     try {
-      if (!fs.existsSync(improvement.file)) return;
+      fs.appendFileSync(improvement.file, `\n${improvement.change}\n`);
 
-      console.log(`✨ Improving: ${improvement.title}`);
-
-      fs.appendFileSync(
-        improvement.file,
-        `\n${improvement.change}\n`
-      );
-
-      run(`git config user.name "Hardline AI Operator"`);
+      run(`git config user.name "Hardline Executive AI"`);
       run(`git config user.email "ai@hardlineprivacy.com"`);
 
-      const branch = `ai-improvement-${Date.now()}`;
-
-      run(`git checkout -b ${branch}`);
+      run(`git checkout -b executive-${Date.now()}`);
       run(`git add .`);
-      run(`git commit -m "AI Improvement: ${improvement.title}"`);
-      run(`git push origin ${branch}`);
+      run(`git commit -m "Executive Optimization: ${improvement.title}"`);
+      run(`git push origin HEAD`);
 
       run(`
         gh pr create \
-        --title "AI Improvement: ${improvement.title}" \
-        --body "Automatically generated improvement by Hardline Autonomous Operator." \
-        --head ${branch}
+        --title "Executive Optimization: ${improvement.title}" \
+        --body "Autonomous revenue optimization proposed by Executive AI."
       `);
 
+      console.log("✅ Executive upgrade proposed");
+
     } catch (e) {
-      console.log("⚠ Skipped improvement:", e.message);
+      console.log("Skipped:", e.message);
     }
   });
 }
 
 /*
-============================
-AUTONOMOUS DECISION ENGINE
-============================
+====================================
+AUTONOMOUS COMMAND LOOP
+====================================
 */
 
-function runOperatorCycle() {
-  console.log("⚙ Running autonomous cycle");
-
-  analyzeRepoHealth();
-  analyzeWebsite();
+function runExecutiveCycle() {
+  console.log("👑 Executive Cycle Started");
 
   discoverWorkflows();
+  analyzeWebsite();
+  analyzeRepoHealth();
 
   workflows.forEach(dispatch);
 
-  selfImprove();
+  revenueDecisions();
 
-  console.log("✅ Autonomous cycle complete");
+  console.log("✅ Executive Cycle Complete");
 }
 
-/*
-============================
-START OPERATOR
-============================
-*/
-
-runOperatorCycle();
+runExecutiveCycle();
