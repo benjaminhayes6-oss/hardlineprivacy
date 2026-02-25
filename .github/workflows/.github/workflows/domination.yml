@@ -1,0 +1,10 @@
+name: domination
+
+on:
+  workflow_dispatch:
+
+jobs:
+  domination:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Domination Engine Active"
