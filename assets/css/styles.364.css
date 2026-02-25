@@ -337,3 +337,19 @@ footer .logo img{height:112px;width:auto;max-width:440px;object-fit:contain;opac
 .founder-profile .card .btn{
   margin-top:8px;
 }
+@media (max-width: 900px) {
+
+  header nav {
+    display: none;
+  }
+
+  header nav.open {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+}
