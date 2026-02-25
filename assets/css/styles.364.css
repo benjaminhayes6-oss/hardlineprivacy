@@ -1,185 +1,178 @@
-/* Hardline Privacy – Base Styles (dark theme) */
+/* HARDLINE PRIVACY — FIXED MASTER CSS */
 
 :root{
-  --bg:#081018;
-  --surface:#0e1620;
-  --ink:#e8edf3;
-  --muted:#8899aa;
-  --accent:#60a5fa;
-  --accent2:#34d399;
-  --border:rgba(255,255,255,.08);
-  --radius:14px;
-  --header-height:100px;
+--bg:#081018;
+--surface:#0e1620;
+--ink:#e8edf3;
+--muted:#8899aa;
+--accent:#60a5fa;
+--accent2:#34d399;
+--border:rgba(255,255,255,.08);
+--radius:14px;
+--header-height:100px;
 }
 
 *,
 *::before,
 *::after{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
 body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  line-height:1.6;
-  overflow-x:hidden;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:var(--bg);
+color:var(--ink);
+overflow-x:hidden;
 }
 
-/* ================================
-   NAVIGATION
-================================ */
+img{
+max-width:100%;
+display:block;
+}
+
+/* ======================
+NAVIGATION
+====================== */
 
 header.nav{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:#061b27;
-  border-bottom:1px solid var(--border);
+position:sticky;
+top:0;
+z-index:1000;
+background:#061b27;
+border-bottom:1px solid var(--border);
 }
 
 .nav-bar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  height:100px;
-  padding:0 24px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+height:100px;
+padding:0 20px;
 }
 
+/* LOGO FIX (critical) */
 .brand-logo{
-  height:120px;
+height:64px;
+width:auto;
+object-fit:contain;
 }
 
 .nav nav{
-  display:flex;
-  gap:18px;
-  align-items:center;
+display:flex;
+align-items:center;
+gap:18px;
 }
 
 .nav nav a{
-  color:var(--muted);
-  text-decoration:none;
+color:var(--muted);
+text-decoration:none;
 }
 
 .nav nav a:hover{
-  color:var(--ink);
+color:var(--ink);
 }
 
-/* ================================
-   HAMBURGER
-================================ */
+/* ======================
+MOBILE MENU
+====================== */
 
 .menu-toggle{
-  display:none;
-  flex-direction:column;
-  gap:5px;
-  background:none;
-  border:none;
-  cursor:pointer;
+display:none;
+flex-direction:column;
+gap:5px;
+background:none;
+border:none;
 }
 
 .menu-toggle span{
-  width:24px;
-  height:2px;
-  background:white;
-  display:block;
+width:24px;
+height:2px;
+background:white;
 }
 
-/* ================================
-   MOBILE NAV FIX
-================================ */
+/* MOBILE BREAKPOINT */
 
-@media (max-width:768px){
+@media(max-width:768px){
 
-  .menu-toggle{
-    display:flex;
-  }
-
-  .nav nav{
-    display:none;
-    position:fixed;
-    top:90px;
-    left:0;
-    right:0;
-    background:#081018;
-    flex-direction:column;
-    padding:20px;
-    gap:16px;
-  }
-
-  .nav nav.open{
-    display:flex;
-  }
+.menu-toggle{
+display:flex;
 }
 
-/* ================================
-   BUTTONS
-================================ */
-
-.btn{
-  padding:12px 24px;
-  border-radius:999px;
-  font-weight:700;
-  text-decoration:none;
+.nav nav{
+display:none;
+position:fixed;
+top:90px;
+left:0;
+right:0;
+flex-direction:column;
+background:#081018;
+padding:20px;
 }
 
-.btn.primary{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#081018;
+.nav nav.open{
+display:flex;
 }
 
-/* ================================
-   SECTIONS
-================================ */
-
-.section{
-  padding:56px 0;
-  border-top:1px solid var(--border);
+.brand-logo{
+height:48px;
+}
 }
 
-/* ================================
-   CARDS
-================================ */
+/* ======================
+HERO FIX
+====================== */
+
+.hero{
+padding:60px 20px;
+text-align:center;
+}
+
+.h1{
+font-size:clamp(1.6rem,4vw,2.4rem);
+font-weight:800;
+}
+
+/* ======================
+CARDS
+====================== */
 
 .cards{
-  display:grid;
-  gap:16px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:16px;
+margin-top:24px;
 }
 
 .card{
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:20px;
+background:rgba(255,255,255,.04);
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:20px;
 }
 
-/* ================================
-   STICKY CTA
-================================ */
+/* ======================
+STICKY CTA
+====================== */
 
 .sticky-cta{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  z-index:1002;
-  box-shadow:0 14px 30px rgba(8,16,24,.45);
+position:fixed;
+right:20px;
+bottom:20px;
+z-index:1002;
 }
 
-@media (max-width:768px){
-  .sticky-cta{
-    right:14px;
-    bottom:14px;
-  }
-}
-
-/* ================================
-   FOOTER
-================================ */
+/* ======================
+FOOTER
+====================== */
 
 footer{
-  padding:32px 0;
-  border-top:1px solid var(--border);
-  text-align:center;
+padding:32px 0;
+text-align:center;
+border-top:1px solid var(--border);
+}
+
+footer .logo img{
+height:70px;
 }
