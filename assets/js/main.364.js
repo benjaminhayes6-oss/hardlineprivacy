@@ -1,236 +1,198 @@
 /* Hardline Privacy – main.364.js */
-
 (function(){
-
-/* ================================
-   MOBILE MENU SYSTEM (PRIMARY)
-================================ */
-
-const toggle = document.querySelector('.menu-toggle');
-const nav = toggle ? toggle.closest('.nav').querySelector('nav') : null;
-
-if(toggle && nav){
-
-  toggle.addEventListener('click', () => {
-
-    const expanded =
-      toggle.getAttribute('aria-expanded') === 'true';
-
-    toggle.setAttribute('aria-expanded', String(!expanded));
-    nav.classList.toggle('open');
-  });
-
-  /* Close when link clicked */
-  nav.querySelectorAll('a').forEach(link=>{
-    link.addEventListener('click',()=>{
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded','false');
+  /* Mobile menu toggle */
+  var toggle=document.querySelector('.menu-toggle');
+  var nav=toggle&&toggle.closest('.nav').querySelector('nav');
+  if(toggle&&nav){
+    toggle.addEventListener('click',function(){
+      var expanded=toggle.getAttribute('aria-expanded')==='true';
+      toggle.setAttribute('aria-expanded',String(!expanded));
+      nav.classList.toggle('open');
     });
-  });
 
-  /* Close when clicking outside */
-  document.addEventListener('click',e=>{
-    if(
-      nav.classList.contains('open') &&
-      !nav.contains(e.target) &&
-      !toggle.contains(e.target)
-    ){
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded','false');
-    }
-  });
-}
-
-
-/* ================================
-   CONSENT SYSTEM
-================================ */
-
-function getConsentVersion(){
-  return document.body.getAttribute('data-consent-version') || '2026-02-16';
-}
-
-function storeConsent(context){
-  try{
-    const payload={
-      version:getConsentVersion(),
-      timestamp:new Date().toISOString(),
-      context:context||'general'
-    };
-    localStorage.setItem('hp_consent',JSON.stringify(payload));
-  }catch(e){}
-}
-
-function bindFormConsent(){
-
-  document.querySelectorAll('form[data-requires-consent]')
-  .forEach(form=>{
-
-    const checkbox=form.querySelector('[data-consent-checkbox]');
-    const errorEl=form.querySelector('.consent-error');
-
-    if(checkbox){
-      checkbox.addEventListener('change',()=>{
-        if(errorEl) errorEl.textContent='';
+    /* Auto-close nav when a link is tapped */
+    nav.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click',function(){
+        nav.classList.remove('open');
+        toggle.setAttribute('aria-expanded','false');
       });
-    }
+    });
 
-    form.addEventListener('submit',e=>{
-
-      if(checkbox && !checkbox.checked){
-        e.preventDefault();
-        if(errorEl)
-          errorEl.textContent='Please confirm you agree before continuing.';
-        checkbox.focus();
-        return;
+    /* Close nav when tapping outside */
+    document.addEventListener('click',function(e){
+      if(nav.classList.contains('open')&&!nav.contains(e.target)&&!toggle.contains(e.target)){
+        nav.classList.remove('open');
+        toggle.setAttribute('aria-expanded','false');
       }
+    });
+  }
 
+  function getConsentVersion(){
+    return document.body.getAttribute('data-consent-version') || '2026-02-16';
+  }
+
+  function storeConsent(context){
+    try{
+      var payload={
+        version:getConsentVersion(),
+        timestamp:new Date().toISOString(),
+        context:context||'general'
+      };
+      localStorage.setItem('hp_consent', JSON.stringify(payload));
+    }catch(e){
+      /* no-op */
+    }
+  }
+
+  function bindFormConsent(){
+    document.querySelectorAll('form[data-requires-consent]').forEach(function(form){
+      var checkbox=form.querySelector('input[data-consent-checkbox]');
+      var errorEl=form.querySelector('.consent-error');
       if(checkbox){
-        storeConsent(form.id || form.name || 'form');
+        checkbox.addEventListener('change',function(){
+          if(errorEl) errorEl.textContent='';
+        });
       }
+      form.addEventListener('submit',function(e){
+        if(checkbox && !checkbox.checked){
+          e.preventDefault();
+          if(errorEl) errorEl.textContent='Please confirm you agree before continuing.';
+          checkbox.focus();
+          return;
+        }
+        if(checkbox && checkbox.checked){
+          storeConsent(form.getAttribute('id') || form.getAttribute('name') || 'form');
+        }
+      });
     });
-  });
-}
+  }
 
+  function bindConsentLinks(){
+    document.querySelectorAll('[data-consent-target]').forEach(function(link){
+      link.addEventListener('click',function(e){
+        var targetId=link.getAttribute('data-consent-target');
+        var errorId=link.getAttribute('data-consent-error');
+        var checkbox=targetId ? document.getElementById(targetId) : null;
+        var errorEl=errorId ? document.getElementById(errorId) : null;
+        if(checkbox && !checkbox.checked){
+          e.preventDefault();
+          if(errorEl) errorEl.textContent='Please confirm you agree before continuing.';
+          checkbox.focus();
+          return;
+        }
+        storeConsent('purchase');
+        var href=link.getAttribute('href') || '';
+        if(href.indexOf('/checkout/')===0){
+          e.preventDefault();
+          var plan=href.slice('/checkout/'.length);
+          startCheckout(plan, link, errorEl);
+        }
+      });
+    });
+  }
 
-/* ================================
-   CONSENT LINKS
-================================ */
+  function getCheckoutToken(){
+    var meta=document.querySelector('meta[name="checkout-token"]');
+    if(meta && meta.content) return meta.content;
+    var bodyToken=document.body.getAttribute('data-checkout-token') || '';
+    if(bodyToken) return bodyToken;
+    return import.meta && import.meta.env && import.meta.env.VITE_CHECKOUT_SECRET ? import.meta.env.VITE_CHECKOUT_SECRET : '';
+  }
 
-function bindConsentLinks(){
-
-  document.querySelectorAll('[data-consent-target]')
-  .forEach(link=>{
-
-    link.addEventListener('click',e=>{
-
-      const checkbox =
-        document.getElementById(link.dataset.consentTarget);
-
-      const errorEl =
-        document.getElementById(link.dataset.consentError);
-
-      if(checkbox && !checkbox.checked){
-        e.preventDefault();
-        if(errorEl)
-          errorEl.textContent='Please confirm you agree before continuing.';
-        checkbox.focus();
+  async function startCheckout(plan, link, errorEl){
+    if(!plan){
+      if(errorEl) errorEl.textContent='Please select a valid plan.';
+      return;
+    }
+    var token=getCheckoutToken() || 'REPLACE_ME';
+    var originalText=link ? link.textContent : '';
+    if(link){
+      link.setAttribute('aria-busy','true');
+      link.textContent='Preparing checkout...';
+    }
+    try{
+      var res=await fetch('/.netlify/functions/checkout',{
+        method:'POST',
+        headers:{
+          'content-type':'application/json',
+          'x-checkout-token':token || 'REPLACE_ME'
+        },
+        body:JSON.stringify({ plan: plan }),
+        redirect:'manual'
+      });
+      var location=res.headers.get('Location') || res.headers.get('location');
+      if(location){
+        window.location.assign(location);
         return;
       }
-
-      storeConsent('purchase');
-    });
-  });
-}
-
-
-/* ================================
-   CTA VARIANTS
-================================ */
-
-function applyCtaVariants(){
-
-  const params=new URLSearchParams(location.search);
-  let src=(params.get('src')||'meta').toLowerCase();
-
-  if(src!=='meta' && src!=='google') src='meta';
-
-  document.querySelectorAll('.cta-variant').forEach(el=>{
-
-    const raw =
-      src==='meta'
-      ? el.dataset.ctaMeta
-      : el.dataset.ctaGoogle;
-
-    if(!raw) return;
-
-    const labels=raw.split('|')
-      .map(v=>v.trim())
-      .filter(Boolean);
-
-    if(!labels.length) return;
-
-    el.textContent=
-      labels[Math.floor(Math.random()*labels.length)];
-  });
-}
-
-
-/* ================================
-   STICKY CTA
-================================ */
-
-function initStickyCta(){
-
-  if(document.querySelector('.sticky-cta')) return;
-
-  const cta=document.createElement('a');
-
-  cta.className='btn primary sticky-cta';
-  cta.href='/scan';
-  cta.setAttribute('aria-label','Run Free Exposure Scan');
-  cta.textContent='Run Free Exposure Scan';
-
-  document.body.appendChild(cta);
-}
-
-
-/* ================================
-   DYNAMIC STATS
-================================ */
-
-function initDynamicStats(){
-
-  document.querySelectorAll('[data-stat-range]')
-  .forEach(el=>{
-
-    const range=el.dataset.statRange
-      .split('-')
-      .map(v=>parseInt(v,10));
-
-    if(range.length<2) return;
-
-    let [min,max]=range;
-
-    if(max<min)[min,max]=[max,min];
-
-    const target=Math.round(
-      min + Math.random()*(max-min)
-    );
-
-    const prefix=el.dataset.statPrefix||'';
-    const suffix=el.dataset.statSuffix||'';
-    const duration=parseInt(el.dataset.statDuration||'900',10);
-
-    let start=null;
-
-    function step(ts){
-
-      if(!start) start=ts;
-
-      const progress=Math.min((ts-start)/duration,1);
-
-      el.textContent=
-        prefix+
-        Math.floor(target*progress)+
-        suffix;
-
-      if(progress<1) requestAnimationFrame(step);
+      var data=await res.json();
+      if(!res.ok){
+        throw new Error(data && data.error ? data.error : 'Checkout failed');
+      }
+      if(data && data.url){
+        window.location.href=data.url;
+        return;
+      }
+      throw new Error('Checkout failed');
+    }catch(e){
+      if(errorEl) errorEl.textContent='Checkout failed. Please try again or contact support.';
+      if(link){
+        link.setAttribute('aria-busy','false');
+        link.textContent=originalText;
+      }
     }
+  }
 
-    requestAnimationFrame(step);
-  });
-}
+  function applyCtaVariants(){
+    var params=new URLSearchParams(window.location.search);
+    var src=(params.get('src')||'meta').toLowerCase();
+    if(src!=='meta' && src!=='google') src='meta';
+    document.querySelectorAll('.cta-variant').forEach(function(el){
+      var raw=src==='meta' ? el.getAttribute('data-cta-meta') : el.getAttribute('data-cta-google');
+      if(!raw) return;
+      var labels=raw.split('|').map(function(label){ return label.trim(); }).filter(Boolean);
+      if(!labels.length) return;
+      var label=labels[Math.floor(Math.random()*labels.length)];
+      if(label) el.textContent=label;
+    });
+  }
 
+  function initStickyCta(){
+    if(document.querySelector('.sticky-cta')) return;
+    var cta=document.createElement('a');
+    cta.className='btn primary sticky-cta';
+    cta.href='/scan';
+    cta.setAttribute('aria-label','Run Free Exposure Scan');
+    cta.textContent='Run Free Exposure Scan';
+    document.body.appendChild(cta);
+  }
 
-/* ================================
-   INIT
-================================ */
+  function initDynamicStats(){
+    document.querySelectorAll('[data-stat-range]').forEach(function(el){
+      var range=(el.getAttribute('data-stat-range')||'').split('-').map(function(v){ return parseInt(v,10); });
+      if(range.length<2 || range.some(function(v){ return Number.isNaN(v); })) return;
+      var min=range[0];
+      var max=range[1];
+      if(max<min){ var tmp=min; min=max; max=tmp; }
+      var target=Math.round(min + Math.random()*(max-min));
+      var prefix=el.getAttribute('data-stat-prefix')||'';
+      var suffix=el.getAttribute('data-stat-suffix')||'';
+      var duration=parseInt(el.getAttribute('data-stat-duration')||'900',10);
+      var startTime=null;
+      function step(ts){
+        if(startTime===null) startTime=ts;
+        var progress=Math.min((ts-startTime)/duration,1);
+        var value=Math.floor(target*progress);
+        el.textContent=prefix + value + suffix;
+        if(progress<1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
 
-bindFormConsent();
-bindConsentLinks();
-applyCtaVariants();
-initStickyCta();
-initDynamicStats();
-
+  bindFormConsent();
+  bindConsentLinks();
+  applyCtaVariants();
+  initStickyCta();
+  initDynamicStats();
 })();
