@@ -1,20 +1,21 @@
-name: Hardline Master Operator
+name: Hardline Master Operator Brain
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: '0 * * * *'   # runs every hour
   workflow_dispatch:
 
 permissions:
-  contents: write
   actions: write
+  contents: read
 
 jobs:
   operator:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -27,5 +28,6 @@ jobs:
           npm install
 
       - name: Run Operator Brain
-        run: |
-          node ai/operator-brain.js
+        run: node ai/operator-brain.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
