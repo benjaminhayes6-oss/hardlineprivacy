@@ -10,6 +10,7 @@ CONFIG
 */
 
 const SITE = "https://hardlineprivacy.com";
+
 let workflows = [];
 
 /*
@@ -19,16 +20,11 @@ SAFE COMMAND RUNNER
 */
 
 function run(cmd) {
-  try {
-    console.log(`▶ ${cmd}`);
-    return execSync(cmd, {
-      encoding: "utf8",
-      stdio: "pipe"
-    });
-  } catch (err) {
-    console.log("Command failed:", err.message);
-    return "";
-  }
+  console.log(`▶ ${cmd}`);
+  return execSync(cmd, {
+    encoding: "utf8",
+    stdio: "pipe"
+  });
 }
 
 /*
@@ -41,16 +37,10 @@ function discoverWorkflows() {
   console.log("🧠 Discovering workflows...");
 
   const list = run("gh workflow list --json name,path");
-  if (!list) return;
-
   const parsed = JSON.parse(list);
 
   workflows = parsed
-    .filter(
-      wf =>
-        !wf.path.includes("operator.yml") &&
-        !wf.path.includes("autonomous-brain.yml")
-    )
+    .filter(wf => !wf.path.includes("operator.yml"))
     .map(wf => wf.name);
 
   console.log("✅ Found workflows:", workflows);
@@ -68,14 +58,13 @@ EXECUTIVE ANALYSIS
 */
 
 function analyzeWebsite() {
-  console.log("🌐 Checking website availability...");
+  console.log("🌐 Checking revenue surface...");
 
-  const result = run(`curl -Is ${SITE}`);
-
-  if (!result.includes("200")) {
-    createIssue("🚨 Website unreachable or degraded");
-  } else {
+  try {
+    run(`curl -Is ${SITE}`);
     console.log("✅ Website reachable");
+  } catch {
+    createIssue("🚨 Website unavailable — revenue risk");
   }
 }
 
@@ -85,7 +74,7 @@ function analyzeRepoHealth() {
   const status = run("git status --porcelain");
 
   if (status.trim().length > 0) {
-    createIssue("⚠ Repository has pending changes");
+    createIssue("⚠ Repository changes detected");
   }
 }
 
@@ -110,29 +99,28 @@ REVENUE ENGINE
 */
 
 function revenueDecisions() {
-  console.log("💰 Running Executive Revenue Engine");
+  console.log("💰 Executive Revenue Optimization");
 
   const improvements = [
     {
-      title: "Strengthen homepage CTA",
+      title: "Improve homepage CTA",
       file: "index.html",
-      change: "<!-- Executive AI Suggestion: Improve CTA visibility -->"
+      change: "<!-- Executive AI: Stronger CTA placement -->"
     },
     {
-      title: "Increase trust signals",
+      title: "Add trust signals",
       file: "index.html",
-      change: "<!-- Executive AI Suggestion: Add testimonials + authority proof -->"
+      change: "<!-- Executive AI: testimonials + guarantees -->"
     },
     {
-      title: "Optimize pricing clarity",
+      title: "Clarify pricing",
       file: "pricing.html",
-      change: "<!-- Executive AI Suggestion: Simplify pricing messaging -->"
+      change: "<!-- Executive AI: simplified pricing tiers -->"
     }
   ];
 
   improvements.forEach(improvement => {
     try {
-      if (!fs.existsSync(improvement.file)) return;
 
       fs.appendFileSync(
         improvement.file,
@@ -154,29 +142,11 @@ function revenueDecisions() {
       );
 
       console.log("✅ Improvement proposed");
+
     } catch (err) {
       console.log("Skipped improvement:", err.message);
     }
   });
-}
-
-/*
-====================================
-AUTONOMOUS REVENUE BRAIN
-====================================
-*/
-
-function runAutonomousBrain() {
-  console.log("🧠 Activating Autonomous Revenue Brain");
-
-  if (fs.existsSync("ai/autonomous-revenue-brain.js"))
-    run("node ai/autonomous-revenue-brain.js");
-
-  if (fs.existsSync("ai/executive-intelligence.js"))
-    run("node ai/executive-intelligence.js");
-
-  if (fs.existsSync("ai/conversion-lab.js"))
-    run("node ai/conversion-lab.js");
 }
 
 /*
@@ -195,7 +165,6 @@ function runExecutiveCycle() {
   workflows.forEach(dispatch);
 
   revenueDecisions();
-  runAutonomousBrain();
 
   console.log("✅ EXECUTIVE CYCLE COMPLETE");
 }
