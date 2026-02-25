@@ -195,4 +195,21 @@
   applyCtaVariants();
   initStickyCta();
   initDynamicStats();
-})();
+})();/* MOBILE MENU FIX */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const toggle = document.querySelector(".menu-toggle");
+  const nav = document.querySelector("header nav");
+
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener("click", () => {
+    const expanded =
+      toggle.getAttribute("aria-expanded") === "true";
+
+    toggle.setAttribute("aria-expanded", !expanded);
+    nav.classList.toggle("open");
+  });
+
+});
