@@ -2,8 +2,12 @@ name: Hardline Master Operator Brain
 
 on:
   schedule:
-    - cron: "0 */3 * * *"   # every 3 hours
+    - cron: "0 */3 * * *"   # runs every 3 hours
   workflow_dispatch:
+
+concurrency:
+  group: hardline-operator
+  cancel-in-progress: false
 
 jobs:
   operator:
@@ -16,13 +20,55 @@ jobs:
       actions: write
 
     steps:
-      - uses: actions/checkout@v4
 
+      # =====================
+      # Checkout Repo
+      # =====================
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # =====================
+      # Setup Node (REQUIRED)
+      # =====================
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # =====================
+      # Install GitHub CLI
+      # =====================
       - name: Install GitHub CLI
-        run: sudo apt-get install gh -y
+        run: |
+          sudo apt-get update
+          sudo apt-get install gh -y
 
+      # =====================
+      # Authenticate GitHub
+      # =====================
       - name: Authenticate GH
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$GH_TOKEN" | gh auth login --with-token
 
+      # =====================
+      # Install AI Dependencies (self-healing)
+      # =====================
+      - name: Install dependencies
+        run: |
+          if [ -f ai/package.json ]; then
+            cd ai
+            npm install || true
+            cd ..
+          fi
+
+      # =====================
+      # Run Autonomous Operator
+      # =====================
       - name: Run Operator Brain
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node ai/operator-brain.js
