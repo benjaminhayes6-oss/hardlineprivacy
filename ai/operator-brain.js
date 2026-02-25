@@ -104,3 +104,60 @@ function runOperatorCycle() {
 }
 
 runOperatorCycle();
+selfImprove();
+/*
+============================
+SELF IMPROVEMENT ENGINE
+============================
+*/
+
+function selfImprove() {
+  console.log("🧠 Running Self-Improvement Engine");
+
+  const improvements = [
+    {
+      title: "Improve SEO meta descriptions",
+      file: "index.html",
+      change: "<!-- AI Suggestion: Improve meta descriptions for SEO -->"
+    },
+    {
+      title: "Add trust signals section",
+      file: "index.html",
+      change: "<!-- AI Suggestion: Add testimonials / authority badges -->"
+    }
+  ];
+
+  improvements.forEach(improvement => {
+    try {
+      console.log(`✨ Improving: ${improvement.title}`);
+
+      fs.appendFileSync(
+        improvement.file,
+        `\n${improvement.change}\n`
+      );
+
+      run(`
+        git config user.name "Hardline AI Operator"
+      `);
+
+      run(`
+        git config user.email "ai@hardlineprivacy.com"
+      `);
+
+      run(`git checkout -b ai-improvement-${Date.now()}`);
+
+      run(`git add .`);
+      run(`git commit -m "AI Improvement: ${improvement.title}"`);
+      run(`git push origin HEAD`);
+
+      run(`
+        gh pr create \
+        --title "AI Improvement: ${improvement.title}" \
+        --body "Automatically generated improvement by Hardline Autonomous Operator."
+      `);
+
+    } catch (e) {
+      console.log("Skipped improvement:", e.message);
+    }
+  });
+}
