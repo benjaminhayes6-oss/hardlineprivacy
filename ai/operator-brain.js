@@ -1,197 +1,194 @@
 const { execSync } = require("child_process");
 const fs = require("fs");
 
-console.log("🧠 HARDLINE AUTONOMOUS OPERATOR ONLINE");
+console.log("👑 HARDLINE AI EXECUTIVE ONLINE");
 
-/*
-============================
-SYSTEM CONFIG
-============================
+# /*
+
+# EXECUTIVE CONFIG
+
 */
 
 const SITE = "https://hardlineprivacy.com";
+const BRANCH_PREFIX = "executive";
+
 let workflows = [];
 
-/*
-============================
-HELPERS
-============================
+# /*
+
+# CORE EXECUTION
+
 */
 
 function run(cmd) {
-  try {
-    return execSync(cmd, { encoding: "utf8", stdio: ["pipe","pipe","pipe"] });
-  } catch (err) {
-    console.log("⚠ Command failed:", cmd);
-    console.log(err.message);
-    return "";
-  }
+return execSync(cmd, {
+encoding: "utf8",
+stdio: "pipe"
+}).toString();
 }
 
-/*
-============================
-DISCOVER WORKFLOWS
-(Self-aware system)
-============================
+# /*
+
+# DISCOVER ORGANIZATION DIVISIONS
+
 */
 
 function discoverWorkflows() {
-  console.log("🧠 Discovering workflows automatically...");
+console.log("🧠 Discovering organization capabilities...");
 
-  const result = run(`gh workflow list --json name,path`);
+const list = run("gh workflow list --json name,path");
+const parsed = JSON.parse(list);
 
-  if (!result) {
-    console.log("⚠ Unable to read workflows");
-    return;
-  }
+workflows = parsed
+.filter(wf =>
+!wf.path.includes("operator.yml") &&
+!wf.name.includes("Operator")
+)
+.map(wf => wf.name);
 
-  const parsed = JSON.parse(result);
-
-  workflows = parsed
-    .filter(wf => !wf.path.includes("operator.yml"))
-    .map(wf => wf.name);
-
-  console.log("✅ Workflows found:", workflows);
+console.log("✅ Divisions Online:", workflows);
 }
-
-/*
-============================
-DISPATCH WORKFLOW
-============================
-*/
 
 function dispatch(workflow) {
-  console.log(`🚀 Dispatching ${workflow}`);
-
-  run(`
-    gh workflow run "${workflow}" --ref main
-  `);
+try {
+console.log(`🚀 Executing division → ${workflow}`);
+run(`gh workflow run "${workflow}"`);
+} catch (e) {
+console.log("Skipped workflow:", workflow);
+}
 }
 
-/*
-============================
-AUTONOMOUS ANALYSIS
-============================
+# /*
+
+# EXECUTIVE ANALYSIS
+
 */
 
-function analyzeRepoHealth() {
-  console.log("🔎 Checking repo health...");
-
-  const status = run("git status --porcelain");
-
-  if (status.trim().length > 0) {
-    createIssue("Repository changes detected requiring review");
-  }
-}
-
 function analyzeWebsite() {
-  console.log("🌐 Checking website availability...");
+console.log("🌐 Checking revenue surface...");
 
-  try {
-    run(`curl -Is ${SITE}`);
-    console.log("✅ Website reachable");
-  } catch {
-    createIssue("Website appears unreachable");
-  }
+try {
+run(`curl -Is ${SITE}`);
+console.log("✅ Website reachable");
+} catch {
+createIssue("🚨 Website unavailable — revenue loss risk");
+}
 }
 
-/*
-============================
-SELF MANAGEMENT
-============================
+function analyzeRepoHealth() {
+console.log("🔎 Evaluating operational stability...");
+
+const status = run("git status --porcelain");
+
+if (status.trim().length > 0) {
+createIssue("⚠ Pending changes detected requiring review");
+}
+}
+
+# /*
+
+# SELF-MANAGEMENT
+
 */
 
 function createIssue(title) {
-  console.log(`📌 Creating Issue: ${title}`);
+console.log("📌 Executive Issue:", title);
+
+try {
+run(`       gh issue create \       --title "${title}" \       --body "Created automatically by Hardline Executive AI."
+    `);
+} catch {
+console.log("Issue creation skipped");
+}
+}
+
+# /*
+
+# SAFE EXECUTIVE IMPROVEMENT ENGINE
+
+*/
+
+function revenueDecisions() {
+console.log("💰 Running Revenue Optimization Protocol");
+
+const improvements = [
+{
+title: "Improve CTA visibility",
+file: "index.html",
+change: "<!-- EXECUTIVE AI: stronger primary CTA -->"
+},
+{
+title: "Increase trust signals",
+file: "index.html",
+change: "<!-- EXECUTIVE AI: add testimonials / guarantees -->"
+},
+{
+title: "Clarify pricing",
+file: "pricing.html",
+change: "<!-- EXECUTIVE AI: simplified pricing explanation -->"
+}
+];
+
+improvements.forEach(improvement => {
+try {
+
+```
+  if (!fs.existsSync(improvement.file)) {
+    console.log("Skipped missing file:", improvement.file);
+    return;
+  }
+
+  fs.appendFileSync(
+    improvement.file,
+    `\n${improvement.change}\n`
+  );
+
+  const branch = `${BRANCH_PREFIX}-${Date.now()}`;
+
+  run(`git config user.name "Hardline Executive AI"`);
+  run(`git config user.email "ai@hardlineprivacy.com"`);
+
+  run(`git checkout -b ${branch}`);
+  run(`git add .`);
+  run(`git commit -m "Executive Optimization: ${improvement.title}"`);
+  run(`git push origin ${branch}`);
 
   run(`
-    gh issue create \
-    --title "${title}" \
-    --body "Created automatically by Hardline Autonomous Operator."
+    gh pr create \
+    --title "Executive Optimization: ${improvement.title}" \
+    --body "Autonomous revenue improvement proposed by Executive AI."
   `);
+
+  run(`git checkout main`);
+
+  console.log("✅ Executive upgrade proposed");
+
+} catch (e) {
+  console.log("Skipped improvement:", e.message);
+}
+```
+
+});
 }
 
-/*
-============================
-SELF IMPROVEMENT ENGINE
-============================
+# /*
+
+# EXECUTIVE COMMAND LOOP
+
 */
 
-function selfImprove() {
-  console.log("🧠 Running Self-Improvement Engine");
+function runExecutiveCycle() {
+console.log("👑 Executive Cycle Started");
 
-  const improvements = [
-    {
-      title: "Improve SEO meta descriptions",
-      file: "index.html",
-      change: "<!-- AI Suggestion: Improve meta descriptions for SEO -->"
-    },
-    {
-      title: "Add trust signals section",
-      file: "index.html",
-      change: "<!-- AI Suggestion: Add testimonials / authority badges -->"
-    }
-  ];
+discoverWorkflows();
+analyzeWebsite();
+analyzeRepoHealth();
 
-  improvements.forEach(improvement => {
-    try {
-      if (!fs.existsSync(improvement.file)) return;
+workflows.forEach(dispatch);
 
-      console.log(`✨ Improving: ${improvement.title}`);
+revenueDecisions();
 
-      fs.appendFileSync(
-        improvement.file,
-        `\n${improvement.change}\n`
-      );
-
-      run(`git config user.name "Hardline AI Operator"`);
-      run(`git config user.email "ai@hardlineprivacy.com"`);
-
-      const branch = `ai-improvement-${Date.now()}`;
-
-      run(`git checkout -b ${branch}`);
-      run(`git add .`);
-      run(`git commit -m "AI Improvement: ${improvement.title}"`);
-      run(`git push origin ${branch}`);
-
-      run(`
-        gh pr create \
-        --title "AI Improvement: ${improvement.title}" \
-        --body "Automatically generated improvement by Hardline Autonomous Operator." \
-        --head ${branch}
-      `);
-
-    } catch (e) {
-      console.log("⚠ Skipped improvement:", e.message);
-    }
-  });
+console.log("✅ Executive Cycle Complete");
 }
 
-/*
-============================
-AUTONOMOUS DECISION ENGINE
-============================
-*/
-
-function runOperatorCycle() {
-  console.log("⚙ Running autonomous cycle");
-
-  analyzeRepoHealth();
-  analyzeWebsite();
-
-  discoverWorkflows();
-
-  workflows.forEach(dispatch);
-
-  selfImprove();
-
-  console.log("✅ Autonomous cycle complete");
-}
-
-/*
-============================
-START OPERATOR
-============================
-*/
-
-runOperatorCycle();
+runExecutiveCycle();
