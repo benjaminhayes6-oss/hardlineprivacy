@@ -1,0 +1,10 @@
+name: intelligence
+
+on:
+  workflow_dispatch:
+
+jobs:
+  intelligence:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Intelligence Engine Active"
