@@ -1,0 +1,30 @@
+name: Hardline AI Executive Brain
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"
+  workflow_dispatch:
+
+jobs:
+  executive:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      issues: write
+      actions: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: sudo apt-get update && sudo apt-get install gh -y
+
+      - name: Authenticate GH
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Activate Executive Brain
+        run: node ai/executive-brain.js
