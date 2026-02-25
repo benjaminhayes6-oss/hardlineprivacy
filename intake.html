@@ -1,77 +1,80 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Secure Intake | Hardline Privacy</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #0b1d2a;
-      color: white;
-      padding: 40px;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      border-radius: 6px;
-      border: none;
-    }
-    button {
-      width: 100%;
-      padding: 14px;
-      background-color: #2bd0a4;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
-  </style>
+<title>Client Intake | Hardline Privacy</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="description" content="Start with a free exposure scan and then complete intake details for removal workflows."/>
+<meta name="robots" content="index,follow"/>
+<meta property="og:title" content="Client Intake | Hardline Privacy"/>
+<meta property="og:description" content="Start with a free exposure scan and then complete intake details for removal workflows."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://www.hardlineprivacy.com/intake"/>
+<meta property="og:image" content="https://www.hardlineprivacy.com/assets/images/hardline-privacy-og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Client Intake | Hardline Privacy"/>
+<meta name="twitter:description" content="Start with a free exposure scan and then complete intake details for removal workflows."/>
+<meta name="twitter:image" content="https://www.hardlineprivacy.com/assets/images/hardline-privacy-og.png"/>
+<link rel="canonical" href="https://www.hardlineprivacy.com/intake"/>
+<link rel="icon" href="/favicon.png"/>
+<link rel="preload" as="image" href="/assets/images/logo-light.png" fetchpriority="high"/>
+<link rel="stylesheet" href="/assets/css/styles.364.css"/>
 </head>
-<body>
-  <div class="container">
-    <h1>You’re Protected. Let’s Get Started.</h1>
-    <p>Please complete your secure intake form below. Most clients finish in under 3 minutes.</p>
-
-    <form name="intake" method="POST" data-netlify="true" action="/intake-success.html">
-      <input type="hidden" name="form-name" value="intake" />
-
-      <label>Full Name</label>
-      <input type="text" name="full_name" required />
-
-      <label>City & State</label>
-      <input type="text" name="location" required />
-
-      <label>Date of Birth</label>
-      <input type="text" name="dob" required />
-
-      <label>Phone Number</label>
-      <input type="text" name="phone" />
-
-      <label>Email Address</label>
-      <input type="email" name="email" required />
-
-      <label>Past Addresses (if known)</label>
-      <textarea name="past_addresses"></textarea>
-
-      <button type="submit">Submit Secure Intake</button>
-    </form>
-
-    <p style="margin-top:30px;font-size:14px;">
-      Your information is used solely for removal processing and is never sold or shared.
-    </p>
+<body data-consent-version="2026-02-16">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="nav" role="banner">
+  <div class="nav-bar">
+    <a class="logo" href="/" aria-label="Hardline Privacy home"><img class="brand-logo" src="/assets/images/logo-light.png" alt="Hardline Privacy" decoding="async" fetchpriority="high"/></a>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/founder">Founder</a>
+      <a href="/services">Services</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/resources">Resources</a>
+      <a class="btn primary" href="/scan">Run Free Exposure Scan</a>
+    </nav>
   </div>
+</header>
+<main id="main">
+<section class="hero">
+  <div class="container">
+    <h1 class="h1">Client Intake</h1>
+    <p class="sub">Start with a free exposure scan and then complete intake details for removal workflows.</p>
+    <div class="btnrow">
+      <a class="btn primary" href="/scan">Run Free Exposure Scan</a>
+      <a class="btn outline" href="/pricing">View Protection Plans</a>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <h2>Recommended next step</h2>
+    <p class="sub" style="max-width:720px">Use the scan to see where personal information is visible, then choose a plan for verified removals and ongoing monitoring.</p>
+  </div>
+</section>
+</main>
+<footer role="contentinfo">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="logo" href="/" aria-label="Hardline Privacy home"><img src="/assets/images/logo-light.png" alt="Hardline Privacy" decoding="async" loading="lazy" fetchpriority="low"/></a>
+    </div>
+    <div class="footer-links">
+      <a href="/faq">FAQ</a>
+      <a href="/trust">Trust &amp; Security</a>
+      <a href="/data-brokers">Data Brokers</a>
+      <a href="/about">About</a>
+      <a href="/founder">Founder</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <div class="footer-contact">Hardline Privacy · Nashville, TN · support@hardlineprivacy.com</div>
+    <small>© 2026 Hardline Privacy. All rights reserved.</small>
+  </div>
+</footer>
+<script src="/assets/js/main.364.js" type="module" defer></script>
 </body>
 </html>
