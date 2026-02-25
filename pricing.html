@@ -2,447 +2,225 @@
 <html lang="en">
 <head>
 <title>Pricing | Hardline Privacy</title>
+
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<meta name="description" content="Pricing for household privacy plans that reduce public listings across data brokers and monitor for re-listings over time."/>
+
+<meta name="description" content="Choose a Hardline Privacy protection plan. Remove exposed personal data and keep it from coming back with continuous monitoring."/>
+
 <meta name="robots" content="index,follow"/>
+<link rel="canonical" href="https://www.hardlineprivacy.com/pricing"/>
+
 <meta property="og:title" content="Pricing | Hardline Privacy"/>
-<meta property="og:description" content="Pricing for household privacy plans that reduce public listings across data brokers and monitor for re-listings over time."/>
+<meta property="og:description" content="Simple protection plans for removing and monitoring personal data exposure."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://www.hardlineprivacy.com/pricing"/>
 <meta property="og:image" content="https://www.hardlineprivacy.com/assets/images/hardline-privacy-og.png"/>
+
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Pricing | Hardline Privacy"/>
-<meta name="twitter:description" content="Pricing for household privacy plans that reduce public listings across data brokers and monitor for re-listings over time."/>
+<meta name="twitter:description" content="Protect your household from public exposure."/>
 <meta name="twitter:image" content="https://www.hardlineprivacy.com/assets/images/hardline-privacy-og.png"/>
-<link rel="canonical" href="https://www.hardlineprivacy.com/pricing"/>
+
 <link rel="icon" href="/favicon.png"/>
-<link rel="preload" as="image" href="/assets/images/logo-light.png" fetchpriority="high"/>
 <link rel="stylesheet" href="/assets/css/styles.364.css"/>
 
 <style>
-  /* Layout */
-  .pricing-grid {
-    display: flex;
-    gap: 1.5rem;
-    align-items: stretch;
-    flex-wrap: wrap;
-  }
-
-  .pricing-card {
-    flex: 1 1 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: #0f172a;
-    border: 1px solid #1e293b;
-    border-radius: 16px;
-    padding: 20px;
-    color: #e2e8f0;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-    margin-bottom: 28px;
-  }
-
-  .pricing-card.popular {
-    border-color: #22d3ee;
-    box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.35), 0 10px 24px rgba(0, 0, 0, 0.35);
-    position: relative;
-  }
-
-  .popular-badge {
-    position: absolute;
-    top: -12px;
-    right: 16px;
-    background: #22d3ee;
-    color: #0b1220;
-    font-weight: 700;
-    font-size: 12px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    letter-spacing: 0.02em;
-  }
-
-  .card-header h3 {
-    margin: 0 0 6px 0;
-    font-size: 18px;
-    color: #cbd5e1;
-    font-weight: 700;
-  }
-
-  .price {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-  .price .amount {
-    font-size: 32px;
-    font-weight: 800;
-    color: #ffffff;
-  }
-  .price .term {
-    font-size: 14px;
-    color: #94a3b8;
-  }
-
-  .subtitle {
-    color: #9aa7bd;
-    font-size: 13px;
-    margin-bottom: 14px;
-    line-height: 1.4;
-  }
-
-  .features {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 12px 0;
-  }
-  .features li {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    margin: 8px 0;
-    color: #cbd5e1;
-    font-size: 14px;
-  }
-  .features .feature-icon {
-    flex: 0 0 auto;
-    color: #34d399;
-    margin-top: 2px;
-  }
-  .fineprint {
-    color: #94a3b8;
-    font-size: 12px;
-    margin-top: 8px;
-  }
-
-  .group-note {
-    margin: 0 0 18px 0;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(34, 211, 238, 0.35);
-    background: rgba(34, 211, 238, 0.12);
-    color: #e2e8f0;
-    font-size: 14px;
-  }
-  .group-note a {
-    color: #22d3ee;
-    font-weight: 700;
-  }
-  .pricing-highlights {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin: 18px 0;
-  }
-  .pricing-highlight {
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 12px;
-    padding: 14px 16px;
-    background: rgba(255,255,255,.03);
-  }
-  .pricing-highlight .amount {
-    font-size: 24px;
-    font-weight: 800;
-    color: #ffffff;
-  }
-  .pricing-highlight .label {
-    font-size: 13px;
-    color: #cbd5e1;
-    margin-top: 6px;
-  }
-  .compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 14px;
-    font-size: 14px;
-  }
-  .compare-table th,
-  .compare-table td {
-    border: 1px solid rgba(255,255,255,.08);
-    padding: 10px 12px;
-    text-align: left;
-  }
-  .compare-table th {
-    background: rgba(255,255,255,.04);
-    color: #e2e8f0;
-    font-weight: 700;
-  }
-  .compare-table td {
-    color: #cbd5e1;
-  }
-
-  .card-footer {
-    margin-top: auto;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    padding-top: 14px;
-  }
-
-  .btn {
-    appearance: none;
-    border: 0;
-    border-radius: 999px;
-    padding: 10px 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.03s ease, box-shadow 0.2s ease, background 0.2s ease;
-    white-space: nowrap;
-  }
-  .btn:active { transform: translateY(1px); }
-
-  .btn-primary {
-    background: #22d3ee;
-    color: #0b1220;
-    box-shadow: 0 4px 16px rgba(34, 211, 238, 0.35);
-  }
-  .btn-primary:hover {
-    background: #06b6d4;
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: #e2e8f0;
-    border: 1px solid #334155;
-  }
-  .btn-secondary:hover {
-    border-color: #64748b;
-  }
-
-  /* Small tweaks for tighter layouts */
-  @media (max-width: 860px) {
-    .pricing-grid { gap: 1rem; }
-    .pricing-highlights { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 768px) {
-    .pricing-card { margin-bottom: 36px; }
-  }
+.pricing-grid{display:flex;gap:1.5rem;flex-wrap:wrap}
+.pricing-card{flex:1 1 300px;background:#0f172a;border:1px solid #1e293b;border-radius:16px;padding:22px;color:#e2e8f0;display:flex;flex-direction:column}
+.pricing-card.popular{border-color:#22d3ee;box-shadow:0 0 0 2px rgba(34,211,238,.35)}
+.popular-badge{position:absolute;top:-12px;right:16px;background:#22d3ee;color:#0b1220;font-weight:700;padding:6px 10px;border-radius:999px;font-size:12px}
+.price{display:flex;align-items:baseline;gap:6px;margin-bottom:10px}
+.price .amount{font-size:34px;font-weight:800;color:#fff}
+.price .term{font-size:14px;color:#94a3b8}
+.features{list-style:none;padding:0;margin:14px 0}
+.features li{margin:8px 0;font-size:14px;color:#cbd5e1}
+.card-footer{margin-top:auto}
+.btn-primary{background:#22d3ee;color:#0b1220;border-radius:999px;padding:10px 16px;font-weight:700}
+.hero-note{margin-top:12px;color:#94a3b8;font-size:13px}
+.guarantee{margin-top:18px;font-size:14px;color:#cbd5e1}
 </style>
 </head>
-<body data-consent-version="2026-02-16" data-checkout-token="REPLACE_WITH_CHECKOUT_TOKEN">
-<a class="skip-link" href="#main">Skip to main content</a>
-<header class="nav" role="banner">
-  <div class="nav-bar">
-    <a class="logo" href="/" aria-label="Hardline Privacy home"><img class="brand-logo" src="/assets/images/logo-light.png" alt="Hardline Privacy" decoding="async" fetchpriority="high"/></a>
-    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
-    <nav aria-label="Primary">
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-    <a href="/founder">Founder</a>
-    <a href="/services">Services</a>
-    <a href="/pricing">Pricing</a>
-    <a href="/resources">Resources</a>
-    <a class="btn primary" href="/scan">Run Free Exposure Scan</a>
-    </nav>
-  </div>
+
+<body>
+
+<header class="nav">
+<div class="nav-bar">
+<a class="logo" href="/"><img src="/assets/images/logo-light.png" alt="Hardline Privacy"/></a>
+<nav>
+<a href="/">Home</a>
+<a href="/about">About</a>
+<a href="/founder">Founder</a>
+<a href="/services">Services</a>
+<a href="/pricing">Pricing</a>
+<a href="/resources">Resources</a>
+<a class="btn primary" href="/scan">Run Free Exposure Scan</a>
+</nav>
+</div>
 </header>
 
-<main id="main">
+<main>
+
+<!-- HERO -->
 <section class="hero">
-  <div class="container">
-    <h1 class="h1">Protect your household from public exposure</h1>
-    <p class="sub">Designed for families managing exposure for children and older adults. We reduce listings across data brokers, submit opt‑out requests, and monitor for re‑listings over time.</p>
-    <div class="btnrow">
-      <a class="btn primary" href="/scan">Run Free Exposure Scan</a>
-      <a class="btn outline" href="#plans">See Plans</a>
-    </div>
-    <div class="small">No credit card required • Takes less than 60 seconds</div>
-    <div class="note">All plans include secure handling of your information. No ads. No data resale.</div>
-    <div class="small">Veteran‑founded and led by Grey • Human‑verified removals • Operational security discipline</div>
-  </div>
+<div class="container">
+
+<h1 class="h1">Choose Your Privacy Protection</h1>
+
+<p class="sub">
+Hardline Privacy removes exposed personal data and continuously monitors
+for re-exposure so your information stays private.
+</p>
+
+<div class="hero-note">
+✓ Veteran-Founded • ✓ Human-Verified Removals • ✓ No Data Resale • ✓ Cancel Anytime
+</div>
+
+<div class="btnrow">
+<a class="btn primary" href="/scan">Run Free Exposure Scan</a>
+<a class="btn outline" href="#plans">Compare Plans</a>
+</div>
+
+</div>
 </section>
 
-<section id="plans" aria-labelledby="pricing-heading" style="max-width: 1100px; margin: 0 auto; padding: 24px 16px;">
-  <h2 id="pricing-heading" style="color:#e2e8f0; font-size:22px; margin: 0 0 18px 0;">Choose your protection level</h2>
-  <div class="callout">
-    <h3 style="margin:0 0 10px 0">Simple, clear pricing</h3>
-    <div class="pricing-highlights">
-      <div class="pricing-highlight">
-        <div class="amount">$149</div>
-        <div class="label">One-Time Removal</div>
-      </div>
-      <div class="pricing-highlight">
-        <div class="amount">$30/month</div>
-        <div class="label">Ongoing Monitoring</div>
-      </div>
-      <div class="pricing-highlight">
-        <div class="amount">$300</div>
-        <div class="label">You + 1</div>
-      </div>
-    </div>
-    <div class="small">No contracts. Cancel anytime.</div>
-    <table class="compare-table" aria-label="Plan comparison table">
-      <thead>
-        <tr>
-          <th scope="col">Plan</th>
-          <th scope="col">Best for</th>
-          <th scope="col">Monitoring</th>
-          <th scope="col">Coverage</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>One-Time Removal</td>
-          <td>Single cleanup</td>
-          <td>Not included</td>
-          <td>Household opt-outs where available</td>
-        </tr>
-        <tr>
-          <td>Ongoing Monitoring</td>
-          <td>Ongoing protection</td>
-          <td>Monthly alerts + re-scans</td>
-          <td>Household monitoring across major brokers</td>
-        </tr>
-        <tr>
-          <td>You + 1</td>
-          <td>Two-person coverage</td>
-          <td>Included</td>
-          <td>Expanded broker coverage + priority handling</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="group-note">
-    Companies and agencies seeking group pricing can request a custom quote in the <a href="/contact">quote section</a>.
-  </div>
-  <div class="group-note" style="border-color:rgba(96,165,250,.35);background:rgba(96,165,250,.12)">
-    <strong>Before continuing:</strong> Please review the plan terms below and confirm your agreement to the Terms of Service and Privacy Policy.
-    <div style="margin-top:10px">
-      <label>
-        <input type="checkbox" id="purchaseConsent" data-consent-checkbox/>
-        I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.
-      </label>
-      <div id="purchaseConsentError" class="consent-error" role="alert" aria-live="polite"></div>
-    </div>
-  </div>
-  <div class="fineprint" style="margin: 0 0 18px 0;">Household coverage can include immediate family members living at the same address (where applicable). Coverage varies by source and verification requirements.</div>
+<!-- PLANS -->
+<section id="plans" class="section">
+<div class="container">
 
-  <div class="pricing-grid">
-    <article class="pricing-card" id="tier-one" aria-label="Clean Sweep">
-      <header class="card-header">
-        <h3>Clean Sweep</h3>
-        <div class="price">
-          <div class="amount">$149</div>
-          <div class="term">one-time</div>
-        </div>
-        <p class="subtitle">Best for a single household cleanup. We submit removals where available and provide next steps for families protecting children and aging parents.</p>
-      </header>
+<h2>Simple Protection Plans</h2>
 
-      <ul class="features">
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Household-focused removals across major broker sources (where available)</li>
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Opt‑out submissions and verification steps for family members</li>
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Search engine and map removal requests (when applicable)</li>
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Clear next‑step guidance for monitoring re‑listings</li>
-      </ul>
+<div class="pricing-grid">
 
-      <div class="fineprint">Typical timelines: 7-21 days depending on the site.</div>
+<!-- CLEAN SWEEP -->
+<article class="pricing-card">
+<h3>Clean Sweep</h3>
 
-      <div class="card-footer">
-        <a class="btn btn-primary" href="https://buy.stripe.com/fZudR138saXV3F06rJcjS02" aria-label="Start Clean Sweep" data-consent-target="purchaseConsent" data-consent-error="purchaseConsentError">Start Clean Sweep</a>
-      </div>
-    </article>
+<div class="price">
+<div class="amount">$149</div>
+<div class="term">one-time</div>
+</div>
 
-    <article class="pricing-card popular" id="tier-sub" aria-label="Active Monitoring">
-      <div class="popular-badge" aria-hidden="true">MOST POPULAR</div>
+<p>Best for a single cleanup of exposed listings.</p>
 
-      <header class="card-header">
-        <h3>Active Monitoring</h3>
-        <div class="price">
-          <div class="amount">$30</div>
-          <div class="term">monthly</div>
-        </div>
-        <p class="subtitle">Best for households. Ongoing monitoring and re‑submissions when listings reappear.</p>
-      </header>
+<ul class="features">
+<li>✓ Verified data broker removals</li>
+<li>✓ Search engine removal requests</li>
+<li>✓ Household guidance report</li>
+<li>✓ Human-verified submission process</li>
+</ul>
 
-      <ul class="features">
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Everything in One‑Time Cleanup</li>
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Household monitoring across major data brokers</li>
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Re‑submissions when listings reappear</li>
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Monthly alerts + quarterly re‑scans for household members</li>
-      </ul>
+<div class="card-footer">
+<a class="btn-primary" href="https://buy.stripe.com/fZudR138saXV3F06rJcjS02">
+Start Clean Sweep
+</a>
+</div>
+</article>
 
-      <div class="card-footer">
-        <a class="btn btn-primary" href="https://buy.stripe.com/9B614fcJ28PNejE03lcjS00" aria-label="Start Active Monitoring" data-consent-target="purchaseConsent" data-consent-error="purchaseConsentError">Start Active Monitoring</a>
-      </div>
-    </article>
+<!-- ACTIVE MONITORING -->
+<article class="pricing-card popular" style="position:relative">
+<div class="popular-badge">MOST POPULAR</div>
 
-    <article class="pricing-card" id="tier-pro" aria-label="Full Coverage">
-      <header class="card-header">
-        <h3>Full Coverage</h3>
-<p class="small"><strong>Includes you + 1 additional person</strong></p>
-        <div class="price">
-          <div class="amount">$300</div>
-          <div class="term">annual</div>
-        </div>
-        <p class="subtitle">Best for families managing children + aging parents. Priority handling, deeper broker coverage, and monitoring for re‑listings.</p>
-      </header>
+<h3>Active Monitoring</h3>
 
-      <ul class="features">
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Expanded broker coverage (700+ sites)</li>
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Priority handling + verification follow‑ups</li>
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0L3.3 10a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Deeper household coverage for children and older adults</li>
-        <li><svg class="feature-icon" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.7 6.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 1 1 1.4-1.4l3.1 3.1 6.5-6.4a1 1 0 0 1 1.4 0z" fill="currentColor"/></svg>Ongoing monitoring and re‑listing support</li>
-      </ul>
+<div class="price">
+<div class="amount">$30</div>
+<div class="term">monthly</div>
+</div>
 
-      <div class="fineprint">Common for: households with elevated exposure or public‑facing roles.</div>
+<p>Ongoing privacy protection and re-listing removal.</p>
 
-      <div class="card-footer">
-        <a class="btn btn-primary" href="https://buy.stripe.com/14AdR19wQc1Z0sOg2jcjS05" aria-label="Start Full Coverage" data-consent-target="purchaseConsent" data-consent-error="purchaseConsentError">Start Full Coverage</a>
-      </div>
-    </article>
-  </div>
+<ul class="features">
+<li>✓ Everything in Clean Sweep</li>
+<li>✓ Continuous monitoring</li>
+<li>✓ Re-submission when data returns</li>
+<li>✓ Monthly alerts + quarterly scans</li>
+</ul>
 
-  <div class="callout" style="margin-top:18px">
-    <h3>Not sure which plan you need?</h3>
-    <p class="sub">Run a free exposure scan first, then return to select the right protection level.</p>
-    <div class="btnrow">
-      <a class="btn primary" href="/scan">Run Free Exposure Scan</a>
-      <a class="btn outline" href="/trust">Trust &amp; Security</a>
-    </div>
-  </div>
+<div class="card-footer">
+<a class="btn-primary" href="https://buy.stripe.com/9B614fcJ28PNejE03lcjS00">
+Start Active Monitoring
+</a>
+</div>
+</article>
 
-  <div class="section" style="border-top:none; padding-top:28px">
-    <h3>Plan terms in plain English</h3>
-    <div class="cards">
-      <div class="card"><b>Renewal</b><br/><span class="muted">Monthly plans renew automatically each month until you cancel.</span></div>
-      <div class="card"><b>Cancellation</b><br/><span class="muted">Cancel any time before your next billing date to avoid renewal.</span></div>
-      <div class="card"><b>What’s included</b><br/><span class="muted">Opt‑outs, follow‑ups, and monitoring (if subscribed). No ads or data resale.</span></div>
-      <div class="card"><b>What’s not included</b><br/><span class="muted">Hardline Privacy cannot guarantee removal outcomes or processing speeds. Data brokers, people‑search sites, and public‑record aggregators each maintain their own systems, legal requirements, update schedules, and identity‑verification workflows. Some immediately honor opt‑out requests; others operate on 30‑, 60‑, or even 90‑day cycles, and many automatically repopulate their databases from refreshed public‑record sources. Because these systems are governed entirely by third‑party operators, results and timelines are outside our control.</span></div>
-    </div>
-  </div>
+<!-- FULL COVERAGE -->
+<article class="pricing-card">
+<h3>Full Coverage</h3>
 
-  </div>
+<div class="price">
+<div class="amount">$300</div>
+<div class="term">annual</div>
+</div>
+
+<p>Best for families or higher exposure individuals.</p>
+
+<ul class="features">
+<li>✓ Coverage for you + 1 person</li>
+<li>✓ Expanded broker coverage</li>
+<li>✓ Priority handling</li>
+<li>✓ Continuous monitoring support</li>
+</ul>
+
+<div class="card-footer">
+<a class="btn-primary" href="https://buy.stripe.com/14AdR19wQc1Z0sOg2jcjS05">
+Start Full Coverage
+</a>
+</div>
+</article>
+
+</div>
+
+<div class="guarantee">
+<strong>30-Day Satisfaction Guarantee.</strong>
+If you're not satisfied, contact support and we’ll make it right.
+</div>
+
+</div>
 </section>
+
+<!-- DECISION CTA -->
+<section class="section">
+<div class="container callout" style="text-align:center">
+
+<h2>Not Sure Which Plan You Need?</h2>
+
+<p class="sub">
+Run a free exposure scan first and we’ll recommend the right protection level.
+</p>
+
+<a class="btn primary" href="/scan">Run Free Exposure Scan</a>
+
+</div>
+</section>
+
 </main>
 
-<footer role="contentinfo">
-  <div class="container footer-grid">
-    <div class="footer-brand">
-      <a class="logo" href="/" aria-label="Hardline Privacy home"><img src="/assets/images/logo-light.png" alt="Hardline Privacy" decoding="async" loading="lazy" fetchpriority="low"/></a>
-    </div>
-    <div class="footer-links">
-      <a href='/faq'>FAQ</a>
+<footer>
+<div class="container footer-grid">
+<div>
+<img src="/assets/images/logo-light.png" width="160"/>
+</div>
 
-      <a href="/trust">Trust &amp; Security</a>
+<div class="footer-links">
+<a href="/trust">Trust & Security</a>
+<a href="/privacy">Privacy</a>
+<a href="/terms">Terms</a>
+<a href="/contact">Contact</a>
+</div>
 
-      <a href="/data-brokers">Data Brokers</a>
-      <a href="/about">About</a>
-    <a href="/founder">Founder</a>
-      <a href="/privacy">Privacy</a>
-      <a href="/terms">Terms</a>
-      <a href="/cookies">Cookies</a>
-      <a href="/contact">Contact</a>
-    </div>
-    <div class="footer-contact">Hardline Privacy · Nashville, TN · support@hardlineprivacy.com</div>
-    <small>© 2026 Hardline Privacy. All rights reserved.</small>
-  </div>
+<div class="footer-contact">
+Hardline Privacy · Nashville, TN · support@hardlineprivacy.com
+</div>
+
+<small>© 2026 Hardline Privacy</small>
+
+</div>
 </footer>
 
 <script src="/assets/js/main.364.js" type="module" defer></script>
-<script src="/assets/js/reco.js" defer></script>
 
-<script async id="netlify-rum-container" src="/.netlify/scripts/rum" data-netlify-rum-site-id="b0bbea64-64e0-42d8-ac4f-b72b1f6410d0" data-netlify-deploy-branch="" data-netlify-deploy-context="production" data-netlify-cwv-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlX2lkIjoiYjBiYmVhNjQtNjRlMC00MmQ4LWFjNGYtYjcyYjFmNjQxMGQwIiwiYWNjb3VudF9pZCI6IjY5ODE1ZmQ1MTVmZDkzZDdkZTE3YmQxZSIsImRlcGxveV9pZCI6IjY5OWExYmMzMmY1MzMyZGRjYzgzOGJjYiIsImlzc3VlciI6Im5mc2VydmVyIn0.GCNl6giQ3DCM6gA-FjShVKrLzrBOhk0xsQCAQWbVFrk"></script></body>
+</body>
 </html>
 
 <!-- Executive AI: simplified pricing tiers -->
