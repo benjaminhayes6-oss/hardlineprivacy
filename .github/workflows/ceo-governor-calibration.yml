@@ -59,4 +59,3 @@ steps:
 
   - name: Calibration Complete
     run: echo "Hardline CEO Governance Active"
-```
