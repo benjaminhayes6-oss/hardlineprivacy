@@ -1,52 +1,52 @@
 name: Hardline CEO Governor Calibration
 
 on:
-workflow_dispatch:
-schedule:
-- cron: "*/10 * * * *"
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
 
 permissions:
-contents: read
-actions: write
+  contents: read
+  actions: write
 
 env:
-SITE_URL: "https://www.hardlineprivacy.com"
-CRITICAL_PAGES: "/ /pricing /scan /trust /about"
+  SITE_URL: "https://www.hardlineprivacy.com"
+  CRITICAL_PAGES: "/ /pricing /scan /trust /about"
 
 jobs:
-ceo-governor:
-runs-on: ubuntu-latest
+  ceo-governor:
+    runs-on: ubuntu-latest
 
-`
-steps:
-  - uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  - name: Validate Critical Pages
-    run: |
-      FAIL=0
-      for page in $CRITICAL_PAGES; do
-        STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL$page)
-        echo "$page -> $STATUS"
-        if [ "$STATUS" != "200" ]; then
-          FAIL=1
-        fi
-      done
+      - name: Validate Critical Pages
+        run: |
+          FAIL=0
+          for page in $CRITICAL_PAGES; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL$page)
+            echo "$page -> $STATUS"
+            if [ "$STATUS" != "200" ]; then
+              FAIL=1
+            fi
+          done
 
-      if [ "$FAIL" -eq 1 ]; then
-        echo "Site unstable — automation blocked."
-        exit 1
-      fi
+          if [ "$FAIL" -eq 1 ]; then
+            echo "Site unstable — automation blocked."
+            exit 1
+          fi
 
-  - name: Basic Stability Check
-    run: |
-      echo "Checking automation stability..."
-      sleep 5
-      echo "No automation storm detected."
+      - name: Basic Stability Check
+        run: |
+          echo "Checking automation stability..."
+          sleep 5
+          echo "No automation storm detected."
 
-  - name: CEO Approval Gate
-    run: |
-      echo "CEO Governor: System stable."
-      echo "Growth engines permitted."
+      - name: CEO Approval Gate
+        run: |
+          echo "CEO Governor: System stable."
+          echo "Growth engines permitted."
 
-  - name: Calibration Complete
-    run: echo "Hardline CEO Governance Active"
+      - name: Calibration Complete
+        run: echo "Hardline CEO Governance Active"
