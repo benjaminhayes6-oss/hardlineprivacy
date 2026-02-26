@@ -38,7 +38,7 @@ jobs:
             exit 1
           fi
 
-- name: Validate Pricing Visibility
+ name: Validate Pricing Visibility
   run: |
     PAGE=$(curl -s $SITE_URL/pricing)
 
