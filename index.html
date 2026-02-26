@@ -31,10 +31,46 @@ content="Hardline Privacy removes personal information from data brokers, people
 <script type="application/ld+json">
 {
  "@context":"https://schema.org",
- "@type":"Organization",
- "name":"Hardline Privacy",
- "url":"https://www.hardlineprivacy.com",
- "logo":"https://www.hardlineprivacy.com/assets/images/hardline-og-dark.png"
+ "@graph":[
+  {
+   "@type":"Organization",
+   "@id":"https://www.hardlineprivacy.com/#organization",
+   "name":"Hardline Privacy",
+   "url":"https://www.hardlineprivacy.com",
+   "logo":"https://www.hardlineprivacy.com/assets/images/hardline-og-dark.png",
+   "founder":{
+    "@id":"https://www.hardlineprivacy.com/#founder"
+   },
+   "location":{
+    "@type":"Country",
+    "name":"United States"
+   },
+   "areaServed":"United States"
+  },
+  {
+   "@type":"Person",
+   "@id":"https://www.hardlineprivacy.com/#founder",
+   "name":"Grey",
+   "jobTitle":"Founder",
+   "worksFor":{
+    "@id":"https://www.hardlineprivacy.com/#organization"
+   }
+  },
+  {
+   "@type":"Service",
+   "@id":"https://www.hardlineprivacy.com/#personal-data-removal",
+   "name":"Personal Data Removal",
+   "serviceType":"Personal Data Removal",
+   "provider":{
+    "@id":"https://www.hardlineprivacy.com/#organization"
+   },
+   "areaServed":"United States",
+   "serviceArea":{
+    "@type":"Country",
+    "name":"United States"
+   }
+  }
+ ]
 }
 </script>
 
@@ -109,6 +145,13 @@ No credit card required • Takes less than 60 seconds
 <h2>Founder-Led Accountability</h2>
 <p class="sub" style="max-width:520px">Hardline Privacy is led by Grey, a U.S. Military Veteran and law‑enforcement professional. Every removal request follows documented, human‑verified workflows.</p>
 <p class="sub" style="max-width:520px">The focus is disciplined exposure reduction and continuous monitoring, not automated scraping.</p>
+<div class="trust-signal" style="justify-content:flex-start">
+<span class="badge">Veteran Founded</span>
+<span class="badge">U.S.-Based Operations</span>
+<span class="badge">Human-Verified Removal Process</span>
+<span class="badge">No Automated Data Scraping</span>
+<span class="badge">Continuous Monitoring System</span>
+</div>
 <div class="btnrow" style="justify-content:flex-start">
 <a class="btn primary" href="/scan">Run Free Exposure Scan</a>
 <a class="btn outline" href="/founder">Meet the Founder</a>
@@ -154,7 +197,14 @@ No credit card required • Takes less than 60 seconds
 <section class="section trust-grid">
 <div class="container">
 
-<h2>Data Broker Removal Coverage</h2>
+<h2>Monitoring Across 700+ Data Sources</h2>
+<p class="sub">We actively track, verify, and monitor exposure across hundreds of data brokers, public record aggregators, and people-search platforms.</p>
+<ul class="features">
+<li><span class="feature-icon">✓</span>700+ data sources monitored</li>
+<li><span class="feature-icon">✓</span>Continuous re-scan system</li>
+<li><span class="feature-icon">✓</span>Ongoing removal verification</li>
+<li><span class="feature-icon">✓</span>Escalation follow-up workflows</li>
+</ul>
 
 <div class="badge-grid">
 <span class="badge-strong">Whitepages</span>
@@ -178,20 +228,20 @@ No credit card required • Takes less than 60 seconds
 
 <div class="stats-grid">
 <div class="stat-card">
-<div class="stat-value" data-stat-range="7-21" data-stat-suffix=" days">0</div>
-<div class="stat-label">Typical re‑listing window after an opt‑out attempt</div>
+<div class="stat-value" data-stat-range="18-18" data-stat-suffix=" Days">0</div>
+<div class="stat-label">Average Initial Removal Processing Window</div>
 </div>
 <div class="stat-card">
-<div class="stat-value" data-stat-range="120-260" data-stat-suffix="+">0</div>
-<div class="stat-label">Public source signals reviewed per monitoring sweep</div>
+<div class="stat-value" data-stat-range="147-147" data-stat-suffix="+ Sources">0</div>
+<div class="stat-label">Actively Reviewed Per Monitoring Sweep</div>
 </div>
 <div class="stat-card">
-<div class="stat-value" data-stat-range="28-35" data-stat-suffix=" days">0</div>
-<div class="stat-label">Average monitoring cadence for new exposure alerts</div>
+<div class="stat-value" data-stat-range="33-33" data-stat-suffix=" Days">0</div>
+<div class="stat-label">Average Re-Exposure Detection Cycle</div>
 </div>
 </div>
 
-<p class="stat-note">Ranges update each visit based on public data volatility. Individual results vary.</p>
+<p class="stat-note">Timelines vary based on exposure history and broker response times.</p>
 
 <div class="btnrow">
 <a class="btn primary" href="/scan">Run Free Exposure Scan</a>
@@ -225,6 +275,24 @@ No credit card required • Takes less than 60 seconds
 <p>We watch for re-listing and remove it again.</p>
 </div>
 
+</div>
+
+</div>
+</section>
+
+<!-- TRUST INFRASTRUCTURE -->
+
+<section class="section trust-bar">
+<div class="container">
+
+<h2>Built on Verified Privacy Infrastructure</h2>
+
+<div class="trust-bar-row">
+<span>700+ monitored sources</span>
+<span>Human-reviewed removal workflows</span>
+<span>Continuous monitoring system</span>
+<span>Secure HTTPS encrypted operations</span>
+<span>U.S.-based privacy operations</span>
 </div>
 
 </div>
@@ -287,7 +355,7 @@ No credit card required • Takes less than 60 seconds
 <h2>30-Day Satisfaction Guarantee</h2>
 
 <p class="sub">
-If you are not satisfied within 30 days, we make it right.
+If you're not satisfied within 30 days, we make it right.
 No contracts. Cancel anytime.
 </p>
 
