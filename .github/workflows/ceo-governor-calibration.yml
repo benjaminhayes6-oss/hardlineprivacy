@@ -17,6 +17,7 @@ jobs:
 ceo-governor:
 runs-on: ubuntu-latest
 
+```
 steps:
   - uses: actions/checkout@v4
 
@@ -49,3 +50,4 @@ steps:
 
   - name: Calibration Complete
     run: echo "Hardline CEO Governance Active"
+```
