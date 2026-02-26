@@ -37,7 +37,6 @@ jobs:
             echo "Revenue risk detected."
             exit 1
           fi
-
  name: Validate Pricing Visibility
   run: |
     PAGE=$(curl -s $SITE_URL/pricing)
