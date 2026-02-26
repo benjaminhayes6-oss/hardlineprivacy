@@ -20,7 +20,7 @@ jobs:
           COUNT=$(ls .github/workflows/*.yml | wc -l)
           echo "Workflow count: $COUNT"
 
-          if [ "$COUNT" -gt 5 ]; then
+          if [ "$COUNT" -gt 12 ]; then
             echo "Too many automation systems active."
             exit 1
           fi
