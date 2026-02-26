@@ -1,0 +1,57 @@
+name: Hardline Revenue Commander
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # every 30 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  SITE_URL: "https://www.hardlineprivacy.com"
+  CRITICAL_REVENUE_PAGES: "/ /pricing /scan"
+
+jobs:
+  revenue-commander:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Revenue Pages
+        run: |
+          FAIL=0
+
+          for page in $CRITICAL_REVENUE_PAGES; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL$page)
+            echo "$page -> $STATUS"
+
+            if [ "$STATUS" != "200" ]; then
+              FAIL=1
+            fi
+          done
+
+          if [ "$FAIL" -eq 1 ]; then
+            echo "Revenue risk detected."
+            exit 1
+          fi
+
+      - name: Validate Pricing Visibility
+        run: |
+          PAGE=$(curl -s $SITE_URL/pricing)
+
+          echo "$PAGE" | grep -qi "checkout" || exit 1
+          echo "$PAGE" | grep -qi "Protect" || exit 1
+
+          echo "Pricing CTA detected."
+
+      - name: Validate Scan Funnel
+        run: |
+          PAGE=$(curl -s $SITE_URL/scan)
+
+          echo "$PAGE" | grep -qi "scan" || exit 1
+
+          echo "Lead funnel operational."
+
+      - name: Revenue Status
+        run: echo "Revenue Commander: All systems operational"
