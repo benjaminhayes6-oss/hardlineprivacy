@@ -39,14 +39,15 @@ jobs:
           fi
  name: Validate Pricing Visibility
   run: |
-    PAGE=$(curl -s $SITE_URL/pricing)
+  PAGE=$(curl -s $SITE_URL/pricing)
 
-    echo "$PAGE" | grep -Eiq "checkout|protect|start|subscribe|plan" || {
-      echo "No visible pricing CTA detected."
-      exit 1
-    }
+  echo "$PAGE" | grep -Eiq "checkout|protect|start|subscribe|plan" || {
+  echo "No visible pricing CTA detected."
+  exit 1
+  }
 
-    echo "Pricing CTA detected."
+  echo "Pricing CTA detected."
+
 
       - name: Validate Scan Funnel
         run: |
