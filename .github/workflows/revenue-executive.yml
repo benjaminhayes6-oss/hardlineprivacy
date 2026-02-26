@@ -1,0 +1,53 @@
+name: Hardline Revenue Executive
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  revenue-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check primary CTA presence
+        run: |
+          curl -s https://www.hardlineprivacy.com > site.html
+
+          grep -qi "Run Free Exposure Scan" site.html || echo "CTA_MISSING=true" >> $GITHUB_ENV
+
+      - name: Verify pricing page exists
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://www.hardlineprivacy.com/pricing)
+          echo "Pricing status: $STATUS"
+
+          if [ "$STATUS" != "200" ]; then
+            echo "PRICING_FAIL=true" >> $GITHUB_ENV
+          fi
+
+      - name: Verify checkout visibility
+        run: |
+          curl -s https://www.hardlineprivacy.com/pricing > pricing.html
+
+          grep -qi "checkout" pricing.html || echo "CHECKOUT_MISSING=true" >> $GITHUB_ENV
+
+      - name: Revenue risk alert
+        if: env.CTA_MISSING == 'true' || env.PRICING_FAIL == 'true' || env.CHECKOUT_MISSING == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Revenue Executive Alert",
+              body: "Conversion or checkout elements may be missing. Review immediately."
+            });
+
+      - name: Revenue Executive Complete
+        run: echo "Revenue oversight active"
