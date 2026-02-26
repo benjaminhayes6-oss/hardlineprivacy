@@ -1,0 +1,49 @@
+name: Hardline Executive Governor Lock
+
+on:
+  workflow_run:
+    workflows: ["*"]
+    types:
+      - requested
+
+permissions:
+  actions: write
+  issues: write
+
+jobs:
+  governor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Detect excessive workflow executions
+        run: |
+          COUNT=$(gh run list --limit 20 | wc -l)
+          echo "Recent workflow runs: $COUNT"
+
+          if [ "$COUNT" -gt 15 ]; then
+            echo "LOCKDOWN=true" >> $GITHUB_ENV
+          fi
+
+      - name: Emergency Workflow Lockdown
+        if: env.LOCKDOWN == 'true'
+        run: |
+          echo "Too many executions detected — locking workflows."
+
+          gh workflow list --json id,name | jq -r '.[].id' | while read id; do
+            gh workflow disable $id || true
+          done
+
+      - name: Create Emergency Issue
+        if: env.LOCKDOWN == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Executive Governor Lock Activated",
+              body: "AI workflow execution spike detected. All workflows paused for safety."
+            });
+
+      - name: Governor Active
+        run: echo "Executive Governor monitoring active"
