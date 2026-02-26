@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 env:
-  TARGET_MONTHLY_REVENUE: "5000"
+  TARGET_MONTHLY_REVENUE: "10000"
   SITE_URL: "https://www.hardlineprivacy.com"
 
 jobs:
