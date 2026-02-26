@@ -2,7 +2,7 @@ name: Hardline Revenue Commander
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # every 30 minutes
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Check Revenue Pages
         run: |
           FAIL=0
@@ -54,4 +56,5 @@ jobs:
           echo "Lead funnel operational."
 
       - name: Revenue Status
-        run: echo "Revenue Commander: All systems operational"
+        run: |
+          echo "Revenue Commander: All systems operational"
