@@ -16,6 +16,8 @@ env:
 jobs:
   revenue-commander:
     runs-on: ubuntu-latest
+    environment:
+      name: production
 
     steps:
       - uses: actions/checkout@v4
