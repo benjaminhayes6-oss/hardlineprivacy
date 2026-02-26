@@ -19,44 +19,44 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
-  - name: Check Revenue Pages
-    run: |
-      FAIL=0
 
-      for page in $CRITICAL_REVENUE_PAGES; do
-        STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL$page)
-        echo "$page -> $STATUS"
+      - name: Check Revenue Pages
+        run: |
+          FAIL=0
 
-        if [ "$STATUS" != "200" ]; then
-          FAIL=1
-        fi
-      done
+          for page in $CRITICAL_REVENUE_PAGES; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL$page)
+            echo "$page -> $STATUS"
 
-      if [ "$FAIL" -eq 1 ]; then
-        echo "Revenue risk detected."
-        exit 1
-      fi
+            if [ "$STATUS" != "200" ]; then
+              FAIL=1
+            fi
+          done
 
-  - name: Validate Pricing Visibility
-    run: |
-      PAGE=$(curl -s $SITE_URL/pricing)
+          if [ "$FAIL" -eq 1 ]; then
+            echo "Revenue risk detected."
+            exit 1
+          fi
 
-      echo "$PAGE" | grep -Eiq "checkout|protect|start|subscribe|plan" || {
-        echo "No visible pricing CTA detected."
-        exit 1
-      }
+      - name: Validate Pricing Visibility
+        run: |
+          PAGE=$(curl -s $SITE_URL/pricing)
 
-      echo "Pricing CTA detected."
+          echo "$PAGE" | grep -Eiq "checkout|protect|start|subscribe|plan" || {
+            echo "No visible pricing CTA detected."
+            exit 1
+          }
 
-  - name: Validate Scan Funnel
-    run: |
-      PAGE=$(curl -s $SITE_URL/scan)
+          echo "Pricing CTA detected."
 
-      echo "$PAGE" | grep -iq "scan" || exit 1
+      - name: Validate Scan Funnel
+        run: |
+          PAGE=$(curl -s $SITE_URL/scan)
 
-      echo "Lead funnel operational."
+          echo "$PAGE" | grep -iq "scan" || exit 1
 
-  - name: Revenue Status
-    run: |
-      echo "Revenue Commander: All systems operational"
+          echo "Lead funnel operational."
+
+      - name: Revenue Status
+        run: |
+          echo "Revenue Commander: All systems operational"
