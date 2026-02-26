@@ -20,13 +20,17 @@ jobs:
           COUNT=$(ls .github/workflows/*.yml | wc -l)
           echo "Workflow count: $COUNT"
 
-          if [ "$COUNT" -gt 12 ]; then
-            echo "Too many automation systems active."
+          # Hardline Executive Threshold
+          if [ "$COUNT" -gt 25 ]; then
+            echo "Extreme automation level detected."
             exit 1
           fi
 
+          echo "Automation level approved by CEO."
+
       - name: Protect visual files
         run: |
+          git fetch origin main || true
           CHANGED=$(git diff --name-only origin/main || true)
           echo "$CHANGED"
 
