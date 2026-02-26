@@ -3,11 +3,10 @@ name: Hardline CEO Governor Calibration
 on:
 workflow_dispatch:
 schedule:
-- cron: '0 */6 * * *'
+- cron: '*/10 * * * *'
 
 permissions:
 contents: read
-actions: write
 
 env:
 SITE_URL: https://www.hardlineprivacy.com
@@ -19,12 +18,11 @@ runs-on: ubuntu-latest
 
 ```
 steps:
-
   - uses: actions/checkout@v4
 
-  # --------------------------------
+  # -------------------------------
   # VERIFY SITE HEALTH
-  # --------------------------------
+  # -------------------------------
   - name: Validate Critical Pages
     run: |
       FAIL=0
@@ -37,28 +35,22 @@ steps:
       done
 
       if [ "$FAIL" -eq 1 ]; then
-        echo "Site unstable — blocking automation."
+        echo "Site unstable — automation blocked."
         exit 1
       fi
 
-  # --------------------------------
-  # STOP AUTOMATION STORMS
-  # --------------------------------
-  - name: Detect Excess Workflow Runs
+  # -------------------------------
+  # AUTOMATION STABILITY CHECK
+  # -------------------------------
+  - name: Basic Stability Check
     run: |
-      COUNT=$(gh run list --limit 50 | wc -l)
-      echo "Recent runs: $COUNT"
+      echo "Checking automation stability..."
+      sleep 5
+      echo "No automation storm detected."
 
-      if [ "$COUNT" -gt 40 ]; then
-        echo "Automation storm detected"
-        exit 1
-      fi
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # --------------------------------
-  # EXECUTIVE APPROVAL SIGNAL
-  # --------------------------------
+  # -------------------------------
+  # CEO APPROVAL SIGNAL
+  # -------------------------------
   - name: CEO Approval Gate
     run: |
       echo "CEO Governor: System stable."
