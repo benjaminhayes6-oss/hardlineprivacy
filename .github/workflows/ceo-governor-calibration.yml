@@ -10,20 +10,17 @@ contents: read
 actions: write
 
 env:
-SITE_URL: https://www.hardlineprivacy.com
+SITE_URL: "https://www.hardlineprivacy.com"
 CRITICAL_PAGES: "/ /pricing /scan /trust /about"
 
 jobs:
 ceo-governor:
 runs-on: ubuntu-latest
 
-
+```
 steps:
   - uses: actions/checkout@v4
 
-  # -------------------------------
-  # VERIFY SITE HEALTH
-  # -------------------------------
   - name: Validate Critical Pages
     run: |
       FAIL=0
@@ -40,18 +37,12 @@ steps:
         exit 1
       fi
 
-  # -------------------------------
-  # AUTOMATION STABILITY CHECK
-  # -------------------------------
   - name: Basic Stability Check
     run: |
       echo "Checking automation stability..."
       sleep 5
       echo "No automation storm detected."
 
-  # -------------------------------
-  # CEO APPROVAL SIGNAL
-  # -------------------------------
   - name: CEO Approval Gate
     run: |
       echo "CEO Governor: System stable."
@@ -59,3 +50,4 @@ steps:
 
   - name: Calibration Complete
     run: echo "Hardline CEO Governance Active"
+```
