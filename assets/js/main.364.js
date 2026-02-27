@@ -157,16 +157,6 @@
     });
   }
 
-  function initStickyCta(){
-    if(document.querySelector('.sticky-cta')) return;
-    var cta=document.createElement('a');
-    cta.className='btn primary sticky-cta';
-    cta.href='/scan';
-    cta.setAttribute('aria-label','Run Free Exposure Scan');
-    cta.textContent='Run Free Exposure Scan';
-    document.body.appendChild(cta);
-  }
-
   function initDynamicStats(){
     document.querySelectorAll('[data-stat-range]').forEach(function(el){
       var range=(el.getAttribute('data-stat-range')||'').split('-').map(function(v){ return parseInt(v,10); });
@@ -193,6 +183,5 @@
   bindFormConsent();
   bindConsentLinks();
   applyCtaVariants();
-  initStickyCta();
   initDynamicStats();
 })();
