@@ -62,18 +62,18 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
 .nav nav .btn{font-size:15px}
 
 /* Mobile menu toggle */
-.menu-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px}
+.menu-toggle{display:none}
 .menu-toggle span{display:block;width:24px;height:2px;background:var(--ink);border-radius:2px;transition:transform .3s,opacity .3s}
 .menu-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
 .menu-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 @media(max-width:768px){
-  .menu-toggle{display:flex}
+  .menu-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;z-index:1001}
   .nav-bar{height:90px;padding:0 16px}
   .brand-logo,
   .nav-bar img{height:100px}
-  .nav nav{display:none;position:fixed;top:calc(env(safe-area-inset-top) + 90px);left:0;right:0;flex-direction:column;background:rgba(8,16,24,.96);padding:16px 20px;border-bottom:1px solid var(--border);gap:12px}
+  .nav nav{display:none;position:fixed;top:90px;left:0;right:0;flex-direction:column;background:#061b27;padding:20px;border-bottom:1px solid var(--border);gap:12px}
   .nav nav.open{display:flex}
   .hero{padding:48px 0 36px}
   .btnrow{flex-direction:column;align-items:stretch}

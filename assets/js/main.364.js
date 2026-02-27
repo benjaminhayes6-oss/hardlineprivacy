@@ -1,31 +1,37 @@
 /* Hardline Privacy – main.364.js */
+document.addEventListener("DOMContentLoaded", () => {
+
+  const toggle = document.querySelector(".menu-toggle");
+  const nav = document.querySelector("header nav");
+
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener("click", () => {
+    const expanded =
+      toggle.getAttribute("aria-expanded") === "true";
+
+    toggle.setAttribute("aria-expanded", !expanded);
+    nav.classList.toggle("open");
+  });
+
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      nav.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (nav.classList.contains("open")
+      && !nav.contains(event.target)
+      && !toggle.contains(event.target)) {
+      nav.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+  });
+});
+
 (function(){
-  /* Mobile menu toggle */
-  var toggle=document.querySelector('.menu-toggle');
-  var nav=toggle&&toggle.closest('.nav').querySelector('nav');
-  if(toggle&&nav){
-    toggle.addEventListener('click',function(){
-      var expanded=toggle.getAttribute('aria-expanded')==='true';
-      toggle.setAttribute('aria-expanded',String(!expanded));
-      nav.classList.toggle('open');
-    });
-
-    /* Auto-close nav when a link is tapped */
-    nav.querySelectorAll('a').forEach(function(link){
-      link.addEventListener('click',function(){
-        nav.classList.remove('open');
-        toggle.setAttribute('aria-expanded','false');
-      });
-    });
-
-    /* Close nav when tapping outside */
-    document.addEventListener('click',function(e){
-      if(nav.classList.contains('open')&&!nav.contains(e.target)&&!toggle.contains(e.target)){
-        nav.classList.remove('open');
-        toggle.setAttribute('aria-expanded','false');
-      }
-    });
-  }
 
   function getConsentVersion(){
     return document.body.getAttribute('data-consent-version') || '2026-02-16';
