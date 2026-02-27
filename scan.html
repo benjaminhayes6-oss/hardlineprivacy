@@ -64,7 +64,7 @@
 <h1 class="h1">Exposure Scanner</h1>
 
 <p class="sub">
-Enter your name, email, and state to discover what personal information may be publicly searchable online.
+Enter your name and state to discover what personal information may be publicly searchable online.
 </p>
 
 <form id="scanForm" class="callout">
@@ -72,10 +72,6 @@ Enter your name, email, and state to discover what personal information may be p
 <label>Full Name</label>
 <input id="fullName" required placeholder="Enter your full name"/>
 <div id="error-fullName" class="field-error" aria-live="polite"></div>
-
-<label>Email</label>
-<input id="email" type="email" required autocomplete="email" placeholder="Enter your email"/>
-<div id="error-email" class="field-error" aria-live="polite"></div>
 
 <label>State</label>
 <select id="state" required>
@@ -151,7 +147,7 @@ See protection options
 </div>
 
 <p class="small">
-Email is used to send scan updates and next steps. No data resale. Results reflect publicly discoverable listings.
+No signup required. Results visible instantly.
 </p>
 
 </form>
@@ -178,6 +174,33 @@ Every scan is designed to surface real public exposure across people‑search si
 
 <!-- SCAN RESULTS -->
 <div id="results" class="result-wrap"></div>
+
+<div id="postScanPrompt" class="callout post-scan" style="display:none">
+  <h2 style="margin:0 0 6px">Want a saved report and ongoing monitoring alerts?</h2>
+  <p class="small" style="margin:0 0 12px">
+    No signup required. Results visible instantly.<br/>
+    Email is only used if you request monitoring updates.
+  </p>
+  <form id="monitoringForm" name="monitoring-alerts" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="monitoring-alerts"/>
+    <input type="hidden" name="scan_request_id" id="monitoringRequestId" value=""/>
+    <input type="hidden" name="scan_name" id="monitoringName" value=""/>
+    <input type="hidden" name="scan_state" id="monitoringState" value=""/>
+    <input type="hidden" name="scan_city" id="monitoringCity" value=""/>
+    <p style="display:none">
+      <label>Don't fill this out if you're human: <input name="bot-field"/></label>
+    </p>
+    <label>Email (optional)</label>
+    <input id="monitoringEmail" name="email" type="email" autocomplete="email" placeholder="Enter your email"/>
+    <label>Phone (optional)</label>
+    <input id="monitoringPhone" name="phone" type="tel" autocomplete="tel" placeholder="Enter your phone"/>
+    <div class="btnrow" style="margin-top:10px">
+      <button class="btn primary" type="submit">Request Monitoring Updates</button>
+      <a class="btn outline" href="/pricing">Explore plans</a>
+    </div>
+    <div id="monitoringStatus" class="small" style="margin-top:10px" aria-live="polite"></div>
+  </form>
+</div>
 
 </div>
 </section>

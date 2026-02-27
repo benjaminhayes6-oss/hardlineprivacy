@@ -250,14 +250,13 @@ function buildFallbackResponse(){
 
 async function runScan(){
   const name = document.getElementById('fullName')?.value.trim();
-  const email = document.getElementById('email')?.value.trim();
+  const email = document.getElementById('email')?.value.trim() || '';
   const state = document.getElementById('state')?.value.trim();
   const city = document.getElementById('city')?.value.trim();
   const aliases = document.getElementById('aliases')?.value.trim();
   setFieldError('fullName', name ? '' : 'Please enter a full name.');
-  setFieldError('email', isValidEmail(email) ? '' : 'Please enter a valid email.');
   setFieldError('state', state ? '' : 'Please select a state.');
-  if (!name || !isValidEmail(email) || !state) return;
+  if (!name || !state) return;
 
   const location = city ? `${city}, ${state}` : state;
   const query = [name, location, aliases].filter(Boolean).join(' ');
@@ -298,9 +297,9 @@ async function runScan(){
     }
     const items = Array.isArray(data.results) ? data.results : [];
     const limitedVisibility = Boolean(data?.limitedVisibility || usedFallback);
-  const meta = getExposureMeta(items, data?.exposure, limitedVisibility);
-  // persist recommendation for pricing highlighting
-  localStorage.setItem('hp_reco', meta.rec);
+    const meta = getExposureMeta(items, data?.exposure, limitedVisibility);
+    // persist recommendation for pricing highlighting
+    localStorage.setItem('hp_reco', meta.rec);
     const message = typeof data?.message === 'string' && data.message.trim()
       ? data.message.trim()
       : FALLBACK_RESULT.message;
@@ -311,6 +310,7 @@ async function runScan(){
       ? data.requestId.trim()
       : generateRequestId();
     render(items, meta, message, usedFallback, requestId, limitedVisibility, data?.providers);
+    showPostScanPrompt({ name, state, city, requestId });
   }catch(err){
     const fallbackReason = err?.name === 'AbortError' ? 'timeout' : 'network';
     console.log(`[scan-fallback] ${new Date().toISOString()} (${fallbackReason})`);
@@ -318,12 +318,13 @@ async function runScan(){
     const meta = getExposureMeta([], fallback.exposure, true);
     localStorage.setItem('hp_reco', meta.rec);
     render([], meta, fallback.message, true, fallback.requestId, true, null);
+    showPostScanPrompt({ name, state, city, requestId: fallback.requestId });
   }
 }
 
 form?.addEventListener('submit', (e)=>{ e.preventDefault(); runScan(); });
 
-['fullName','email','state','city'].forEach((id)=>{
+['fullName','state','city'].forEach((id)=>{
   const input = document.getElementById(id);
   if (input) {
     const eventName = input.tagName === 'SELECT' ? 'change' : 'input';
@@ -342,7 +343,71 @@ form?.addEventListener('submit', (e)=>{ e.preventDefault(); runScan(); });
   const s = p.get('state');
   const c = p.get('city');
   if (n) document.getElementById('fullName').value = n;
-  if (e) document.getElementById('email').value = e;
+  if (e && document.getElementById('email')) document.getElementById('email').value = e;
   if (s) document.getElementById('state').value = s;
   if (c) document.getElementById('city').value = c;
 })();
+
+function showPostScanPrompt(details){
+  const prompt = document.getElementById('postScanPrompt');
+  if (!prompt) return;
+  prompt.style.display = 'block';
+  if (details?.requestId) {
+    const requestId = document.getElementById('monitoringRequestId');
+    if (requestId) requestId.value = details.requestId;
+  }
+  if (details?.name) {
+    const nameField = document.getElementById('monitoringName');
+    if (nameField) nameField.value = details.name;
+  }
+  if (details?.state) {
+    const stateField = document.getElementById('monitoringState');
+    if (stateField) stateField.value = details.state;
+  }
+  if (details?.city) {
+    const cityField = document.getElementById('monitoringCity');
+    if (cityField) cityField.value = details.city;
+  }
+}
+
+const monitoringForm = document.getElementById('monitoringForm');
+const monitoringStatus = document.getElementById('monitoringStatus');
+
+function setMonitoringStatus(message, isError){
+  if (!monitoringStatus) return;
+  monitoringStatus.textContent = message || '';
+  monitoringStatus.style.color = isError ? '#fca5a5' : 'var(--muted)';
+}
+
+monitoringForm?.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const email = document.getElementById('monitoringEmail')?.value.trim() || '';
+  const phone = document.getElementById('monitoringPhone')?.value.trim() || '';
+  if (!email && !phone) {
+    setMonitoringStatus('Please provide an email or phone to request monitoring updates.', true);
+    return;
+  }
+  if (email && !isValidEmail(email)) {
+    setMonitoringStatus('Please enter a valid email address.', true);
+    return;
+  }
+  setMonitoringStatus('Submitting request...', false);
+  try {
+    const response = await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(monitoringForm)).toString()
+    });
+    if (!response.ok) throw new Error('submission-failed');
+    setMonitoringStatus('Thanks! Monitoring updates will be sent to the contact info provided.', false);
+    monitoringForm.reset();
+  } catch {
+    setMonitoringStatus('Unable to submit right now. Please try again later.', true);
+  }
+});
+
+['monitoringEmail','monitoringPhone'].forEach((id)=>{
+  const input = document.getElementById(id);
+  if (!input) return;
+  input.addEventListener('input', ()=>{ setMonitoringStatus('', false); });
+});
