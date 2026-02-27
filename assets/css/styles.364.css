@@ -24,6 +24,20 @@ ul{list-style:none}
 input,select,button,textarea{font:inherit;color:inherit}
 input,select{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;padding:10px 14px;width:100%;margin-top:4px;margin-bottom:12px;font-size:16px}
 input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(96,165,250,.2)}
+select.hp-select-native{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;margin:0;padding:0;border:0}
+.hp-select{position:relative;width:100%;margin-top:4px;margin-bottom:12px;z-index:2}
+.hp-select-trigger{width:100%;text-align:left;background:linear-gradient(160deg,#0f1e2e,#0b1522);border:1px solid var(--border);border-radius:8px;padding:10px 38px 10px 14px;font-size:16px;color:#e2e8f0;cursor:pointer;position:relative}
+.hp-select-trigger::after{content:"";position:absolute;right:14px;top:50%;transform:translateY(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #94a3b8}
+.hp-select-trigger:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(96,165,250,.2)}
+.hp-select-trigger[aria-invalid="true"]{border-color:rgba(248,113,113,.8);box-shadow:0 0 0 3px rgba(248,113,113,.15)}
+.hp-select-list{position:absolute;left:0;right:0;top:calc(100% + 6px);max-height:250px;overflow-y:auto;background:linear-gradient(160deg,#0f1e2e,#0b1522);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:6px;box-shadow:0 18px 40px rgba(4,12,20,.55);display:none;z-index:20}
+.hp-select.is-open{z-index:30}
+.hp-select.is-open .hp-select-list{display:block}
+.hp-select-option{padding:8px 10px;border-radius:8px;color:#e2e8f0;cursor:pointer}
+.hp-select-option.is-active,
+.hp-select-option:hover{background:rgba(96,165,250,.16)}
+.hp-select-option[aria-selected="true"]{background:rgba(96,165,250,.22);font-weight:600}
+.hp-select-option[aria-disabled="true"]{opacity:.6;cursor:not-allowed}
 label{display:block;font-weight:600;font-size:14px;margin-top:8px;color:var(--muted)}
 .field-help{color:var(--muted);font-size:12px;margin:-6px 0 12px}
 .field-error{color:#fca5a5;font-size:12px;margin:-6px 0 12px}

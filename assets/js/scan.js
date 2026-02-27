@@ -220,6 +220,153 @@ function escapeHtml(s){
   return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+function initStateSelect(){
+  const select = document.getElementById('state');
+  if (!select || select.dataset.hpSelect === 'ready') return null;
+  select.dataset.hpSelect = 'ready';
+  select.classList.add('hp-select-native');
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'hp-select';
+  const trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'hp-select-trigger';
+  trigger.setAttribute('role', 'combobox');
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.setAttribute('aria-haspopup', 'listbox');
+  const list = document.createElement('div');
+  list.className = 'hp-select-list';
+  list.setAttribute('role', 'listbox');
+  list.id = `state-listbox-${Math.random().toString(36).slice(2, 8)}`;
+  trigger.setAttribute('aria-controls', list.id);
+
+  wrapper.append(trigger, list);
+  select.insertAdjacentElement('afterend', wrapper);
+
+  const optionEls = [];
+  const options = Array.from(select.options);
+  options.forEach((opt, index) => {
+    const optionEl = document.createElement('div');
+    optionEl.className = 'hp-select-option';
+    optionEl.setAttribute('role', 'option');
+    optionEl.setAttribute('aria-selected', 'false');
+    optionEl.dataset.value = opt.value;
+    optionEl.dataset.index = String(index);
+    optionEl.id = `${list.id}-option-${index}`;
+    optionEl.textContent = opt.textContent;
+    if (opt.disabled) optionEl.setAttribute('aria-disabled', 'true');
+    list.appendChild(optionEl);
+    optionEls.push(optionEl);
+  });
+
+  let activeIndex = Math.max(select.selectedIndex, 0);
+
+  function isDisabled(index){
+    return optionEls[index]?.getAttribute('aria-disabled') === 'true';
+  }
+
+  function findNextEnabled(start, direction){
+    let idx = start;
+    while (idx >= 0 && idx < optionEls.length && isDisabled(idx)) {
+      idx += direction;
+    }
+    if (idx < 0 || idx >= optionEls.length) return start;
+    return idx;
+  }
+
+  function updateActive(index, shouldScroll){
+    optionEls.forEach((opt, idx) => {
+      opt.classList.toggle('is-active', idx === index);
+    });
+    const active = optionEls[index];
+    if (active) {
+      trigger.setAttribute('aria-activedescendant', active.id);
+      if (shouldScroll) active.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function syncFromSelect(){
+    const selected = select.options[select.selectedIndex] || select.options[0];
+    trigger.textContent = selected?.textContent?.trim() || 'Select your state';
+    optionEls.forEach((opt, idx) => {
+      const isSelected = opt.dataset.value === select.value;
+      opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      if (isSelected) activeIndex = idx;
+    });
+    updateActive(activeIndex, false);
+  }
+
+  function openList(){
+    if (wrapper.classList.contains('is-open')) return;
+    wrapper.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+    activeIndex = findNextEnabled(activeIndex, 1);
+    updateActive(activeIndex, true);
+  }
+
+  function closeList(){
+    if (!wrapper.classList.contains('is-open')) return;
+    wrapper.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  function selectIndex(index){
+    const optionEl = optionEls[index];
+    if (!optionEl || optionEl.getAttribute('aria-disabled') === 'true') return;
+    select.value = optionEl.dataset.value || '';
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    syncFromSelect();
+  }
+
+  trigger.addEventListener('click', () => {
+    if (wrapper.classList.contains('is-open')) closeList();
+    else openList();
+  });
+
+  trigger.addEventListener('keydown', (event) => {
+    const { key } = event;
+    if (key === 'ArrowDown' || key === 'ArrowUp') {
+      event.preventDefault();
+      if (!wrapper.classList.contains('is-open')) openList();
+      const direction = key === 'ArrowDown' ? 1 : -1;
+      activeIndex = findNextEnabled(activeIndex + direction, direction);
+      updateActive(activeIndex, true);
+      return;
+    }
+    if (key === 'Enter' || key === ' ') {
+      event.preventDefault();
+      if (!wrapper.classList.contains('is-open')) {
+        openList();
+      } else {
+        selectIndex(activeIndex);
+        closeList();
+      }
+      return;
+    }
+    if (key === 'Escape') {
+      event.preventDefault();
+      closeList();
+    }
+  });
+
+  list.addEventListener('click', (event) => {
+    const optionEl = event.target.closest('.hp-select-option');
+    if (!optionEl) return;
+    selectIndex(Number(optionEl.dataset.index || 0));
+    closeList();
+    trigger.focus();
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!wrapper.contains(event.target)) closeList();
+  });
+
+  select.addEventListener('change', syncFromSelect);
+  syncFromSelect();
+
+  return { sync: syncFromSelect, trigger };
+}
+
 function isValidEmail(value){
   return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(String(value||'').trim());
 }
@@ -238,6 +385,13 @@ function setFieldError(fieldId, message){
   if (input) {
     if (message) input.setAttribute('aria-invalid', 'true');
     else input.removeAttribute('aria-invalid');
+  }
+  if (input?.classList?.contains('hp-select-native')) {
+    const trigger = input.nextElementSibling?.querySelector('.hp-select-trigger');
+    if (trigger) {
+      if (message) trigger.setAttribute('aria-invalid', 'true');
+      else trigger.removeAttribute('aria-invalid');
+    }
   }
 }
 
@@ -335,6 +489,8 @@ form?.addEventListener('submit', (e)=>{ e.preventDefault(); runScan(); });
   }
 });
 
+const stateSelectControl = initStateSelect();
+
 // Optional: prefill via query params
 (function(){
   const p = new URLSearchParams(location.search);
@@ -346,6 +502,7 @@ form?.addEventListener('submit', (e)=>{ e.preventDefault(); runScan(); });
   if (e && document.getElementById('email')) document.getElementById('email').value = e;
   if (s) document.getElementById('state').value = s;
   if (c) document.getElementById('city').value = c;
+  if (stateSelectControl) stateSelectControl.sync();
 })();
 
 function showPostScanPrompt(details){
