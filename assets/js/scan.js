@@ -439,15 +439,18 @@ async function runScan(){
       usedFallback = true;
       fallbackReason = 'json-parse';
     }
+    const errorMessage = data && data.success === false && typeof data.error === 'string'
+      ? data.error.trim()
+      : '';
     if (!res.ok) {
       usedFallback = true;
       fallbackReason = fallbackReason || `status-${res.status}`;
-      data = buildFallbackResponse();
+      data = errorMessage ? { ...buildFallbackResponse(), message: errorMessage } : buildFallbackResponse();
     }
     if (!data || data?.success !== true || !Array.isArray(data.results)) {
       usedFallback = true;
       fallbackReason = fallbackReason || 'invalid-payload';
-      data = buildFallbackResponse();
+      data = errorMessage ? { ...buildFallbackResponse(), message: errorMessage } : buildFallbackResponse();
     }
     const items = Array.isArray(data.results) ? data.results : [];
     const limitedVisibility = Boolean(data?.limitedVisibility || usedFallback);
