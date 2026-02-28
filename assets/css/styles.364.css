@@ -346,6 +346,7 @@ footer .logo img{height:112px;width:auto;max-width:440px;object-fit:contain;opac
 .comparison-section .comparison-cell.feature{text-align:left;color:var(--ink);font-weight:600;background:rgba(8,16,24,.35)}
 .comparison-section .comparison-header .comparison-cell{font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;color:#cbd5e1;background:rgba(8,16,24,.6)}
 .comparison-section .comparison-cell.highlight{background:linear-gradient(160deg,rgba(96,165,250,.18),rgba(14,22,32,.92));color:var(--ink);font-weight:700}
+.comparison-positioning{margin-top:16px;color:var(--muted);max-width:760px}
 .comparison-mobile{display:none;margin-top:20px}
 .comparison-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .comparison-detail{border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:rgba(255,255,255,.03);margin-bottom:12px}
