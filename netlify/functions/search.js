@@ -2,9 +2,6 @@
 
 const fetch = require("node-fetch");
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-const GOOGLE_CX = process.env.GOOGLE_CX;
-
 function calculateNameCommonality(name) {
   const commonNames = [
     "john", "michael", "david", "james", "robert",
@@ -62,12 +59,27 @@ function getRiskLevel(score) {
 }
 
 exports.handler = async (event) => {
+  const GOOGLE_API_KEY = Netlify.env.get("GOOGLE_API_KEY");
+  const GOOGLE_CX = Netlify.env.get("GOOGLE_CX");
   const { q } = event.queryStringParameters;
+
+  if (!GOOGLE_API_KEY || !GOOGLE_CX) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        success: false,
+        error: "Missing Google API configuration"
+      })
+    };
+  }
 
   if (!q) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Missing query parameter." })
+      body: JSON.stringify({
+        success: false,
+        error: "Missing query parameter."
+      })
     };
   }
 
@@ -98,8 +110,8 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        query: q,
-        googleResults: items.slice(0, 5),
+        success: true,
+        results: items.slice(0, 5),
         exposureScore,
         riskLevel: getRiskLevel(exposureScore),
         categories,
@@ -110,7 +122,10 @@ exports.handler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Search failed." })
+      body: JSON.stringify({
+        success: false,
+        error: "Search failed."
+      })
     };
   }
 };

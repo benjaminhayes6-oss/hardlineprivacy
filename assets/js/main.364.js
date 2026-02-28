@@ -12,12 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     toggle.setAttribute("aria-expanded", !expanded);
     nav.classList.toggle("open");
+    document.body.classList.toggle("menu-open", !expanded);
   });
 
   nav.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
       nav.classList.remove("open");
       toggle.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("menu-open");
     });
   });
 
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       && !toggle.contains(event.target)) {
       nav.classList.remove("open");
       toggle.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("menu-open");
     }
   });
 });
