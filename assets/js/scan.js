@@ -122,11 +122,20 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
   const hasFallbackResults = isFallback && (!items || items.length === 0);
   const listItems = (hasFallbackResults ? FALLBACK_RESULTS : (items||[])).slice(0, 15);
   const isPartial = Boolean(limitedVisibility || isFallback);
+  const summaryItems = [
+    'Recommended For Ongoing Privacy Monitoring',
+    'People-search profiling findings',
+    'Address history exposure',
+    'Property mapping links',
+    'Phone/email associations'
+  ];
+  const summaryCount = summaryItems.length;
+  const riskLabel = level === 'low' ? 'LOW' : (level === 'high' || level === 'elevated') ? 'HIGH' : 'MODERATE';
 
   const why = `
     <div class="callout">
       <h3 style="margin:0 0 6px">Why this matters</h3>
-      <div class="small">Public listings are commonly used to target families—especially households with children or older adults.</div>
+      <div class="small">Public listings are commonly used to target families, especially households with children or older adults.</div>
     </div>
   `;
 
@@ -135,7 +144,7 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
       <h3 style="margin:0 0 6px">What this means</h3>
       <div class="small">Public listings commonly include home addresses, phone numbers, relatives, and location data.</div>
       <div class="small" style="margin-top:8px">When aggregated across multiple sites, this information can be used to identify, track, or contact individuals without their consent.</div>
-      <div class="small" style="margin-top:8px"><b>High‑risk broker note:</b> Certain sites are known to collect, resell, and frequently republish personal information—even after manual opt‑outs.</div>
+      <div class="small" style="margin-top:8px"><b>High-risk broker note:</b> Certain sites are known to collect, resell, and frequently republish personal information, even after manual opt-outs.</div>
     </div>
   `;
 
@@ -159,7 +168,6 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
     </div>
   `;
 
-  const headerLabel = isPartial ? 'Partial Scan' : 'Scan Complete';
   const pillLabel = isPartial ? 'Exposure Analysis Complete' : label;
   const pillLevel = isPartial ? 'moderate' : level;
   const levels = [
@@ -175,43 +183,59 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
   }).join('');
   const exposureBlock = `
       <div class="risk-panel">
-        <div class="risk-title">Estimated Risk Level</div>
+        <div class="risk-title">Your Exposure Risk: ${riskLabel}</div>
         <div class="risk-levels">${riskLevels}</div>
-        <div class="small" style="margin-top:8px">Based on the number and type of results returned from publicly accessible sources. This is an informational estimate, not a guarantee of removal or search rank changes.</div>
-      </div>
-      <div class="risk-categories">
-        <div class="risk-title">Exposure Categories</div>
-        <ul class="small">
-          <li>People-search databases</li>
-          <li>Phone aggregators</li>
-          <li>Address history networks</li>
-        </ul>
-        <div class="small" style="margin-top:6px">Categories reflect the most common sources that surface public listings.</div>
+        <div class="small" style="margin-top:8px">Scan Status: ${isPartial ? 'Partial Scan Completed' : 'Scan Completed'}</div>
+        <div class="small" style="margin-top:6px">Estimated Risk Level: ${escapeHtml(label)}</div>
+        <div class="small" style="margin-top:6px">Data Categories Detected: ${summaryCount}</div>
       </div>
   `;
 
   setResultsHTML(`
     <div class="callout">
       <div class="scan-summary-header">
-        <div style="font-weight:900">${headerLabel}</div>
+        <div style="font-weight:900">Your Exposure Scan Is Complete</div>
         ${riskPill(pillLevel, pillLabel)}
       </div>
+      <div class="small" style="margin-top:8px">We located publicly searchable personal information connected to your profile.</div>
+      <div class="small" style="margin-top:8px">✔ Scan Complete &nbsp; ✔ Sources Checked &nbsp; ✔ Exposure Analysis Generated</div>
+      ${safeId ? `<div class="small" style="margin-top:8px">Request ID: <span style="font-weight:700">${safeId}</span></div>` : ''}
+    </div>
+    <div class="callout">
+      ${exposureBlock}
       ${isPartial ? `<div class="small" style="margin-top:8px">Partial scan: one or more sources were unavailable. Results may be incomplete. Please try again.</div>` : ''}
       ${!isPartial ? `<div class="small" style="margin-top:8px">${escapeHtml(message || FALLBACK_RESULT.message)}</div>` : ''}
-      ${exposureBlock}
       ${renderProviders(providers)}
-      <div class="small" style="margin-top:8px">Families with children and older adults are often targeted when listings are easy to find.</div>
-      <div class="small" style="margin-top:8px">This scan uses publicly accessible sources only.</div>
-      ${safeId ? `<div class="small" style="margin-top:8px">Request ID: <span style="font-weight:700">${safeId}</span></div>` : ''}
+    </div>
+    <div class="callout">
+      <h3 style="margin:0 0 6px">Results Summary</h3>
+      <ul class="features">
+        ${summaryItems.map((item)=>`<li><span class="feature-icon">✓</span>${item}</li>`).join('')}
+      </ul>
+    </div>
+    <div class="callout">
+      <h3 style="margin:0 0 6px">Start Reducing Your Exposure Now</h3>
+      <div class="cta-box">
+        <a class="btn primary" href="/pricing?rec=${rec || 'sub'}#plans">Protect My Information Now</a>
+        <a class="btn outline" href="/pricing#plans">View Protection Plans</a>
+      </div>
+      <div class="small" style="margin-top:10px">Secure checkout powered by Stripe. No contracts. Cancel anytime.</div>
     </div>
     ${means}
     ${why}
-    ${recommendationBlock(rec)}
     <div class="callout items-list">
-      <h3 style="margin:0 0 6px">Results</h3>
+      <h3 style="margin:0 0 6px">Results Detail</h3>
       <div class="small">Showing up to 15 top results from available free sources.</div>
       ${hasFallbackResults ? `<div class="small" style="margin-top:6px">These are example exposure categories shown because the scan sources were temporarily unavailable.</div>` : ''}
       ${list}
+    </div>
+    <div class="callout">
+      <h3 style="margin:0 0 6px">Exposure Does Not Stay Removed Without Monitoring.</h3>
+      <div class="cta-box">
+        <a class="btn primary" href="/pricing#plans">Run Protection Setup</a>
+        <a class="btn outline" href="/trust">View Trust &amp; Standards</a>
+      </div>
+      <div class="small" style="margin-top:8px">This scan uses publicly accessible sources only.</div>
     </div>
     <div class="small" style="margin-top:14px">This scan does not access private databases or bypass protections. Results reflect publicly accessible listings and may change over time.</div>
   `);

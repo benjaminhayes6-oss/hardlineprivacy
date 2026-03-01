@@ -91,18 +91,14 @@
       <a class="logo" href="/" aria-label="Hardline Privacy home"><img src="/assets/images/logo-light.png" alt="Hardline Privacy" decoding="async" loading="lazy" fetchpriority="low" width="600" height="400"></a>
     </div>
     <div class="footer-links">
-      <a href='/faq'>FAQ</a>
-
-      <a href="/trust">Trust &amp; Security</a>
-      <a href="/authority">Authority Hub</a>
-
-      <a href="/data-brokers">Data Brokers</a>
-      <a href="/about">About</a>
-    <a href="/founder">Founder</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
-      <a href="/cookies">Cookies</a>
       <a href="/contact">Contact</a>
+      <a href="/trust">Trust &amp; Standards</a>
+      <a href="/methodology">Methodology</a>
+      <a href="/authority">Authority Hub</a>
+      <a href="/blog">Blog</a>
+      <a href="/compare">Comparison</a>
     </div>
     <div class="footer-contact">Hardline Privacy · Nashville, TN · support@hardlineprivacy.com</div>
     <small>© 2026 Hardline Privacy. All rights reserved.</small>
@@ -110,6 +106,16 @@
 </footer>
 
 <script src="/assets/js/main.364.js" type="module" defer></script>
+<script>
+  (function(){
+    var params = new URLSearchParams(window.location.search);
+    var subject = params.get('subject');
+    if (subject) {
+      var subjectField = document.getElementById('subject');
+      if (subjectField) subjectField.value = subject;
+    }
+  })();
+</script>
 
 <script async id="netlify-rum-container" src="/.netlify/scripts/rum" data-netlify-rum-site-id="b0bbea64-64e0-42d8-ac4f-b72b1f6410d0" data-netlify-deploy-branch="" data-netlify-deploy-context="production" data-netlify-cwv-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlX2lkIjoiYjBiYmVhNjQtNjRlMC00MmQ4LWFjNGYtYjcyYjFmNjQxMGQwIiwiYWNjb3VudF9pZCI6IjY5ODE1ZmQ1MTVmZDkzZDdkZTE3YmQxZSIsImRlcGxveV9pZCI6IjY5OWExYmMzMmY1MzMyZGRjYzgzOGJjYiIsImlzc3VlciI6Im5mc2VydmVyIn0.GCNl6giQ3DCM6gA-FjShVKrLzrBOhk0xsQCAQWbVFrk"></script>
 
