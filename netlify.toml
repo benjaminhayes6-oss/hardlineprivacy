@@ -28,24 +28,12 @@
 
 [[redirects]]
   from = "/assets/images/logo.svg"
-  to = "/assets/brand/hardlineprivacy-logo.png"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/assets/images/logo-dark.svg"
-  to = "/assets/brand/hardlineprivacy-logo.png"
+  to = "/assets/images/logo-light.svg"
   status = 301
   force = true
 
 [[redirects]]
   from = "/assets/images/logo-dark.png"
-  to = "/assets/brand/hardlineprivacy-logo.png"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/assets/images/logo-light.svg"
   to = "/assets/brand/hardlineprivacy-logo.png"
   status = 301
   force = true

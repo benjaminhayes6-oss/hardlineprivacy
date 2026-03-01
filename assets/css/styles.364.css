@@ -61,7 +61,7 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
 .nav nav a:hover{color:var(--ink);text-decoration:none}
 .nav nav .btn,
 .nav nav .btn-primary{font-size:15px}
-.menu-open{overflow:hidden;height:100vh}
+body.menu-open{overflow:hidden;height:100vh}
 
 /* Mobile menu toggle */
 .menu-toggle{display:none}
@@ -75,7 +75,7 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
   .nav-bar{height:90px;padding:0 16px}
   .brand-logo,
   .nav-bar img{height:100px}
-  .nav nav{display:none;position:fixed;top:90px;left:0;right:0;flex-direction:column;background:#061b27;padding:20px;border-bottom:1px solid var(--border);gap:12px}
+  .nav nav{display:none;position:fixed;top:90px;left:0;right:0;bottom:0;flex-direction:column;background:#061b27;padding:20px;border-bottom:1px solid var(--border);gap:12px;overflow-y:auto;max-width:100vw}
   .nav nav.open{display:flex}
   .hero{padding:48px 0 36px}
   .btnrow{flex-direction:column;align-items:stretch}
@@ -100,6 +100,8 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
 .seo-links{margin-top:12px;font-size:.9rem;color:var(--muted);text-align:center}
 .seo-links a{color:var(--accent)}
 .founder-story{border-top:none;padding-top:28px}
+.founder-image-wrapper{max-width:420px;margin:0 auto;aspect-ratio:4/5;overflow:hidden;border-radius:12px}
+.founder-image-wrapper img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
 
 /* Buttons */
 .btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
@@ -230,6 +232,23 @@ footer .logo img{height:112px;width:auto;max-width:440px;object-fit:contain;opac
   font-weight:600;
   border-radius:6px;
   text-decoration:none;
+}
+
+.cta-spacing{
+  margin-top:64px;
+  margin-bottom:48px;
+}
+
+.btn.text-link{
+  background:none;
+  border:none;
+  padding:0;
+  color:var(--accent);
+  font-weight:600;
+  text-decoration:none;
+}
+.btn.text-link:hover{
+  text-decoration:underline;
 }
 
 .cta-support{

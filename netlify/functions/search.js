@@ -74,7 +74,8 @@ exports.handler = async (event) => {
         success: true,
         results: googleResults || [],
         exposureScore,
-        riskLevel
+        riskLevel,
+        exposure: riskLevel.toLowerCase()
       })
     };
   }
@@ -86,7 +87,8 @@ exports.handler = async (event) => {
         success: true,
         results: googleResults || [],
         exposureScore,
-        riskLevel
+        riskLevel,
+        exposure: riskLevel.toLowerCase()
       })
     };
   }
@@ -120,7 +122,8 @@ exports.handler = async (event) => {
         success: true,
         results: (googleResults || []).slice(0, 5),
         exposureScore,
-        riskLevel
+        riskLevel,
+        exposure: riskLevel.toLowerCase()
       })
     };
 
@@ -131,7 +134,8 @@ exports.handler = async (event) => {
         success: true,
         results: googleResults || [],
         exposureScore,
-        riskLevel
+        riskLevel,
+        exposure: riskLevel.toLowerCase()
       })
     };
   }
