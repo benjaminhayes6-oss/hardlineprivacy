@@ -234,6 +234,23 @@ footer .logo img{height:112px;width:auto;max-width:440px;object-fit:contain;opac
   text-decoration:none;
 }
 
+.cta-spacing{
+  margin-top:64px;
+  margin-bottom:48px;
+}
+
+.btn.text-link{
+  background:none;
+  border:none;
+  padding:0;
+  color:var(--accent);
+  font-weight:600;
+  text-decoration:none;
+}
+.btn.text-link:hover{
+  text-decoration:underline;
+}
+
 .cta-support{
   margin-top:14px;
   font-size:14px;
