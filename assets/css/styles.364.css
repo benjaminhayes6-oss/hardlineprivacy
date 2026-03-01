@@ -100,6 +100,8 @@ body.menu-open{overflow:hidden;height:100vh}
 .seo-links{margin-top:12px;font-size:.9rem;color:var(--muted);text-align:center}
 .seo-links a{color:var(--accent)}
 .founder-story{border-top:none;padding-top:28px}
+.founder-image-wrapper{max-width:420px;margin:0 auto;aspect-ratio:4/5;overflow:hidden;border-radius:12px}
+.founder-image-wrapper img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
 
 /* Buttons */
 .btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}

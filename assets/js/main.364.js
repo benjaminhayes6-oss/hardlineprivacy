@@ -1,8 +1,13 @@
 /* Hardline Privacy – main.364.js */
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".scan-cta").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      console.log("Scan CTA clicked");
+  document.querySelectorAll(".scan-cta, .scan-btn").forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      const isAnchor = btn.tagName.toLowerCase() === "a";
+      const href = isAnchor ? btn.getAttribute("href") : null;
+      if (!isAnchor || !href) {
+        event.preventDefault();
+        window.location.href = "/scan";
+      }
     });
   });
 

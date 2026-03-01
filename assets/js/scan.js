@@ -39,7 +39,10 @@ const BROKER_HINTS = [
 
 function setResultsHTML(html){
   if (!resultsEl) return;
-  requestAnimationFrame(()=>{ resultsEl.innerHTML = html; });
+  requestAnimationFrame(()=>{
+    resultsEl.innerHTML = html;
+    resultsEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+  });
 }
 
 function host(u){
@@ -186,6 +189,7 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
   }).join('');
   const exposureBlock = `
       <div class="risk-panel">
+        <h3 style="margin:0 0 6px">Exposure Risk Score</h3>
         <div class="risk-title">Your Exposure Risk: ${riskLabel}</div>
         <div class="risk-levels">${riskLevels}</div>
         <div class="small" style="margin-top:8px">Scan Status: ${isPartial ? 'Partial Scan Completed' : 'Scan Completed'}</div>
@@ -196,13 +200,17 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
 
   setResultsHTML(`
     ${failureNotice}
-    <div class="callout">
+    <div class="callout scan-confirmation">
       <div class="scan-summary-header">
         <div style="font-weight:900">Your Exposure Scan Is Complete</div>
         ${riskPill(pillLevel, pillLabel)}
       </div>
       <div class="small" style="margin-top:8px">We located publicly searchable personal information connected to your profile.</div>
-      <div class="small" style="margin-top:8px">✔ Scan Complete &nbsp; ✔ Sources Checked &nbsp; ✔ Exposure Analysis Generated</div>
+      <ul class="scan-confirmation-list">
+        <li>✔ Scan Complete</li>
+        <li>✔ Sources Checked</li>
+        <li>✔ Exposure Analysis Generated</li>
+      </ul>
       ${safeId ? `<div class="small" style="margin-top:8px">Request ID: <span style="font-weight:700">${safeId}</span></div>` : ''}
     </div>
     <div class="callout">
