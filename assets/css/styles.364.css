@@ -61,7 +61,7 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
 .nav nav a:hover{color:var(--ink);text-decoration:none}
 .nav nav .btn,
 .nav nav .btn-primary{font-size:15px}
-.menu-open{overflow:hidden;height:100vh}
+body.menu-open{overflow:hidden;height:100vh}
 
 /* Mobile menu toggle */
 .menu-toggle{display:none}
@@ -75,7 +75,7 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
   .nav-bar{height:90px;padding:0 16px}
   .brand-logo,
   .nav-bar img{height:100px}
-  .nav nav{display:none;position:fixed;top:90px;left:0;right:0;flex-direction:column;background:#061b27;padding:20px;border-bottom:1px solid var(--border);gap:12px}
+  .nav nav{display:none;position:fixed;top:90px;left:0;right:0;bottom:0;flex-direction:column;background:#061b27;padding:20px;border-bottom:1px solid var(--border);gap:12px;overflow-y:auto;max-width:100vw}
   .nav nav.open{display:flex}
   .hero{padding:48px 0 36px}
   .btnrow{flex-direction:column;align-items:stretch}

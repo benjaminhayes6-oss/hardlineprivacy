@@ -49,6 +49,8 @@
 .risk-pill.risk-low{border-color:rgba(52,211,153,.6);color:#bbf7d0}
 .risk-pill.risk-mod{border-color:rgba(251,191,36,.6);color:#fde68a}
 .risk-pill.risk-high{border-color:rgba(248,113,113,.6);color:#fecaca}
+.callout.error{border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.08);color:#fee2e2}
+.callout.error strong{color:#fecaca}
 .risk-categories{margin-top:12px}
 .risk-categories ul{margin:8px 0 0 18px;padding:0}
 .risk-categories li{margin:4px 0}
@@ -61,7 +63,7 @@
 <body>
 <header class="nav">
 <div class="nav-bar">
-<a class="logo" href="/"><img class="brand-logo" src="/assets/images/logo-light.png" alt="Hardline Privacy" width="600" height="400"/></a>
+<a class="logo" href="/"><img class="brand-logo" src="/assets/images/logo-light.svg" alt="Hardline Privacy" width="600" height="400" decoding="async" fetchpriority="high"></a>
 <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
 <span></span>
 <span></span>
@@ -180,10 +182,9 @@ No signup required. Results visible instantly.
 <div id="results" class="result-wrap"></div>
 
 <div id="postScanPrompt" class="callout post-scan" style="display:none">
-  <h2 style="margin:0 0 6px">Want a saved report and ongoing monitoring alerts?</h2>
+  <h2 style="margin:0 0 6px">Want ongoing monitoring alerts?</h2>
   <p class="small" style="margin:0 0 12px">
-    No signup required. Results visible instantly.<br/>
-    Email is only used if you request monitoring updates.
+    This is optional. Email or phone is only used if you request monitoring updates.
   </p>
   <form id="monitoringForm" name="monitoring-alerts" method="POST" data-netlify="true" netlify-honeypot="bot-field">
     <input type="hidden" name="form-name" value="monitoring-alerts"/>
@@ -207,61 +208,16 @@ No signup required. Results visible instantly.
 </div>
 
 <div class="callout">
-<h2>Exposure does not stay removed</h2>
+<h2>Exposure Does Not Stay Removed Without Monitoring</h2>
 <p class="sub">
-Even after an opt‑out, data brokers routinely refresh their databases and re‑list profiles.
-Continuous monitoring reduces the time your information stays exposed.
-</p>
-</div>
-
-<div class="callout">
-<h2>Why this scan is trustworthy</h2>
-<p class="sub">
-Hardline Privacy is veteran‑founded and led by Grey, a U.S. Military Veteran and law‑enforcement professional.
-Every scan is designed to surface real public exposure across people‑search sites, data brokers, and public records.
+Data brokers refresh databases and re-list profiles routinely. Monitoring reduces the time your information stays exposed after a removal.
 </p>
 <div class="cta-box">
+<a class="btn primary" href="/pricing#plans">Run Protection Setup</a>
 <a class="btn outline" href="/trust">View Trust &amp; Standards</a>
-<a class="btn outline" href="/">Back to Home</a>
 </div>
 </div>
 
-</div>
-</section>
-
-<!-- ========================= -->
-<!-- REVENUE FLYWHEEL SECTION -->
-<!-- ========================= -->
-
-<section class="section">
-<div class="container">
-
-<div class="callout">
-
-<h2>Your Exposure Risk</h2>
-
-<p>
-Public data broker listings commonly reveal home addresses,
-relatives, phone numbers, and historical location data.
-When aggregated across hundreds of databases, this information
-is frequently used for identity theft, targeting, and social engineering attacks.
-</p>
-
-<div class="cta-box">
-
-<a class="btn outline" href="/pricing">
-Protect My Information Now
-</a>
-
-<div class="small">
-✔ Human-verified removals<br>
-✔ Average removal time: 7–21 days<br>
-✔ Continuous exposure monitoring included
-</div>
-
-</div>
-
-</div>
 </div>
 </section>
 
@@ -271,7 +227,7 @@ Protect My Information Now
 <div class="container footer-grid">
 
 <div>
-<img src="/assets/images/logo-light.png" alt="Hardline Privacy Logo" width="160" height="107"/>
+<img src="/assets/images/logo-light.svg" alt="Hardline Privacy Logo" width="160" height="107" loading="lazy" decoding="async" fetchpriority="low">
 </div>
 
 <div class="footer-links">

@@ -122,6 +122,9 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
   const hasFallbackResults = isFallback && (!items || items.length === 0);
   const listItems = (hasFallbackResults ? FALLBACK_RESULTS : (items||[])).slice(0, 15);
   const isPartial = Boolean(limitedVisibility || isFallback);
+  const failureNotice = isFallback
+    ? `<div class="callout error"><strong>Scan issue:</strong> ${escapeHtml(API_FAILURE_MESSAGE)}</div>`
+    : '';
   const summaryItems = [
     'Recommended For Ongoing Privacy Monitoring',
     'People-search profiling findings',
@@ -192,6 +195,7 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
   `;
 
   setResultsHTML(`
+    ${failureNotice}
     <div class="callout">
       <div class="scan-summary-header">
         <div style="font-weight:900">Your Exposure Scan Is Complete</div>
@@ -228,14 +232,6 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
       <div class="small">Showing up to 15 top results from available free sources.</div>
       ${hasFallbackResults ? `<div class="small" style="margin-top:6px">These are example exposure categories shown because the scan sources were temporarily unavailable.</div>` : ''}
       ${list}
-    </div>
-    <div class="callout">
-      <h3 style="margin:0 0 6px">Exposure Does Not Stay Removed Without Monitoring.</h3>
-      <div class="cta-box">
-        <a class="btn primary" href="/pricing#plans">Run Protection Setup</a>
-        <a class="btn outline" href="/trust">View Trust &amp; Standards</a>
-      </div>
-      <div class="small" style="margin-top:8px">This scan uses publicly accessible sources only.</div>
     </div>
     <div class="small" style="margin-top:14px">This scan does not access private databases or bypass protections. Results reflect publicly accessible listings and may change over time.</div>
   `);
@@ -427,6 +423,22 @@ function buildFallbackResponse(){
   };
 }
 
+function normalizeApiResponse(data){
+  if (!data || typeof data !== 'object') return data;
+  const mapped = { ...data };
+  if (mapped.ok === true && mapped.success !== true) mapped.success = true;
+  if (!Array.isArray(mapped.results)) {
+    if (Array.isArray(mapped.items)) mapped.results = mapped.items;
+    else if (Array.isArray(mapped.data)) mapped.results = mapped.data;
+    else if (Array.isArray(mapped.listings)) mapped.results = mapped.listings;
+    else if (mapped.results && Array.isArray(mapped.results.items)) mapped.results = mapped.results.items;
+  }
+  if (!mapped.requestId && typeof mapped.request_id === 'string') mapped.requestId = mapped.request_id;
+  if (!mapped.exposure && typeof mapped.riskLevel === 'string') mapped.exposure = mapped.riskLevel.toLowerCase();
+  if (!mapped.message && typeof mapped.notice === 'string') mapped.message = mapped.notice;
+  return mapped;
+}
+
 async function runScan(){
   const name = document.getElementById('fullName')?.value.trim();
   const email = document.getElementById('email')?.value.trim() || '';
@@ -464,6 +476,7 @@ async function runScan(){
       usedFallback = true;
       fallbackReason = 'json-parse';
     }
+    data = normalizeApiResponse(data);
     const errorMessage = data && data.success === false && typeof data.error === 'string'
       ? data.error.trim()
       : '';
