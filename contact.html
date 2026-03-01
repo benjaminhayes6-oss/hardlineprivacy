@@ -40,7 +40,7 @@
     <a href="/services">Services</a>
     <a href="/pricing">Pricing</a>
     <a href="/resources">Resources</a>
-    <a class="btn primary" href="/scan">Run Free Exposure Scan</a>
+    <a href="/scan" class="btn-primary scan-cta">Run Free Exposure Scan</a>
     </nav>
   </div>
 </header>
@@ -60,6 +60,14 @@
 
         <label for="email">Email Address</label>
         <input id="email" name="email" type="email" placeholder="jane@example.com" autocomplete="email" required/>
+
+        <label for="inquiryType">Inquiry Type</label>
+        <select id="inquiryType" name="inquiryType">
+          <option>General Inquiry</option>
+          <option>Exposure Scan Help</option>
+          <option>Military / Law Enforcement Pricing</option>
+          <option>Partnership Inquiry</option>
+        </select>
 
         <label for="subject">Subject</label>
         <input id="subject" name="subject" placeholder="Privacy removal inquiry" autocomplete="off"/>

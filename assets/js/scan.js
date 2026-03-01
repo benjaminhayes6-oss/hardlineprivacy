@@ -9,6 +9,7 @@ const FALLBACK_RESULT = {
   results: [],
   message: 'Partial scan: one or more sources were unavailable. Results may be incomplete. Please try again.'
 };
+const API_FAILURE_MESSAGE = 'We could not complete the scan automatically. Please retry or contact support.';
 const FALLBACK_NOTICE_MAIN = 'Partial scan: one or more sources were unavailable. Results may be incomplete. Please try again.';
 const FALLBACK_NOTICE_DETAIL = 'Results are based on available public sources and may change over time.';
 const SCAN_TIMEOUT_MS = 12000;
@@ -457,9 +458,11 @@ async function runScan(){
     const meta = getExposureMeta(items, data?.exposure, limitedVisibility);
     // persist recommendation for pricing highlighting
     localStorage.setItem('hp_reco', meta.rec);
-    const message = typeof data?.message === 'string' && data.message.trim()
-      ? data.message.trim()
-      : FALLBACK_RESULT.message;
+    const message = usedFallback
+      ? API_FAILURE_MESSAGE
+      : (typeof data?.message === 'string' && data.message.trim()
+        ? data.message.trim()
+        : FALLBACK_RESULT.message);
     if (usedFallback) {
       console.log(`[scan-fallback] ${new Date().toISOString()} (${fallbackReason || 'unknown'})`);
     }
@@ -474,7 +477,7 @@ async function runScan(){
     const fallback = buildFallbackResponse();
     const meta = getExposureMeta([], fallback.exposure, true);
     localStorage.setItem('hp_reco', meta.rec);
-    render([], meta, fallback.message, true, fallback.requestId, true, null);
+    render([], meta, API_FAILURE_MESSAGE, true, fallback.requestId, true, null);
     showPostScanPrompt({ name, state, city, requestId: fallback.requestId });
   }
 }
