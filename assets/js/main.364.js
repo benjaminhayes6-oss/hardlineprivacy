@@ -1,5 +1,10 @@
 /* Hardline Privacy – main.364.js */
 document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".scan-cta").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      console.log("Scan CTA clicked");
+    });
+  });
 
   const toggle = document.querySelector(".menu-toggle");
   const nav = document.querySelector("header nav");

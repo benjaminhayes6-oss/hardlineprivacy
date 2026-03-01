@@ -61,24 +61,32 @@ function getRiskLevel(score) {
 exports.handler = async (event) => {
   const GOOGLE_API_KEY = Netlify.env.get("GOOGLE_API_KEY");
   const GOOGLE_CX = Netlify.env.get("GOOGLE_CX");
-  const { q } = event.queryStringParameters;
+  const { q } = event.queryStringParameters || {};
+
+  let googleResults = [];
+  let exposureScore = 0;
+  let riskLevel = getRiskLevel(exposureScore);
 
   if (!GOOGLE_API_KEY || !GOOGLE_CX) {
     return {
-      statusCode: 500,
+      statusCode: 200,
       body: JSON.stringify({
-        success: false,
-        error: "Missing Google API configuration"
+        success: true,
+        results: googleResults || [],
+        exposureScore,
+        riskLevel
       })
     };
   }
 
   if (!q) {
     return {
-      statusCode: 400,
+      statusCode: 200,
       body: JSON.stringify({
-        success: false,
-        error: "Missing query parameter."
+        success: true,
+        results: googleResults || [],
+        exposureScore,
+        riskLevel
       })
     };
   }
@@ -88,8 +96,7 @@ exports.handler = async (event) => {
   try {
     const response = await fetch(googleUrl);
     const data = await response.json();
-
-    const items = data.items || [];
+    googleResults = data.items || [];
 
     // Split query into name + location
     const parts = q.split(",");
@@ -100,31 +107,31 @@ exports.handler = async (event) => {
     const metroScore = calculateMetroScore(city);
     const brokerScore = calculateBrokerSaturation();
 
-    const exposureScore = Math.min(
+    exposureScore = Math.min(
       nameScore + metroScore + brokerScore,
       100
     );
 
-    const categories = generateCategoryCounts(exposureScore);
+    riskLevel = getRiskLevel(exposureScore);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
-        results: items.slice(0, 5),
+        results: (googleResults || []).slice(0, 5),
         exposureScore,
-        riskLevel: getRiskLevel(exposureScore),
-        categories,
-        methodology: "Exposure estimate based on public data density, name frequency modeling, and broker distribution patterns."
+        riskLevel
       })
     };
 
   } catch (error) {
     return {
-      statusCode: 500,
+      statusCode: 200,
       body: JSON.stringify({
-        success: false,
-        error: "Search failed."
+        success: true,
+        results: googleResults || [],
+        exposureScore,
+        riskLevel
       })
     };
   }

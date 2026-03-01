@@ -59,7 +59,8 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
 .nav nav{display:flex;align-items:center;gap:18px;font-size:20px;font-weight:500}
 .nav nav a{color:var(--muted);transition:color .2s}
 .nav nav a:hover{color:var(--ink);text-decoration:none}
-.nav nav .btn{font-size:15px}
+.nav nav .btn,
+.nav nav .btn-primary{font-size:15px}
 .menu-open{overflow:hidden;height:100vh}
 
 /* Mobile menu toggle */
@@ -78,7 +79,9 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
   .nav nav.open{display:flex}
   .hero{padding:48px 0 36px}
   .btnrow{flex-direction:column;align-items:stretch}
-  .btn{width:100%;min-width:0;padding:14px 20px;font-size:16px}
+  .btn,
+  .btn-primary,
+  .btn-secondary{width:100%;min-width:0;padding:14px 20px;font-size:16px}
   .cards{grid-template-columns:1fr}
   .section{padding:40px 0}
   .price{font-size:1.5rem}
@@ -100,12 +103,18 @@ header.nav{position:sticky;top:0;z-index:1000;background:#061b27;width:100%;padd
 
 /* Buttons */
 .btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border-radius:999px;font-weight:700;font-size:15px;line-height:1.2;cursor:pointer;transition:transform .15s,box-shadow .2s;text-decoration:none;border:none;-webkit-tap-highlight-color:transparent}
-.btn:hover{transform:translateY(-1px);text-decoration:none}
-.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg)}
-.btn.primary:hover{box-shadow:0 4px 20px rgba(96,165,250,.35)}
+.btn,
+.btn-primary{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border-radius:999px;font-weight:700;font-size:15px;line-height:1.2;cursor:pointer;transition:transform .15s,box-shadow .2s;text-decoration:none;border:none;-webkit-tap-highlight-color:transparent}
+.btn:hover,
+.btn-primary:hover{transform:translateY(-1px);text-decoration:none}
+.btn.primary,
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg)}
+.btn.primary:hover,
+.btn-primary:hover{box-shadow:0 4px 20px rgba(96,165,250,.35)}
 .btn.outline{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
 .btn.outline:hover{background:rgba(96,165,250,.08)}
+.btn-secondary{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border-radius:999px;font-weight:700;font-size:15px;line-height:1.2;cursor:pointer;transition:transform .15s,box-shadow .2s;text-decoration:none;border:1.5px solid var(--accent);color:var(--accent);background:transparent;-webkit-tap-highlight-color:transparent}
+.btn-secondary:hover{transform:translateY(-1px);text-decoration:none;background:rgba(96,165,250,.08)}
 
 /* Sections */
 .section{padding:56px 0;border-top:1px solid var(--border)}
