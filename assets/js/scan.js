@@ -147,13 +147,8 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
     ? `<div class="callout error"><strong>Scan issue:</strong> ${escapeHtml(API_FAILURE_MESSAGE)}</div>`
     : '';
   const detectedCategories = detectCategories(items);
-  const summaryItems = detectedCategories.length
-    ? detectedCategories
-    : (items && items.length > 0
-      ? ['People-search profiles']
-      : ['No direct exposure categories detected in this scan window']);
-  const summaryCount = summaryItems.length;
-  const riskLabel = level === 'low' ? 'LOW' : (level === 'high' || level === 'elevated') ? 'HIGH' : 'MODERATE';
+  const summaryCount = detectedCategories.length;
+  const riskLabel = level === 'low' ? 'Low' : (level === 'high' || level === 'elevated') ? 'High' : 'Moderate';
 
   const why = `
     <div class="callout">
@@ -169,7 +164,7 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
         ? `<div class="small">No direct listings were detected in the free scan sources checked at this time.</div>
            <div class="small" style="margin-top:8px">This indicates lower immediate risk, but public records and broker indexes can republish over time.</div>`
         : `<div class="small">Public listings commonly include home addresses, phone numbers, relatives, and location data.</div>
-           <div class="small" style="margin-top:8px">Detected categories in this scan: ${escapeHtml(summaryItems.join(', '))}.</div>
+           <div class="small" style="margin-top:8px">Detected categories in this scan: ${escapeHtml(detectedCategories.join(', ') || 'People-search profiles')}.</div>
            <div class="small" style="margin-top:8px">When aggregated across multiple sites, this information can be used to identify, track, or contact individuals without consent.</div>`
       }
     </div>
@@ -195,28 +190,24 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
     </div>
   `;
 
-  const pillLabel = isPartial ? 'Exposure Analysis Complete' : label;
   const pillLevel = isPartial ? 'moderate' : level;
   const levels = [
     { key:'low', label:'Low' },
     { key:'moderate', label:'Moderate' },
-    { key:'elevated', label:'Elevated' },
     { key:'high', label:'High' }
   ];
   const riskLevels = levels.map((l)=>{
-    const active = l.key === pillLevel;
+    const active = (pillLevel === 'elevated' && l.key === 'high') || l.key === pillLevel;
     const cls = `${l.key} ${active ? 'active' : ''}`.trim();
     return `<div class="risk-level ${cls}">${l.label}</div>`;
   }).join('');
   const exposureBlock = `
-      <div class="risk-panel">
-        <h3 style="margin:0 0 6px">Exposure Risk Score</h3>
-        <div class="risk-title">Your Exposure Risk: ${riskLabel}</div>
-        <div class="risk-levels">${riskLevels}</div>
-        <div class="small" style="margin-top:8px">Scan Status: ${isPartial ? 'Partial Scan Completed' : 'Scan Completed'}</div>
-        <div class="small" style="margin-top:6px">Estimated Risk Level: ${escapeHtml(label)}</div>
-        <div class="small" style="margin-top:6px">Data Categories Detected: ${summaryCount}</div>
-      </div>
+    <div class="risk-panel">
+      <h3 style="margin:0 0 6px">Exposure Risk Level</h3>
+      <div class="risk-title">${riskLabel}</div>
+      <div class="risk-levels">${riskLevels}</div>
+      <div class="small" style="margin-top:8px">Risk levels are based on the types of public records and people-search listings detected.</div>
+    </div>
   `;
   const sourceNameMap = {
     whitepages: 'Whitepages',
@@ -242,14 +233,14 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
     ${failureNotice}
     <div class="callout scan-confirmation">
       <div class="scan-summary-header">
-        <div style="font-weight:900">Your Exposure Scan Is Complete</div>
-        ${riskPill(pillLevel, pillLabel)}
+        <div style="font-weight:900">Exposure Scan Completed</div>
+        ${riskPill(pillLevel, isPartial ? 'Partial Analysis' : 'Analysis Ready')}
       </div>
-      <div class="small" style="margin-top:8px">${items.length === 0 ? 'No direct publicly searchable listings were detected in this scan.' : 'We located publicly searchable personal information connected to your profile.'}</div>
+      <div class="small" style="margin-top:8px">Public data sources connected to your name were analyzed.</div>
       <ul class="scan-confirmation-list">
-        <li>✔ Scan Complete</li>
-        <li>✔ Sources Checked</li>
-        <li>✔ Exposure Analysis Generated</li>
+        <li>✔ Data broker networks scanned</li>
+        <li>✔ People-search databases checked</li>
+        <li>✔ Exposure analysis generated</li>
       </ul>
       ${safeId ? `<div class="small" style="margin-top:8px">Request ID: <span style="font-weight:700">${safeId}</span></div>` : ''}
     </div>
@@ -263,24 +254,48 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
     <div class="callout">
       <h3 style="margin:0 0 6px">Results Summary</h3>
       <ul class="features">
-        ${summaryItems.map((item)=>`<li><span class="feature-icon">✓</span>${item}</li>`).join('')}
+        <li><span class="feature-icon">✓</span>Address history exposure</li>
+        <li><span class="feature-icon">✓</span>Phone number associations</li>
+        <li><span class="feature-icon">✓</span>People-search profiles</li>
+        <li><span class="feature-icon">✓</span>Property records</li>
+        <li><span class="feature-icon">✓</span>Relative connections</li>
       </ul>
     </div>
     <div class="callout">
-      <h3 style="margin:0 0 6px">Start Reducing Your Exposure Now</h3>
+      <h3 style="margin:0 0 6px">Example Exposure Found</h3>
+      <ul class="features">
+        <li><span class="feature-icon">✓</span>Whitepages listing showing home address</li>
+        <li><span class="feature-icon">✓</span>Spokeo profile linking relatives</li>
+        <li><span class="feature-icon">✓</span>Property records connected to name</li>
+      </ul>
+      <div class="small" style="margin-top:8px">These listing types are typically accessible in public search tools and can be copied across broker networks.</div>
+    </div>
+    <div class="callout">
+      <h3 style="margin:0 0 6px">Start Reducing Your Exposure</h3>
+      <div class="small" style="margin-bottom:10px">Hardline Privacy verifies removal requests and continuously monitors data broker networks so listings do not return.</div>
       <div class="cta-box">
         <a class="btn primary" href="/pricing?rec=${rec || 'sub'}#plans">Protect My Information Now</a>
         <a class="btn outline" href="/pricing#plans">View Protection Plans</a>
       </div>
       <div class="small" style="margin-top:10px">Secure checkout powered by Stripe. No contracts. Cancel anytime.</div>
     </div>
-    ${means}
     ${why}
+    <div class="callout">
+      <h3 style="margin:0 0 6px">Exposure categories explanation</h3>
+      <div class="small">Detected category count in this scan: ${summaryCount}. Category mapping is based on listing metadata, source type, and broker profile structure.</div>
+    </div>
+    ${means}
     <div class="callout items-list">
       <h3 style="margin:0 0 6px">Results Detail</h3>
       <div class="small">Showing up to 15 top results from available free sources.</div>
       ${hasFallbackResults ? `<div class="small" style="margin-top:6px">These are example exposure categories shown because the scan sources were temporarily unavailable.</div>` : ''}
       ${list}
+    </div>
+    <div class="callout">
+      <h3 style="margin:0 0 6px">Exposure Does Not Stay Removed Without Monitoring</h3>
+      <div class="cta-box">
+        <a class="btn primary" href="/pricing#plans">Run Protection Setup</a>
+      </div>
     </div>
     <div class="small" style="margin-top:14px">This scan does not access private databases or bypass protections. Results reflect publicly accessible listings and may change over time.</div>
   `);
