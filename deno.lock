@@ -11,9 +11,7 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
-        "npm:@netlify/blobs@^10.6.0",
-        "npm:@netlify/functions@3",
-        "npm:stripe@^20.3.1"
+        "npm:node-fetch@^2.6.7"
       ]
     }
   }
