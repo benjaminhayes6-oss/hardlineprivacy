@@ -1,5 +1,26 @@
 /* Hardline Privacy – main.364.js */
 document.addEventListener("DOMContentLoaded", () => {
+  const navHeaders = document.querySelectorAll("header.nav");
+  if (navHeaders.length > 1) {
+    navHeaders.forEach((header, index) => {
+      if (index > 0) header.remove();
+    });
+  }
+
+  const primaryNav = document.querySelector("header.nav nav");
+  if (primaryNav) {
+    const scanLinks = Array.from(primaryNav.querySelectorAll("a[href='/scan']"));
+    scanLinks.forEach((link, index) => {
+      if (index > 0) link.remove();
+    });
+  }
+
+  const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (pathname === "/founder" || pathname === "/resources") {
+    const mainHeader = document.querySelector("header.nav");
+    if (mainHeader) mainHeader.classList.add("no-sticky");
+  }
+
   document.querySelectorAll(".scan-cta, .scan-btn").forEach((btn) => {
     btn.addEventListener("click", (event) => {
       const isAnchor = btn.tagName.toLowerCase() === "a";
@@ -13,6 +34,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const toggle = document.querySelector(".menu-toggle");
   const nav = document.querySelector("header nav");
+
+  const ensureAuthorityHubLinks = () => {
+    const headerNav = document.querySelector("header.nav nav");
+    if (headerNav && !headerNav.querySelector("a[href='/authority-hub']")) {
+      const link = document.createElement("a");
+      link.href = "/authority-hub";
+      link.textContent = "Authority Hub";
+
+      const pricing = headerNav.querySelector("a[href='/pricing']");
+      if (pricing) {
+        headerNav.insertBefore(link, pricing);
+      } else {
+        headerNav.appendChild(link);
+      }
+    }
+
+    document.querySelectorAll(".footer-links").forEach((footerLinks) => {
+      if (!footerLinks.querySelector("a[href='/authority-hub']")) {
+        const link = document.createElement("a");
+        link.href = "/authority-hub";
+        link.textContent = "Authority Hub";
+        footerLinks.appendChild(link);
+      }
+    });
+  };
+
+  ensureAuthorityHubLinks();
 
   if (!toggle || !nav) return;
 
@@ -45,6 +93,56 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 (function(){
+  function getGa4MeasurementId(){
+    var fromMeta = document.querySelector('meta[name="ga4-measurement-id"]');
+    if (fromMeta && fromMeta.content) return fromMeta.content.trim();
+    if (typeof window.HARDLINE_GA4_ID === 'string') return window.HARDLINE_GA4_ID.trim();
+    var fromData = document.documentElement.getAttribute('data-ga4-id');
+    return fromData ? fromData.trim() : '';
+  }
+
+  function initAnalytics(){
+    window.dataLayer = window.dataLayer || [];
+    window.hpTrack = function(eventName, params){
+      if (!eventName) return;
+      var payload = Object.assign({ event: eventName }, params || {});
+      window.dataLayer.push(payload);
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, params || {});
+      }
+    };
+
+    document.querySelectorAll("a[href*='buy.stripe.com'], a[href^='/checkout/'], button[data-checkout-plan]").forEach(function(el){
+      el.addEventListener('click', function(){
+        var href = el.getAttribute('href') || '';
+        var plan = el.getAttribute('data-checkout-plan') || href.split('/checkout/')[1] || 'unknown';
+        window.hpTrack('checkout_clicked', {
+          plan: plan
+        });
+      });
+    });
+
+    if (window.location.pathname.replace(/\/+$/, '') === '/pricing') {
+      window.hpTrack('pricing_viewed', {
+        page_path: '/pricing'
+      });
+    }
+
+    var measurementId = getGa4MeasurementId();
+    if (!/^G-[A-Z0-9]+$/.test(measurementId)) return;
+
+    var gtagScript = document.createElement('script');
+    gtagScript.async = true;
+    gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(measurementId);
+    document.head.appendChild(gtagScript);
+
+    window.gtag = function(){ window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', measurementId, {
+      send_page_view: true,
+      anonymize_ip: true
+    });
+  }
 
   function getConsentVersion(){
     return document.body.getAttribute('data-consent-version') || '2026-02-16';
@@ -199,8 +297,83 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function appendSitewideSchemas(){
+    if(document.getElementById('hp-sitewide-schema')) return;
+    var schemaScript=document.createElement('script');
+    schemaScript.type='application/ld+json';
+    schemaScript.id='hp-sitewide-schema';
+    var schema={
+      '@context':'https://schema.org',
+      '@graph':[
+        {
+          '@type':'FAQPage',
+          'mainEntity':[
+            {
+              '@type':'Question',
+              'name':'How long does removal take?',
+              'acceptedAnswer':{
+                '@type':'Answer',
+                'text':'Most removals begin processing within days, while full suppression and verification across multiple brokers typically takes one to three weeks.'
+              }
+            },
+            {
+              '@type':'Question',
+              'name':'Why does data reappear?',
+              'acceptedAnswer':{
+                '@type':'Answer',
+                'text':'Data reappears when brokers ingest new feeds from public records, marketing datasets, and partner networks that republish profile details.'
+              }
+            },
+            {
+              '@type':'Question',
+              'name':'Is this legal?',
+              'acceptedAnswer':{
+                '@type':'Answer',
+                'text':'Yes. Submitting opt-outs and privacy deletion requests to brokers is a lawful consumer-rights workflow in the United States.'
+              }
+            },
+            {
+              '@type':'Question',
+              'name':'Do you sell my data?',
+              'acceptedAnswer':{
+                '@type':'Answer',
+                'text':'No. Hardline Privacy does not sell client data and uses security-first handling standards for submitted information.'
+              }
+            },
+            {
+              '@type':'Question',
+              'name':'What makes Hardline different?',
+              'acceptedAnswer':{
+                '@type':'Answer',
+                'text':'Hardline combines human-verified removals, documented escalation workflows, and continuous monitoring focused on reducing repeat exposure.'
+              }
+            }
+          ]
+        },
+        {
+          '@type':'LocalBusiness',
+          '@id':'https://hardlineprivacy.com/#localbusiness',
+          'name':'Hardline Privacy',
+          'url':'https://hardlineprivacy.com',
+          'image':'https://hardlineprivacy.com/assets/images/hardline-og-dark.png',
+          'address':{
+            '@type':'PostalAddress',
+            'addressLocality':'Nashville',
+            'addressRegion':'Tennessee',
+            'addressCountry':'United States'
+          },
+          'areaServed':'United States'
+        }
+      ]
+    };
+    schemaScript.textContent=JSON.stringify(schema);
+    document.head.appendChild(schemaScript);
+  }
+
   bindFormConsent();
   bindConsentLinks();
+  initAnalytics();
   applyCtaVariants();
   initDynamicStats();
+  appendSitewideSchemas();
 })();

@@ -66,12 +66,15 @@ exports.handler = async (event) => {
   let googleResults = [];
   let exposureScore = 0;
   let riskLevel = getRiskLevel(exposureScore);
+  const requestId = `scan-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 
   if (!GOOGLE_API_KEY || !GOOGLE_CX) {
     return {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
+        ok: true,
+        requestId,
         results: googleResults || [],
         exposureScore,
         riskLevel,
@@ -85,6 +88,8 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
+        ok: true,
+        requestId,
         results: googleResults || [],
         exposureScore,
         riskLevel,
@@ -120,6 +125,8 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
+        ok: true,
+        requestId,
         results: (googleResults || []).slice(0, 5),
         exposureScore,
         riskLevel,
@@ -132,6 +139,8 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
+        ok: true,
+        requestId,
         results: googleResults || [],
         exposureScore,
         riskLevel,

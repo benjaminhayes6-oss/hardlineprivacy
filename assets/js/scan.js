@@ -36,6 +36,13 @@ const BROKER_HINTS = [
   'beenverified.com','truthfinder.com','instantcheckmate.com','intelius.com','nuwber.com',
   'peoplefinders.com','ussearch.com','peekyou.com'
 ];
+const CATEGORY_RULES = [
+  { key: 'People-search profiles', pattern: /people|profile|background|records?|directory|broker/i },
+  { key: 'Address history', pattern: /address|location|resident|property|map/i },
+  { key: 'Phone directories', pattern: /phone|cell|mobile|caller|number/i },
+  { key: 'Relative associations', pattern: /relative|associate|family|household/i },
+  { key: 'Email associations', pattern: /email|contact/i }
+];
 
 function setResultsHTML(html){
   if (!resultsEl) return;
@@ -59,6 +66,17 @@ function collectBrokerHits(items){
     }
   }
   return [...hits];
+}
+
+function detectCategories(items){
+  const found = new Set();
+  for (const item of (items || [])) {
+    const text = `${item?.title || ''} ${item?.snippet || ''} ${item?.link || item?.url || ''}`;
+    for (const rule of CATEGORY_RULES) {
+      if (rule.pattern.test(text)) found.add(rule.key);
+    }
+  }
+  return [...found];
 }
 
 function normalizeExposureLevel(count, brokerHits, limitedVisibility){
@@ -119,7 +137,7 @@ function renderProviders(providers){
   return `<div class="small" style="margin-top:8px">Sources: ${escapeHtml(lines)}</div>`;
 }
 
-function render(items, meta, message, isFallback, requestId, limitedVisibility, providers){
+function render(items, meta, message, isFallback, requestId, limitedVisibility, providers, stateLabel){
   const {level,label,rec,brokerHits} = meta;
   const safeId = escapeHtml(requestId || '');
   const hasFallbackResults = isFallback && (!items || items.length === 0);
@@ -128,13 +146,12 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
   const failureNotice = isFallback
     ? `<div class="callout error"><strong>Scan issue:</strong> ${escapeHtml(API_FAILURE_MESSAGE)}</div>`
     : '';
-  const summaryItems = [
-    'Recommended For Ongoing Privacy Monitoring',
-    'People-search profiling findings',
-    'Address history exposure',
-    'Property mapping links',
-    'Phone/email associations'
-  ];
+  const detectedCategories = detectCategories(items);
+  const summaryItems = detectedCategories.length
+    ? detectedCategories
+    : (items && items.length > 0
+      ? ['People-search profiles']
+      : ['No direct exposure categories detected in this scan window']);
   const summaryCount = summaryItems.length;
   const riskLabel = level === 'low' ? 'LOW' : (level === 'high' || level === 'elevated') ? 'HIGH' : 'MODERATE';
 
@@ -148,9 +165,13 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
   const means = `
     <div class="callout">
       <h3 style="margin:0 0 6px">What this means</h3>
-      <div class="small">Public listings commonly include home addresses, phone numbers, relatives, and location data.</div>
-      <div class="small" style="margin-top:8px">When aggregated across multiple sites, this information can be used to identify, track, or contact individuals without their consent.</div>
-      <div class="small" style="margin-top:8px"><b>High-risk broker note:</b> Certain sites are known to collect, resell, and frequently republish personal information, even after manual opt-outs.</div>
+      ${items.length === 0
+        ? `<div class="small">No direct listings were detected in the free scan sources checked at this time.</div>
+           <div class="small" style="margin-top:8px">This indicates lower immediate risk, but public records and broker indexes can republish over time.</div>`
+        : `<div class="small">Public listings commonly include home addresses, phone numbers, relatives, and location data.</div>
+           <div class="small" style="margin-top:8px">Detected categories in this scan: ${escapeHtml(summaryItems.join(', '))}.</div>
+           <div class="small" style="margin-top:8px">When aggregated across multiple sites, this information can be used to identify, track, or contact individuals without consent.</div>`
+      }
     </div>
   `;
 
@@ -197,6 +218,25 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
         <div class="small" style="margin-top:6px">Data Categories Detected: ${summaryCount}</div>
       </div>
   `;
+  const sourceNameMap = {
+    whitepages: 'Whitepages',
+    spokeo: 'Spokeo',
+    beenverified: 'BeenVerified',
+    truthfinder: 'TruthFinder',
+    intelius: 'Intelius',
+    instantcheckmate: 'InstantCheckmate',
+    fastpeoplesearch: 'FastPeopleSearch'
+  };
+  const contextualSources = brokerHits.length
+    ? brokerHits.slice(0, 3).map((entry) => {
+      const key = entry.split('.')[0];
+      return sourceNameMap[key] || key;
+    }).join(', ')
+    : 'Whitepages, Spokeo, BeenVerified';
+  const stateContext = stateLabel
+    ? `<div class="small" style="margin-top:8px">Based on exposure trends in ${escapeHtml(stateLabel)}, broker re-listing rates are above national average.</div>
+      <div class="small" style="margin-top:6px">Common sources include ${escapeHtml(contextualSources)}.</div>`
+    : '';
 
   setResultsHTML(`
     ${failureNotice}
@@ -205,7 +245,7 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
         <div style="font-weight:900">Your Exposure Scan Is Complete</div>
         ${riskPill(pillLevel, pillLabel)}
       </div>
-      <div class="small" style="margin-top:8px">We located publicly searchable personal information connected to your profile.</div>
+      <div class="small" style="margin-top:8px">${items.length === 0 ? 'No direct publicly searchable listings were detected in this scan.' : 'We located publicly searchable personal information connected to your profile.'}</div>
       <ul class="scan-confirmation-list">
         <li>✔ Scan Complete</li>
         <li>✔ Sources Checked</li>
@@ -217,6 +257,7 @@ function render(items, meta, message, isFallback, requestId, limitedVisibility, 
       ${exposureBlock}
       ${isPartial ? `<div class="small" style="margin-top:8px">Partial scan: one or more sources were unavailable. Results may be incomplete. Please try again.</div>` : ''}
       ${!isPartial ? `<div class="small" style="margin-top:8px">${escapeHtml(message || FALLBACK_RESULT.message)}</div>` : ''}
+      ${stateContext}
       ${renderProviders(providers)}
     </div>
     <div class="callout">
@@ -451,6 +492,7 @@ async function runScan(){
   const name = document.getElementById('fullName')?.value.trim();
   const email = document.getElementById('email')?.value.trim() || '';
   const state = document.getElementById('state')?.value.trim();
+  const stateLabel = document.getElementById('state')?.selectedOptions?.[0]?.textContent?.trim() || state;
   const city = document.getElementById('city')?.value.trim();
   const aliases = document.getElementById('aliases')?.value.trim();
   setFieldError('fullName', name ? '' : 'Please enter a full name.');
@@ -514,7 +556,15 @@ async function runScan(){
     const requestId = typeof data?.requestId === 'string' && data.requestId.trim()
       ? data.requestId.trim()
       : generateRequestId();
-    render(items, meta, message, usedFallback, requestId, limitedVisibility, data?.providers);
+    render(items, meta, message, usedFallback, requestId, limitedVisibility, data?.providers, stateLabel);
+    if (typeof window.hpTrack === 'function') {
+      window.hpTrack('scan_completed', {
+        risk_level: meta.level,
+        result_count: items.length,
+        state: state || '',
+        partial_scan: limitedVisibility
+      });
+    }
     showPostScanPrompt({ name, state, city, requestId });
   }catch(err){
     const fallbackReason = err?.name === 'AbortError' ? 'timeout' : 'network';
@@ -522,7 +572,15 @@ async function runScan(){
     const fallback = buildFallbackResponse();
     const meta = getExposureMeta([], fallback.exposure, true);
     localStorage.setItem('hp_reco', meta.rec);
-    render([], meta, API_FAILURE_MESSAGE, true, fallback.requestId, true, null);
+    render([], meta, API_FAILURE_MESSAGE, true, fallback.requestId, true, null, stateLabel);
+    if (typeof window.hpTrack === 'function') {
+      window.hpTrack('scan_completed', {
+        risk_level: meta.level,
+        result_count: 0,
+        state: state || '',
+        partial_scan: true
+      });
+    }
     showPostScanPrompt({ name, state, city, requestId: fallback.requestId });
   }
 }
