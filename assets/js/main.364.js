@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mainHeader) mainHeader.classList.add("no-sticky");
   }
 
-  document.querySelectorAll(".scan-cta, .scan-btn").forEach((btn) => {
+  document.querySelectorAll(".scan-cta, .scan-btn, [data-scan-link]").forEach((btn) => {
     btn.addEventListener("click", (event) => {
       const isAnchor = btn.tagName.toLowerCase() === "a";
       const href = isAnchor ? btn.getAttribute("href") : null;
@@ -32,8 +32,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  const toggle = document.querySelector(".menu-toggle");
-  const nav = document.querySelector("header nav");
+  document.addEventListener("click", (event) => {
+    const scanTarget = event.target.closest("a[href='/scan'], a[href='/scan/']");
+    if (!scanTarget) return;
+    const href = scanTarget.getAttribute("href");
+    if (!href) {
+      event.preventDefault();
+      window.location.href = "/scan";
+    }
+  });
+
+  const toggle = document.querySelector("header.nav .menu-toggle");
+  const nav = document.querySelector("header.nav nav");
 
   const ensureAuthorityHubLinks = () => {
     const headerNav = document.querySelector("header.nav nav");
