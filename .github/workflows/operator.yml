@@ -1,10 +1,9 @@
-# .github/workflows/operator.yml
 name: Hardline Operator Master Engine
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 15 * * 1'
+    - cron: '0 15 * * 1'  # weekly run
 
 permissions:
   contents: write
@@ -14,33 +13,55 @@ jobs:
   operator:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up environment
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq bc
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y jq bc nodejs npm
 
-      - name: Run Autonomous Growth Engine
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          # run your custom growth scripts here
+    - name: Load dynamic topics
+      run: |
+        # Example: read topics from a YAML file and export as bash array
+        TOPICS=$(yq -r '.topics[]' topics.yaml | jq -R . | jq -s .)
+        echo "TOPICS_JSON=${TOPICS}" >> $GITHUB_ENV
 
-      - name: Calculate Authority Score
-        run: |
-          # calculate scores and save to file
+    - name: Generate blog posts
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        TOPICS_JSON: ${{ env.TOPICS_JSON }}
+      run: |
+        # Parse topics and generate articles via OpenAI API loop
+        TOPICS=$(echo "$TOPICS_JSON" | jq -r '.[]')
+        for topic in $TOPICS; do
+          # generate slug and call OpenAI
+          # create HTML or Markdown file in blog/
+        done
 
-      - name: Generate Comparison Page
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          # generate comparison content
+    - name: SEO audit & fix metadata
+      run: |
+        npm install -g lighthouse
+        # run lighthouse on built site, parse JSON report
+        # fix missing titles/descriptions/alt text
 
-      - name: Update Sitemap
-        run: |
-          # regenerate sitemap.xml
+    - name: Optimise images
+      run: |
+        npm install -g imagemin-cli imagemin-mozjpeg imagemin-pngquant
+        find blog/ -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) -print0 \
+          | xargs -0 -n1 -I{} sh -c 'imagemin "{}" --out-dir $(dirname "{}")'
 
-      - name: Commit and Open PR
-        run: |
-          # create branch, commit changes and open PR with gh or GitHub CLI
+    - name: Rebuild blog index and sitemap
+      run: |
+        # run your static site generator or custom script
+        # update blog/index.html and sitemap.xml with new posts
+
+    - name: Create social captions
+      env:
+        TOPICS_JSON: ${{ env.TOPICS_JSON }}
+      run: |
+        mkdir -p social
+        for topic in $(echo "$TOPICS_JSON" | jq -r '.[]'); do
+          # generate social caption using OpenAI API and save to social/<slug>.md
+        done
+
+    - name: Commit and PR
+      run: |
+        # create branch, commit all changes and open PR using GitHub CLI
