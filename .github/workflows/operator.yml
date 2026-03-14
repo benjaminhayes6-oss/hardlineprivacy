@@ -1,0 +1,46 @@
+# .github/workflows/operator.yml
+name: Hardline Operator Master Engine
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 15 * * 1'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  operator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq bc
+
+      - name: Run Autonomous Growth Engine
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          # run your custom growth scripts here
+
+      - name: Calculate Authority Score
+        run: |
+          # calculate scores and save to file
+
+      - name: Generate Comparison Page
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          # generate comparison content
+
+      - name: Update Sitemap
+        run: |
+          # regenerate sitemap.xml
+
+      - name: Commit and Open PR
+        run: |
+          # create branch, commit changes and open PR with gh or GitHub CLI
