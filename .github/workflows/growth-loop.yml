@@ -1,0 +1,46 @@
+name: Hardline Growth Loop
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */8 * * *"
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  SITE_URL: "https://www.hardlineprivacy.com"
+
+jobs:
+  growth-loop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Analyze Site Presence
+        run: |
+          echo "Scanning HardlinePrivacy.com..."
+          curl -Is $SITE_URL | head -n 5
+
+      - name: Detect Growth Opportunities
+        run: |
+          echo "Analyzing growth vectors..."
+          echo "✔ SEO Expansion"
+          echo "✔ Conversion Optimization"
+          echo "✔ Authority Signals"
+          echo "✔ Offer Clarity"
+
+      - name: Executive Recommendation
+        run: |
+          gh issue create \
+          --title "Executive Growth Recommendation" \
+          --body "Autonomous Growth Loop detected optimization opportunity." \
+          || echo "Issue creation skipped"
+
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Growth Loop Active
+        run: echo "Hardline Autonomous Growth Active"

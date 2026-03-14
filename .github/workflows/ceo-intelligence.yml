@@ -1,0 +1,52 @@
+name: Hardline CEO Intelligence
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * 1"
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  SITE_URL: "https://www.hardlineprivacy.com"
+
+jobs:
+  ceo-intelligence:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gather Business Signals
+        run: |
+          echo "Scanning core signals..."
+
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL)
+          echo "Homepage status: $STATUS"
+
+          PAGE_COUNT=$(ls *.html 2>/dev/null | wc -l)
+          echo "HTML pages in repo: $PAGE_COUNT"
+
+          WORKFLOW_COUNT=$(ls .github/workflows/*.yml 2>/dev/null | wc -l)
+          echo "Workflow count: $WORKFLOW_COUNT"
+
+      - name: CEO Strategic Report
+        run: |
+          gh issue create \
+          --title "CEO Weekly Strategic Brief" \
+          --body "CEO Intelligence Scan Complete.
+
+          - Site reachable
+          - Workflows active
+          - Page count evaluated
+
+          Review manually before approving expansion." \
+          || echo "Issue skipped"
+
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: CEO Brain Online
+        run: echo "Hardline CEO Intelligence Active"

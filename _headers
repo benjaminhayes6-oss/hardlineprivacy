@@ -15,3 +15,15 @@
 /member*
   Cache-Control: no-store
   Pragma: no-cache
+
+/wp-admin/*
+  Status: 403
+
+/wordpress/*
+  Status: 403
+
+/xmlrpc.php
+  Status: 403
+
+/wp-login.php
+  Status: 403

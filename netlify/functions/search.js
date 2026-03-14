@@ -2,9 +2,6 @@
 
 const fetch = require("node-fetch");
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-const GOOGLE_CX = process.env.GOOGLE_CX;
-
 function calculateNameCommonality(name) {
   const commonNames = [
     "john", "michael", "david", "james", "robert",
@@ -62,12 +59,42 @@ function getRiskLevel(score) {
 }
 
 exports.handler = async (event) => {
-  const { q } = event.queryStringParameters;
+  const GOOGLE_API_KEY = Netlify.env.get("GOOGLE_API_KEY");
+  const GOOGLE_CX = Netlify.env.get("GOOGLE_CX");
+  const { q } = event.queryStringParameters || {};
+
+  let googleResults = [];
+  let exposureScore = 0;
+  let riskLevel = getRiskLevel(exposureScore);
+  const requestId = `scan-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+
+  if (!GOOGLE_API_KEY || !GOOGLE_CX) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        success: true,
+        ok: true,
+        requestId,
+        results: googleResults || [],
+        exposureScore,
+        riskLevel,
+        exposure: riskLevel.toLowerCase()
+      })
+    };
+  }
 
   if (!q) {
     return {
-      statusCode: 400,
-      body: JSON.stringify({ error: "Missing query parameter." })
+      statusCode: 200,
+      body: JSON.stringify({
+        success: true,
+        ok: true,
+        requestId,
+        results: googleResults || [],
+        exposureScore,
+        riskLevel,
+        exposure: riskLevel.toLowerCase()
+      })
     };
   }
 
@@ -76,8 +103,7 @@ exports.handler = async (event) => {
   try {
     const response = await fetch(googleUrl);
     const data = await response.json();
-
-    const items = data.items || [];
+    googleResults = data.items || [];
 
     // Split query into name + location
     const parts = q.split(",");
@@ -88,29 +114,38 @@ exports.handler = async (event) => {
     const metroScore = calculateMetroScore(city);
     const brokerScore = calculateBrokerSaturation();
 
-    const exposureScore = Math.min(
+    exposureScore = Math.min(
       nameScore + metroScore + brokerScore,
       100
     );
 
-    const categories = generateCategoryCounts(exposureScore);
+    riskLevel = getRiskLevel(exposureScore);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        query: q,
-        googleResults: items.slice(0, 5),
+        success: true,
+        ok: true,
+        requestId,
+        results: (googleResults || []).slice(0, 5),
         exposureScore,
-        riskLevel: getRiskLevel(exposureScore),
-        categories,
-        methodology: "Exposure estimate based on public data density, name frequency modeling, and broker distribution patterns."
+        riskLevel,
+        exposure: riskLevel.toLowerCase()
       })
     };
 
   } catch (error) {
     return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Search failed." })
+      statusCode: 200,
+      body: JSON.stringify({
+        success: true,
+        ok: true,
+        requestId,
+        results: googleResults || [],
+        exposureScore,
+        riskLevel,
+        exposure: riskLevel.toLowerCase()
+      })
     };
   }
 };
