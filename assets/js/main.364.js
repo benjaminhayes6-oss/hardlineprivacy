@@ -14,11 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (index > 0) link.remove();
     });
   }
-
-  const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
-  if (pathname === "/founder" || pathname === "/resources") {
-    const mainHeader = document.querySelector("header.nav");
-    if (mainHeader) mainHeader.classList.add("no-sticky");
+  if (primaryNav) {
+    const scanLink = primaryNav.querySelector("a[href='/scan']");
+    if (scanLink) scanLink.classList.add("scan-link");
   }
 
   document.querySelectorAll(".scan-cta, .scan-btn, [data-scan-link]").forEach((btn) => {
@@ -44,6 +42,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const toggle = document.querySelector("header.nav .menu-toggle");
   const nav = document.querySelector("header.nav nav");
+  const createMobileStickyCta = () => {
+    if (document.querySelector(".mobile-sticky-cta")) return;
+    const bar = document.createElement("div");
+    bar.className = "mobile-sticky-cta";
+    bar.innerHTML = `
+      <a class="mobile-cta-secondary" href="/pricing">View Plans</a>
+      <a class="mobile-cta-primary" href="/scan">Run Free Scan</a>
+    `;
+    document.body.appendChild(bar);
+    document.body.classList.add("has-mobile-cta");
+  };
 
   const ensureAuthorityHubLinks = () => {
     const headerNav = document.querySelector("header.nav nav");
@@ -71,6 +80,59 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   ensureAuthorityHubLinks();
+  createMobileStickyCta();
+
+  const injectNewsletterSignup = () => {
+    if (document.querySelector(".newsletter-signup")) return;
+    const footer = document.querySelector("footer");
+    if (!footer || !footer.parentNode) return;
+
+    const section = document.createElement("section");
+    section.className = "newsletter-signup";
+    section.setAttribute("aria-label", "Privacy newsletter signup");
+    section.innerHTML = `
+      <div class="newsletter-wrap">
+        <h2>Get Privacy Law Alerts and Broker Takedown Tips</h2>
+        <p>Receive practical 2026 privacy law updates and exposure-reduction guidance. Only an email address is required.</p>
+        <form name="newsletter-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="newsletter-signup">
+          <p hidden aria-hidden="true"><label>Do not fill this out <input name="bot-field"></label></p>
+          <input type="email" name="email" autocomplete="email" required placeholder="Email address">
+          <button class="btn-primary" type="submit">Subscribe</button>
+        </form>
+        <div class="newsletter-status" aria-live="polite"></div>
+        <div class="newsletter-note">No spam. Unsubscribe at any time.</div>
+      </div>
+    `;
+    footer.parentNode.insertBefore(section, footer);
+
+    const form = section.querySelector("form");
+    const status = section.querySelector(".newsletter-status");
+    if (!form || !status) return;
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const body = new URLSearchParams(formData).toString();
+      status.textContent = "Submitting...";
+      status.classList.remove("error");
+      try {
+        const response = await fetch("/__forms.html", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body
+        });
+        if (!response.ok) {
+          throw new Error("Submit failed");
+        }
+        form.reset();
+        status.textContent = "Subscribed. New privacy updates will be sent soon.";
+      } catch (error) {
+        status.textContent = "Unable to subscribe right now. Please try again.";
+        status.classList.add("error");
+      }
+    });
+  };
+  injectNewsletterSignup();
 
   if (!toggle || !nav) return;
 
@@ -316,51 +378,6 @@ document.addEventListener("DOMContentLoaded", () => {
       '@context':'https://schema.org',
       '@graph':[
         {
-          '@type':'FAQPage',
-          'mainEntity':[
-            {
-              '@type':'Question',
-              'name':'How long does removal take?',
-              'acceptedAnswer':{
-                '@type':'Answer',
-                'text':'Most removals begin processing within days, while full suppression and verification across multiple brokers typically takes one to three weeks.'
-              }
-            },
-            {
-              '@type':'Question',
-              'name':'Why does data reappear?',
-              'acceptedAnswer':{
-                '@type':'Answer',
-                'text':'Data reappears when brokers ingest new feeds from public records, marketing datasets, and partner networks that republish profile details.'
-              }
-            },
-            {
-              '@type':'Question',
-              'name':'Is this legal?',
-              'acceptedAnswer':{
-                '@type':'Answer',
-                'text':'Yes. Submitting opt-outs and privacy deletion requests to brokers is a lawful consumer-rights workflow in the United States.'
-              }
-            },
-            {
-              '@type':'Question',
-              'name':'Do you sell my data?',
-              'acceptedAnswer':{
-                '@type':'Answer',
-                'text':'No. Hardline Privacy does not sell client data and uses security-first handling standards for submitted information.'
-              }
-            },
-            {
-              '@type':'Question',
-              'name':'What makes Hardline different?',
-              'acceptedAnswer':{
-                '@type':'Answer',
-                'text':'Hardline combines human-verified removals, documented escalation workflows, and continuous monitoring focused on reducing repeat exposure.'
-              }
-            }
-          ]
-        },
-        {
           '@type':'LocalBusiness',
           '@id':'https://hardlineprivacy.com/#localbusiness',
           'name':'Hardline Privacy',
@@ -380,10 +397,86 @@ document.addEventListener("DOMContentLoaded", () => {
     document.head.appendChild(schemaScript);
   }
 
+  function appendArticleSchema(){
+    var pathname = window.location.pathname.replace(/\/+$/, '');
+    if (!pathname.startsWith('/blog/') || pathname === '/blog') return;
+    if (document.getElementById('hp-article-schema')) return;
+    var headlineEl = document.querySelector('main h1, .hero h1, h1');
+    var headline = headlineEl ? headlineEl.textContent.trim() : document.title.replace(/\s*\|\s*Hardline Privacy$/i,'').trim();
+    if (!headline) return;
+    var descMeta = document.querySelector('meta[name=\"description\"]');
+    var description = descMeta && descMeta.content ? descMeta.content.trim() : '';
+    var canonical = document.querySelector('link[rel=\"canonical\"]');
+    var url = canonical && canonical.href ? canonical.href : ('https://hardlineprivacy.com' + pathname);
+    var imageMeta = document.querySelector('meta[property=\"og:image\"]');
+    var image = imageMeta && imageMeta.content ? imageMeta.content : 'https://hardlineprivacy.com/assets/images/hardline-og-dark.png';
+    var pubMeta = document.querySelector('meta[name=\"article:published_time\"]');
+    var modMeta = document.querySelector('meta[name=\"article:modified_time\"]');
+    var published = pubMeta && pubMeta.content ? pubMeta.content : '2026-03-14';
+    var modified = modMeta && modMeta.content ? modMeta.content : '2026-03-14';
+    var schemaScript = document.createElement('script');
+    schemaScript.type = 'application/ld+json';
+    schemaScript.id = 'hp-article-schema';
+    schemaScript.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      'headline': headline,
+      'description': description,
+      'image': [image],
+      'author': {
+        '@type': 'Organization',
+        'name': 'Hardline Privacy Editorial Team'
+      },
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Hardline Privacy',
+        'logo': {
+          '@type': 'ImageObject',
+          'url': 'https://hardlineprivacy.com/assets/images/logo-light.png'
+        }
+      },
+      'mainEntityOfPage': url,
+      'datePublished': published,
+      'dateModified': modified
+    });
+    document.head.appendChild(schemaScript);
+  }
+
+  function appendFaqSchemaFromPage(){
+    if (document.getElementById('hp-faq-schema')) return;
+    var faqItems = Array.from(document.querySelectorAll('[data-faq-item]'));
+    if (!faqItems.length) return;
+    var entities = faqItems.map(function(item){
+      var q = item.querySelector('[data-faq-question]');
+      var a = item.querySelector('[data-faq-answer]');
+      if (!q || !a) return null;
+      return {
+        '@type': 'Question',
+        'name': q.textContent.trim(),
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': a.textContent.trim()
+        }
+      };
+    }).filter(Boolean);
+    if (!entities.length) return;
+    var schemaScript = document.createElement('script');
+    schemaScript.type = 'application/ld+json';
+    schemaScript.id = 'hp-faq-schema';
+    schemaScript.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': entities
+    });
+    document.head.appendChild(schemaScript);
+  }
+
   bindFormConsent();
   bindConsentLinks();
   initAnalytics();
   applyCtaVariants();
   initDynamicStats();
   appendSitewideSchemas();
+  appendArticleSchema();
+  appendFaqSchemaFromPage();
 })();
