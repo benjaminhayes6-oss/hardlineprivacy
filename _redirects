@@ -1,6 +1,4 @@
-http://hardlineprivacy.com/*       https://www.hardlineprivacy.com/:splat   301!
-https://hardlineprivacy.com/*      https://www.hardlineprivacy.com/:splat   301!
-http://www.hardlineprivacy.com/*   https://www.hardlineprivacy.com/:splat   301!
-
-/family   /family.html   200
-/coverage  /data-brokers  301
+http://hardlineprivacy.com/* https://hardlineprivacy.com/:splat 301!
+http://www.hardlineprivacy.com/* https://hardlineprivacy.com/:splat 301!
+https://www.hardlineprivacy.com/* https://hardlineprivacy.com/:splat 301!
+/api/search /.netlify/functions/search 200

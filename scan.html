@@ -4,115 +4,74 @@
 <title>Exposure Scanner | Hardline Privacy</title>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<meta name="description" content="Run a free exposure scan to see publicly discoverable listings across people-search sites and data brokers."/>
-<meta name="robots" content="noindex, nofollow"/>
-
-<link rel="canonical" href="https://www.hardlineprivacy.com/scan"/>
+<meta name="description" content="Run a free exposure scan to identify where your address, phone, and profile details may be publicly searchable."/>
+<meta name="robots" content="index,follow"/>
+<link rel="canonical" href="https://hardlineprivacy.com/scan"/>
+<meta property="og:title" content="Exposure Scanner | Hardline Privacy"/>
+<meta property="og:description" content="Run a free exposure scan to see publicly discoverable listings across people-search sites and data brokers."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://hardlineprivacy.com/scan"/>
+<meta property="og:image" content="https://hardlineprivacy.com/assets/images/hardline-og-dark.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Exposure Scanner | Hardline Privacy"/>
+<meta name="twitter:description" content="Run a free exposure scan to see publicly discoverable listings across people-search sites and data brokers."/>
+<meta name="twitter:image" content="https://hardlineprivacy.com/assets/images/hardline-og-dark.png"/>
 <link rel="icon" href="/favicon.png"/>
-<link rel="preload" as="image" href="/assets/images/logo-light.png" fetchpriority="high"/>
 <link rel="stylesheet" href="/assets/css/styles.364.css"/>
+<meta name="ga4-measurement-id" content=""/>
 
 <style>
 .result-wrap{margin-top:18px}
 .callout{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:14px 16px;border-radius:14px;margin-top:14px}
-.cta-box{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
-.cta-box .btn{min-width:220px}
 .small{font-size:12px;color:var(--muted)}
-.risk-panel{margin-top:12px}
-.risk-title{font-weight:800;margin-bottom:8px}
-.risk-levels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.risk-level{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;text-align:center;font-size:12px;color:#cbd5e1}
-.risk-level.active{border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.12);color:#e2e8f0;font-weight:700}
-.risk-level.high.active{border-color:rgba(248,113,113,.7);background:rgba(248,113,113,.12)}
-.risk-level.elevated.active{border-color:rgba(251,191,36,.6);background:rgba(251,191,36,.12)}
-.risk-level.low.active{border-color:rgba(52,211,153,.6);background:rgba(52,211,153,.12)}
-.risk-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.16);color:#e2e8f0}
-.risk-pill.risk-low{border-color:rgba(52,211,153,.6);color:#bbf7d0}
-.risk-pill.risk-mod{border-color:rgba(251,191,36,.6);color:#fde68a}
-.risk-pill.risk-high{border-color:rgba(248,113,113,.6);color:#fecaca}
-.risk-categories{margin-top:12px}
-.risk-categories ul{margin:8px 0 0 18px;padding:0}
-.risk-categories li{margin:4px 0}
+.scan-checks{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted)}
+.scan-checks li{display:flex;align-items:center;gap:6px}
+.meter-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.meter-level{font-weight:800;letter-spacing:.04em}
+.meter-bar{position:relative;width:100%;height:14px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin-top:12px}
+.meter-fill{height:100%;width:0;background:linear-gradient(90deg,#22c55e 0%,#facc15 50%,#ef4444 100%);border-radius:999px;transition:width 1s ease}
+.snapshot-list,.source-list,.risk-list{margin:8px 0 0 18px;padding:0}
+.snapshot-list li,.source-list li,.risk-list li{margin:6px 0;color:#cbd5e1}
+.action-buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
 @media (max-width:720px){
-  .risk-levels{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .action-buttons{flex-direction:column}
+  .action-buttons a{width:100%}
 }
 </style>
-<!-- GOOGLE SITE NAME FIX -->
-<script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@type": "Organization",
- "name": "Hardline Privacy",
- "alternateName": "HardlinePrivacy",
- "url": "https://www.hardlineprivacy.com",
- "logo": "https://www.hardlineprivacy.com/assets/images/logo-light.png",
- "sameAs": [
-   "https://www.instagram.com/hardlineprivacy"
- ]
-}
-</script>
-
-<script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@type": "WebSite",
- "name": "Hardline Privacy",
- "url": "https://www.hardlineprivacy.com",
- "potentialAction": {
-   "@type": "SearchAction",
-   "target": "https://www.hardlineprivacy.com/search?q={search_term_string}",
-   "query-input": "required name=search_term_string"
- }
-}
-</script>
-
-<!-- HARDLINE PRIVACY OFFICIAL THUMBNAIL -->
-<meta property="og:image" content="https://www.hardlineprivacy.com/assets/images/hardline-og.png"/>
-<meta property="og:image:width" content="1200"/>
-<meta property="og:image:height" content="630"/>
-<meta property="og:image:type" content="image/png"/>
-
-<meta name="twitter:image" content="https://www.hardlineprivacy.com/assets/images/hardline-og.png"/>
-<meta name="twitter:card" content="summary_large_image"/>
 </head>
 
-<body>
+<body data-consent-version="2026-02-16">
 <header class="nav">
 <div class="nav-bar">
-<a class="logo" href="/"><img class="brand-logo" src="/assets/images/logo-light.png" alt="Hardline Privacy"/></a>
+<a class="logo" href="/"><img class="brand-logo" src="/assets/images/logo-light.svg" alt="Hardline Privacy" width="600" height="400" decoding="async"></a>
+<button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+<span></span>
+<span></span>
+<span></span>
+</button>
 
 <nav>
 <a href="/">Home</a>
 <a href="/about">About</a>
-    <a href="/founder">Founder</a>
+<a href="/founder">Founder</a>
 <a href="/services">Services</a>
 <a href="/pricing">Pricing</a>
 <a href="/resources">Resources</a>
-<a class="btn primary" href="/scan">Run Free Exposure Scan</a>
+<a href="/scan">Run Free Exposure Scan</a>
 </nav>
 </div>
 </header>
 
 <main id="main">
-
 <section class="hero">
 <div class="container">
-
 <h1 class="h1">Exposure Scanner</h1>
-
-<p class="sub">
-Enter your name, email, and state to discover what personal information may be publicly searchable online.
-</p>
+<p class="sub">Enter your name and state to check whether personal information may already be publicly searchable.</p>
 
 <form id="scanForm" class="callout">
-
 <label>Full Name</label>
 <input id="fullName" required placeholder="Enter your full name"/>
 <div id="error-fullName" class="field-error" aria-live="polite"></div>
-
-<label>Email</label>
-<input id="email" type="email" required autocomplete="email" placeholder="Enter your email"/>
-<div id="error-email" class="field-error" aria-live="polite"></div>
 
 <label>State</label>
 <select id="state" required>
@@ -178,107 +137,37 @@ Enter your name, email, and state to discover what personal information may be p
 <input id="aliases" placeholder="Maiden name, nickname, previous legal name"/>
 
 <div class="btnrow">
-<button class="btn primary" type="submit">
-Run Free Exposure Scan
-</button>
-
-<a class="btn outline" href="/pricing">
-See protection options
-</a>
+<button class="btn text-link" type="submit">Run Free Exposure Scan</button>
 </div>
-
-<p class="small">
-Email is used to send scan updates and next steps. No data resale. Results reflect publicly discoverable listings.
-</p>
-
+<p class="small">No signup required. Results visible instantly.</p>
 </form>
 
-<div class="callout">
-<h2>Exposure does not stay removed</h2>
-<p class="sub">
-Even after an opt‑out, data brokers routinely refresh their databases and re‑list profiles.
-Continuous monitoring reduces the time your information stays exposed.
-</p>
-</div>
-
-<div class="callout">
-<h2>Why this scan is trustworthy</h2>
-<p class="sub">
-Hardline Privacy is veteran‑founded and led by Grey, a U.S. Military Veteran and law‑enforcement professional.
-Every scan is designed to surface real public exposure across people‑search sites, data brokers, and public records.
-</p>
-<div class="cta-box">
-<a class="btn outline" href="/trust">View Trust &amp; Security</a>
-<a class="btn outline" href="/">Back to Home</a>
-</div>
-</div>
-
-<!-- SCAN RESULTS -->
-<div id="results" class="result-wrap"></div>
-
+<div id="results" class="result-wrap" aria-live="polite"></div>
 </div>
 </section>
-
-<!-- ========================= -->
-<!-- REVENUE FLYWHEEL SECTION -->
-<!-- ========================= -->
-
-<section class="section">
-<div class="container">
-
-<div class="callout">
-
-<h2>Your Exposure Risk</h2>
-
-<p>
-Public data broker listings commonly reveal home addresses,
-relatives, phone numbers, and historical location data.
-When aggregated across hundreds of databases, this information
-is frequently used for identity theft, targeting, and social engineering attacks.
-</p>
-
-<div class="cta-box">
-
-<a class="btn outline" href="/pricing">
-Protect My Information Now
-</a>
-
-<div class="small">
-✔ Human-verified removals<br>
-✔ Average removal time: 7–21 days<br>
-✔ Continuous exposure monitoring included
-</div>
-
-</div>
-
-</div>
-</div>
-</section>
-
 </main>
 
 <footer>
 <div class="container footer-grid">
-
 <div>
-<img src="/assets/images/logo-light.png" alt="Hardline Privacy"/>
+<img src="/assets/images/logo-light.svg" alt="Hardline Privacy Logo" width="160" height="107" loading="lazy" decoding="async" fetchpriority="low">
 </div>
-
 <div class="footer-links">
-<a href="/faq">FAQ</a>
-<a href="/trust">Trust & Security</a>
 <a href="/privacy">Privacy</a>
 <a href="/terms">Terms</a>
 <a href="/contact">Contact</a>
+<a href="/trust">Trust &amp; Standards</a>
+<a href="/methodology">Methodology</a>
+<a href="/authority-hub">Authority Hub</a>
+<a href="/blog">Blog</a>
+<a href="/compare">Comparison</a>
 </div>
-
 <small>© 2026 Hardline Privacy</small>
-
 </div>
 </footer>
 
 <script src="/assets/js/main.364.js" type="module" defer></script>
 <script src="/assets/js/scan.js" defer></script>
-
+<script async id="netlify-rum-container" src="/.netlify/scripts/rum" data-netlify-rum-site-id="b0bbea64-64e0-42d8-ac4f-b72b1f6410d0" data-netlify-deploy-branch="agent-699e738475ec6d2f3327f853" data-netlify-deploy-context="deploy-preview" data-netlify-cwv-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlX2lkIjoiYjBiYmVhNjQtNjRlMC00MmQ4LWFjNGYtYjcyYjFmNjQxMGQwIiwiYWNjb3VudF9pZCI6IjY5ODE1ZmQ1MTVmZDkzZDdkZTE3YmQxZSIsImRlcGxveV9pZCI6IjY5OWU3NjFiZmFhYjQ1MjEyNThlOTE1YSIsImlzc3VlciI6Im5mc2VydmVyIn0.ndTnmSXMSjFHZN3iNGl8JtifDqUHO4rnRsY4FFOZ4mc"></script>
 </body>
 </html>
