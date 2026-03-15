@@ -79,8 +79,10 @@ body.menu-open{overflow:hidden;height:100vh}
   .nav-bar{height:90px;padding:0 16px}
   .brand-logo,
   .nav-bar img{height:100px}
-  .nav nav{display:none;position:fixed;top:90px;left:0;right:0;bottom:0;flex-direction:column;background:#061b27;padding:20px;border-bottom:1px solid var(--border);gap:12px;overflow-y:auto;max-width:100vw;z-index:1190}
-  .nav nav.open{display:flex}
+  .nav nav,
+  .nav-links{display:none;position:fixed;top:90px;left:0;right:0;bottom:0;flex-direction:column;background:#061b27;padding:20px;border-bottom:1px solid var(--border);gap:12px;overflow-y:auto;max-width:100vw;z-index:1190}
+  .nav nav.open,
+  .nav-links.open{display:flex}
   .hero{padding:48px 0 36px}
   .btnrow{flex-direction:column;align-items:stretch}
   .btn,
@@ -265,11 +267,18 @@ footer .logo img{height:112px;width:auto;max-width:440px;object-fit:contain;opac
 /* Mobile sticky cta */
 .mobile-sticky-cta{display:none}
 @media(max-width:768px){
-  .mobile-sticky-cta{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:1250;gap:10px;padding:10px;border-radius:14px;background:rgba(6,19,31,.92);backdrop-filter:blur(10px);border:1px solid rgba(124,196,255,.32);box-shadow:0 14px 34px rgba(0,0,0,.35)}
+  .mobile-sticky-cta{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:999;gap:8px;padding:8px;max-height:15vh;border-radius:12px;background:rgba(50,0,100,.85);border:1px solid rgba(124,196,255,.32);box-shadow:0 10px 24px rgba(0,0,0,.35)}
   .mobile-sticky-cta a{flex:1;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:999px;padding:12px 14px;font-size:14px;font-weight:800}
   .mobile-sticky-cta .mobile-cta-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#07101a}
   .mobile-sticky-cta .mobile-cta-secondary{color:var(--accent);border:1px solid rgba(124,196,255,.45)}
-  body.has-mobile-cta footer{padding-bottom:104px}
+  .mobile-sticky-cta::before{display:none}
+  body.has-mobile-cta footer{padding-bottom:84px}
+}
+
+@media(max-width:600px){
+  .mobile-sticky-cta{padding:.5rem;max-height:70px}
+  .mobile-sticky-cta a{padding:10px 12px;font-size:13px}
+  body.has-mobile-cta footer{padding-bottom:72px}
 }
 
 /* Newsletter */
