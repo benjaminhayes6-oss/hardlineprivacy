@@ -13,55 +13,64 @@ jobs:
   operator:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y jq bc nodejs npm
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq bc nodejs npm
 
-    - name: Load dynamic topics
-      run: |
-        # Example: read topics from a YAML file and export as bash array
-        TOPICS=$(yq -r '.topics[]' topics.yaml | jq -R . | jq -s .)
-        echo "TOPICS_JSON=${TOPICS}" >> $GITHUB_ENV
+      # Load dynamic topics, falling back to a hard-coded list if topics.yaml is missing
+      - name: Load dynamic topics
+        id: load_topics
+        run: |
+          if [ -f topics.yaml ]; then
+            # Read topics from topics.yaml into a JSON array
+            TOPICS_JSON=$(python3 -c "import yaml, json; print(json.dumps(yaml.safe_load(open('topics.yaml'))['topics']))")
+          else
+            echo "topics.yaml not found, using default topics"
+            TOPICS_JSON='["How the 2027 Delete Act will change data broker regulation", "Best opt‑out practices for families in 2027", "State privacy law updates for 2027"]'
+          fi
+          echo "TOPICS_JSON=${TOPICS_JSON}" >> $GITHUB_ENV
+          echo "::set-output name=topics_json::$TOPICS_JSON"
 
-    - name: Generate blog posts
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        TOPICS_JSON: ${{ env.TOPICS_JSON }}
-      run: |
-        # Parse topics and generate articles via OpenAI API loop
-        TOPICS=$(echo "$TOPICS_JSON" | jq -r '.[]')
-        for topic in $TOPICS; do
-          # generate slug and call OpenAI
-          # create HTML or Markdown file in blog/
-        done
+      - name: Generate blog posts
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TOPICS_JSON: ${{ steps.load_topics.outputs.topics_json }}
+        run: |
+          # Parse topics and generate articles via OpenAI API loop
+          for topic in $(echo "$TOPICS_JSON" | jq -r '.[]'); do
+            # generate slug and call OpenAI
+            # create HTML or Markdown file in blog/
+            :
+          done
 
-    - name: SEO audit & fix metadata
-      run: |
-        npm install -g lighthouse
-        # run lighthouse on built site, parse JSON report
-        # fix missing titles/descriptions/alt text
+      - name: SEO audit & fix metadata
+        run: |
+          npm install -g lighthouse
+          # run lighthouse on built site, parse JSON report
+          # fix missing titles/descriptions/alt text
 
-    - name: Optimise images
-      run: |
-        npm install -g imagemin-cli imagemin-mozjpeg imagemin-pngquant
-        find blog/ -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) -print0 \
-          | xargs -0 -n1 -I{} sh -c 'imagemin "{}" --out-dir $(dirname "{}")'
+      - name: Optimise images
+        run: |
+          npm install -g imagemin-cli imagemin-mozjpeg imagemin-pngquant
+          find blog/ -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) -print0 \
+            | xargs -0 -n1 -I{} sh -c 'imagemin "{}" --out-dir $(dirname "{}")'
 
-    - name: Rebuild blog index and sitemap
-      run: |
-        # run your static site generator or custom script
-        # update blog/index.html and sitemap.xml with new posts
+      - name: Rebuild blog index and sitemap
+        run: |
+          # run your static site generator or custom script
+          # update blog/index.html and sitemap.xml with new posts
 
-    - name: Create social captions
-      env:
-        TOPICS_JSON: ${{ env.TOPICS_JSON }}
-      run: |
-        mkdir -p social
-        for topic in $(echo "$TOPICS_JSON" | jq -r '.[]'); do
-          # generate social caption using OpenAI API and save to social/<slug>.md
-        done
+      - name: Create social captions
+        env:
+          TOPICS_JSON: ${{ steps.load_topics.outputs.topics_json }}
+        run: |
+          mkdir -p social
+          for topic in $(echo "$TOPICS_JSON" | jq -r '.[]'); do
+            # generate social caption using OpenAI API and save to social/<slug>.md
+            :
+          done
 
-    - name: Commit and PR
-      run: |
-        # create branch, commit all changes and open PR using GitHub CLI
+      - name: Commit and PR
+        run: |
+          # create branch, commit all changes and open PR using GitHub CLI
