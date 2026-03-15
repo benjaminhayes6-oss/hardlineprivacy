@@ -40,8 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  const toggle = document.querySelector("header.nav .menu-toggle");
-  const nav = document.querySelector("header.nav nav");
+  const toggle = document.querySelector("header.nav .mobile-menu-toggle, header.nav .menu-toggle, .mobile-menu-toggle, .menu-toggle");
+  const nav = document.querySelector("header.nav .nav-links, header.nav nav, .nav-links");
+  if (nav) nav.classList.add("nav-links");
   const createMobileStickyCta = () => {
     if (document.querySelector(".mobile-sticky-cta")) return;
     const bar = document.createElement("div");
